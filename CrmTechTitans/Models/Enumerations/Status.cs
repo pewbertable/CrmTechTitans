@@ -10,5 +10,6 @@ namespace CrmTechTitans.Models.Enumerations
         ClosedNewMember,
         [Display(Name = "Closed - Not Intersted")]
         ClosedNotInterested
+
     }
 }
