@@ -91,7 +91,7 @@ namespace CrmTechTitans.Data
 
                                new Member
                                {
-                                   Id = 1,
+
                                    MemberName = "Tech Solutions Inc.",
                                    MembershipType = MembershipType.Associate,
                                    ContactedBy = "John Doe",
@@ -105,7 +105,7 @@ namespace CrmTechTitans.Data
                                },
                                 new Member
                                 {
-                                    Id = 2,
+
                                     MemberName = "Energy Corp",
                                     MembershipType = MembershipType.Localindustrial,
                                     ContactedBy = "Jane Smith",
@@ -119,7 +119,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 3,
+
                                     MemberName = "Green Innovations Ltd.",
                                     MembershipType = MembershipType.ChamberAssociate,
                                     ContactedBy = "Albert Green",
@@ -133,7 +133,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 4,
+
                                     MemberName = "City Logistics",
                                     MembershipType = MembershipType.Localindustrial,
                                     ContactedBy = "Maria Johnson",
@@ -147,7 +147,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 5,
+
                                     MemberName = "HealthCare Plus",
                                     MembershipType = MembershipType.GovernmentEducationAssociate,
                                     ContactedBy = "Emily Wright",
@@ -161,7 +161,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 6,
+
                                     MemberName = "Tech Electronics",
                                     MembershipType = MembershipType.NonLocalIndustrial,
                                     ContactedBy = "James Carter",
@@ -175,7 +175,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 7,
+
                                     MemberName = "Auto Parts Co.",
                                     MembershipType = MembershipType.Associate,
                                     ContactedBy = "Daniel Lee",
@@ -189,7 +189,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 8,
+
                                     MemberName = "Foodies Market",
                                     MembershipType = MembershipType.ChamberAssociate,
                                     ContactedBy = "Linda Miller",
@@ -203,7 +203,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 9,
+
                                     MemberName = "Global Transport Ltd.",
                                     MembershipType = MembershipType.Localindustrial,
                                     ContactedBy = "Nina Roberts",
@@ -217,7 +217,7 @@ namespace CrmTechTitans.Data
                                 },
                                 new Member
                                 {
-                                    Id = 10,
+
                                     MemberName = "Universal Tech Hub",
                                     MembershipType = MembershipType.Associate,
                                     ContactedBy = "Oliver Thomas",

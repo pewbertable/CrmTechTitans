@@ -7,7 +7,7 @@ namespace CrmTechTitans.Models
     public class Member
     {
         [Key]
-        public int Id { get; set; }
+        public int ID { get; set; }
 
         [Display(Name = "Member")]
         [Required(ErrorMessage = "Member is required")]
@@ -46,7 +46,7 @@ namespace CrmTechTitans.Models
 
         [Display(Name = "Membership Status")]
         public MembershipStatus MembershipStatus { get; set; }
-        public ICollection<IndustryMember> IndustryMembers { get; set; }
+        public ICollection<IndustryMember> IndustryMembers { get; set; } = new HashSet<IndustryMember>();
 
 
     }
