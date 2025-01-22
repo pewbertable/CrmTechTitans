@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CrmTechTitans")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c0a77324d723a68970df985415fd0538ba73c5b2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("CrmTechTitans")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CrmTechTitans")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

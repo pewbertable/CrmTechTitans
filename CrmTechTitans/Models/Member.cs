@@ -8,9 +8,9 @@ namespace CrmTechTitans.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        [Display(Name = "Member Name")]
+        [Display(Name = "Member")]
+        [Required(ErrorMessage = "Member is required")]
+        [StringLength(100, ErrorMessage = "Member name can't be longer than 100 characters")]
         public string MemberName { get; set; }
 
         [Required]
@@ -46,6 +46,7 @@ namespace CrmTechTitans.Models
         [Display(Name = "Notes")]
         public string? Notes { get; set; }
 
+        [Display(Name = "Membership Status")]
         public MembershipStatus MembershipStatus { get; set; }
 
 

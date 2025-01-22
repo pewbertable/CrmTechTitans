@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CrmTechTitans.Models.Enumerations;
 
 namespace CRM.Models
 {
@@ -6,11 +7,16 @@ namespace CRM.Models
     {
         public int ID { get; set; }
 
-
+        [Display(Name = "Title")]
         [StringLength(200, ErrorMessage = "Opportunity title can't be longer than 200 characters")]
         public string? Title { get; set; }
-        public string? Description { get; set; }
 
-        public string? Priority { get; set; }
+        [Display(Name = "Description")]
+        [Required(ErrorMessage = "Description is required")]
+        [StringLength(1000)]
+        public string Description { get; set; }
+
+        [Display(Name = "Priority")]
+        public PriorityType Priority { get; set; } //Enum
     }
 }

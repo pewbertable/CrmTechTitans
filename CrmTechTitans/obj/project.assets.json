@@ -8477,23 +8477,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\austeen\\.nuget\\packages\\": {},
+    "C:\\Users\\alish\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\austeen\\OneDrive - NC\\Documents\\SEMESTER 4\\COMMUNITY PROJECT\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
+      "projectUniqueName": "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\CrmTechTitans.csproj",
       "projectName": "CrmTechTitans",
-      "projectPath": "C:\\Users\\austeen\\OneDrive - NC\\Documents\\SEMESTER 4\\COMMUNITY PROJECT\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
-      "packagesPath": "C:\\Users\\austeen\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\austeen\\OneDrive - NC\\Documents\\SEMESTER 4\\COMMUNITY PROJECT\\CrmTechTitans\\CrmTechTitans\\obj\\",
+      "projectPath": "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\CrmTechTitans.csproj",
+      "packagesPath": "C:\\Users\\alish\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\austeen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\alish\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8502,7 +8502,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8515,11 +8514,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -8576,7 +8570,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100-rc.2.23502.2/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
