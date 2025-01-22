@@ -19,10 +19,10 @@
                 @Html.DisplayNameFor(model => model.MembershipType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ContactedBy)
+               Industries
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Industry)
+                @Html.DisplayNameFor(model => model.ContactedBy)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CompanySize)
@@ -54,11 +54,19 @@
             <td>
                 @Html.DisplayFor(modelItem => item.MembershipType)
             </td>
+                <td>
+                    @if (item.IndustryMembers.Any())  // Check if there are industries associated with the member
+                    {
+                        @string.Join(", ", item.IndustryMembers.Select(im => im.Industry.Name))
+                    }
+                    else
+                    {
+                        <span>No industries associated</span>
+                        // Display a fallback message if no industries are associated
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ContactedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Industry)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CompanySize)

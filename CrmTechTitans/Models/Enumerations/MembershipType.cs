@@ -3,7 +3,7 @@
     public enum MembershipType
     {
         Associate,
-        ChemberAssociate,
+        ChamberAssociate,
         GovernmentEducationAssociate,
         Localindustrial,
         NonLocalIndustrial

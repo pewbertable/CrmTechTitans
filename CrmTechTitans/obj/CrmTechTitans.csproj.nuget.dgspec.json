@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\CrmTechTitans.csproj": {}
+    "C:\\Users\\jgrewal45\\Source\\Repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj": {}
   },
   "projects": {
-    "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\CrmTechTitans.csproj": {
+    "C:\\Users\\jgrewal45\\Source\\Repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\CrmTechTitans.csproj",
+        "projectUniqueName": "C:\\Users\\jgrewal45\\Source\\Repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
         "projectName": "CrmTechTitans",
-        "projectPath": "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\CrmTechTitans.csproj",
-        "packagesPath": "C:\\Users\\alish\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\alish\\OneDrive - NC\\Semester Four\\Community Sponsored Project\\NIA3_CRM\\CrmTechTitans\\obj\\",
+        "projectPath": "C:\\Users\\jgrewal45\\Source\\Repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
+        "packagesPath": "C:\\Users\\jgrewal45\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jgrewal45\\Source\\Repos\\CrmTechTitans\\CrmTechTitans\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\alish\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jgrewal45\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,6 +39,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -94,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100-rc.2.23502.2/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

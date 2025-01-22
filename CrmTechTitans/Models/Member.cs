@@ -1,4 +1,5 @@
 ﻿using CrmTechTitans.Models.Enumerations;
+using CrmTechTitans.Models.JoinTables;
 using System.ComponentModel.DataAnnotations;
 
 namespace CrmTechTitans.Models
@@ -21,9 +22,6 @@ namespace CrmTechTitans.Models
         [StringLength(100)]
         public string? ContactedBy { get; set; }
 
-        [Required]
-        [Display(Name = "Industry Type")]
-        public NaicsIndustryCode Industry { get; set; }  // Changed to enum
 
         [Required]
         [Display(Name = "Company Size")]
@@ -48,6 +46,7 @@ namespace CrmTechTitans.Models
 
         [Display(Name = "Membership Status")]
         public MembershipStatus MembershipStatus { get; set; }
+        public ICollection<IndustryMember> IndustryMembers { get; set; }
 
 
     }

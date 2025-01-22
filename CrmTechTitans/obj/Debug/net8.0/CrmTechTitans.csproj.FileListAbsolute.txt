@@ -290,3 +290,4 @@ C:\Users\jgrewal45\source\repos\CrmTechTitans\CrmTechTitans\bin\Debug\net8.0\run
 C:\Users\jgrewal45\source\repos\CrmTechTitans\CrmTechTitans\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
 C:\Users\jgrewal45\source\repos\CrmTechTitans\CrmTechTitans\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\jgrewal45\source\repos\CrmTechTitans\CrmTechTitans\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
+C:\Users\jgrewal45\Source\Repos\CrmTechTitans\CrmTechTitans\obj\Debug\net8.0\CrmTechTitans.sourcelink.json

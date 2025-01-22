@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CrmTechTitans.Models.JoinTables;
+using System.ComponentModel.DataAnnotations;
 
 namespace CrmTechTitans.Models
 {
@@ -14,5 +15,7 @@ namespace CrmTechTitans.Models
         [Display(Name = "NAICS Code")]
         [Required(ErrorMessage = "NAICS code is required")]
         public int NAICS { get; set; }
+
+        public ICollection<IndustryMember> IndustryMembers { get; set; }
     }
 }

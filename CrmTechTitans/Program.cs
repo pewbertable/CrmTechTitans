@@ -50,4 +50,13 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+//Prepare the database:
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    CrmInitializer.Initialize(serviceProvider: services);
+}
+
+
 app.Run();

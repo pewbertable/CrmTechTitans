@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CRM.Data;
+﻿using CRM.Data;
 using CrmTechTitans.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CrmTechTitans.Controllers
 {
@@ -22,7 +17,9 @@ namespace CrmTechTitans.Controllers
         // GET: Member
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Members.ToListAsync());
+            return View(await _context.Members
+                .Include(m => m.IndustryMembers)
+                .ThenInclude(im => im.Industry).ToListAsync());
         }
 
         // GET: Member/Details/5
@@ -54,7 +51,7 @@ namespace CrmTechTitans.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MemberName,MembershipType,ContactedBy,Industry,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
+        public async Task<IActionResult> Create([Bind("Id,MemberName,MembershipType,ContactedBy,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +83,7 @@ namespace CrmTechTitans.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MemberName,MembershipType,ContactedBy,Industry,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MemberName,MembershipType,ContactedBy,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
         {
             if (id != member.Id)
             {
