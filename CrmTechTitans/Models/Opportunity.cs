@@ -11,6 +11,8 @@ namespace CRM.Models
         [StringLength(200, ErrorMessage = "Opportunity title can't be longer than 200 characters")]
         public string? Title { get; set; }
 
+        public Status Status { get; set; }
+
         [Display(Name = "Description")]
         [Required(ErrorMessage = "Description is required")]
         [StringLength(1000)]
