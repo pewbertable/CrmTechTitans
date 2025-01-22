@@ -19,8 +19,8 @@ namespace CRM.Models
         public Province Province { get; set; }
 
 
-        [StringLength(20, ErrorMessage = "ZIP code can't be longer than 20 characters")]
-        [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid ZIP code format (should be 5 digits, optionally followed by a hyphen and 4 digits)")]
-        public string? Zip { get; set; }
+        [StringLength(20, ErrorMessage = "Postal code can't be longer than 20 characters")]
+        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code format (should be in the format 'A#A #A#' )")]
+        public string? PostalCode { get; set; }
     }
 }
