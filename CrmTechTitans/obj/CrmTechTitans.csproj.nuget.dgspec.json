@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj": {}
+    "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj": {
+    "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
+        "projectUniqueName": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
         "projectName": "CrmTechTitans",
-        "projectPath": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
-        "packagesPath": "C:\\Users\\ebegouderikong1\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\obj\\",
+        "projectPath": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans.csproj",
+        "packagesPath": "C:\\Users\\jgrewal45\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ebegouderikong1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jgrewal45\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

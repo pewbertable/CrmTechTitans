@@ -1,57 +1,58 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\",
+  "WorkspaceRootPath": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\data\\_commoncommands.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\data\\_commoncommands.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\data\\_commoncommands.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\data\\crmcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\data\\crmcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\data\\crmcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\data\\crminitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\data\\crminitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\data\\crminitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\models\\member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\models\\member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\models\\member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\models\\enumerations\\naicsindustrycode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\models\\enumerations\\naicsindustrycode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\models\\enumerations\\naicsindustrycode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\models\\enumerations\\companysize.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\models\\enumerations\\companysize.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\models\\enumerations\\companysize.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\models\\enumerations\\membershipstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\models\\enumerations\\membershipstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\models\\enumerations\\membershipstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\models\\enumerations\\membershiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\models\\enumerations\\membershiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\models\\enumerations\\membershiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\controllers\\membercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\models\\opportunity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\jgrewal45\\source\\repos\\crmtechtitans\\crmtechtitans\\models\\opportunity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\models\\opportunity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|c:\\users\\ebegouderikong1\\downloads\\crmtechtitans\\crmtechtitans\\crmtechtitans\\data\\crmmigrations\\20250122003740_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{36BCDA50-B052-4651-BB33-D1A1F9222832}|CrmTechTitans\\CrmTechTitans.csproj|solutionrelative:crmtechtitans\\data\\crmmigrations\\20250122003740_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -65,23 +66,24 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 1,
               "Title": "20250122003740_Initial.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs",
               "RelativeToolTip": "CrmTechTitans\\Data\\CrmMigrations\\20250122003740_Initial.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-22T00:37:40.198Z"
+              "WhenOpened": "2025-01-22T00:37:40.198Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "CompanySize.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\CompanySize.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\CompanySize.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Models\\Enumerations\\CompanySize.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\CompanySize.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\CompanySize.cs",
               "RelativeToolTip": "CrmTechTitans\\Models\\Enumerations\\CompanySize.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -89,11 +91,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "MembershipStatus.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipStatus.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipStatus.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Models\\Enumerations\\MembershipStatus.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipStatus.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipStatus.cs",
               "RelativeToolTip": "CrmTechTitans\\Models\\Enumerations\\MembershipStatus.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -101,11 +103,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "MembershipType.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipType.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipType.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Models\\Enumerations\\MembershipType.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipType.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\MembershipType.cs",
               "RelativeToolTip": "CrmTechTitans\\Models\\Enumerations\\MembershipType.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -113,11 +115,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "CrmTechTitans\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "CrmTechTitans\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAA3AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -125,11 +127,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "MemberController.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Controllers\\MemberController.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Controllers\\MemberController.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Controllers\\MemberController.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Controllers\\MemberController.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Controllers\\MemberController.cs",
               "RelativeToolTip": "CrmTechTitans\\Controllers\\MemberController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -137,35 +139,36 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "20250122002354_Initial.cs",
               "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs",
+              "RelativeDocumentMoniker": "CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs",
               "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs",
-              "RelativeToolTip": "..\\..\\..\\..\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs",
+              "RelativeToolTip": "CrmTechTitans\\Data\\CrmMigrations\\20250122002354_Initial.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-22T00:23:54.207Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "CrmContext.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\CrmContext.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmContext.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Data\\CrmContext.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\CrmContext.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmContext.cs",
               "RelativeToolTip": "CrmTechTitans\\Data\\CrmContext.cs",
               "ViewState": "AQIAAAoAAAAAAAAAAAAgwCAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-22T00:21:26.769Z"
+              "WhenOpened": "2025-01-22T00:21:26.769Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "_CommonCommands.txt",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\_CommonCommands.txt",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\_CommonCommands.txt",
               "RelativeDocumentMoniker": "CrmTechTitans\\Data\\_CommonCommands.txt",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\_CommonCommands.txt",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\_CommonCommands.txt",
               "RelativeToolTip": "CrmTechTitans\\Data\\_CommonCommands.txt",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
@@ -174,11 +177,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "NaicsIndustryCode.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\NaicsIndustryCode.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\NaicsIndustryCode.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Models\\Enumerations\\NaicsIndustryCode.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\NaicsIndustryCode.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Enumerations\\NaicsIndustryCode.cs",
               "RelativeToolTip": "CrmTechTitans\\Models\\Enumerations\\NaicsIndustryCode.cs",
               "ViewState": "AQIAABEAAAAAAAAAAAAiwCIAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -186,11 +189,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Member.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Member.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Member.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Models\\Member.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Member.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Member.cs",
               "RelativeToolTip": "CrmTechTitans\\Models\\Member.cs",
               "ViewState": "AQIAABQAAAAAAAAAAAAmwCcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -198,11 +201,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "CrmInitializer.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\CrmInitializer.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmInitializer.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Data\\CrmInitializer.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Data\\CrmInitializer.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Data\\CrmInitializer.cs",
               "RelativeToolTip": "CrmTechTitans\\Data\\CrmInitializer.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAEkAAABMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -210,11 +213,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Opportunity.cs",
-              "DocumentMoniker": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Opportunity.cs",
+              "DocumentMoniker": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Opportunity.cs",
               "RelativeDocumentMoniker": "CrmTechTitans\\Models\\Opportunity.cs",
-              "ToolTip": "C:\\Users\\ebegouderikong1\\Downloads\\CrmTechTitans\\CrmTechTitans\\CrmTechTitans\\Models\\Opportunity.cs",
+              "ToolTip": "C:\\Users\\jgrewal45\\source\\repos\\CrmTechTitans\\CrmTechTitans\\Models\\Opportunity.cs",
               "RelativeToolTip": "CrmTechTitans\\Models\\Opportunity.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
