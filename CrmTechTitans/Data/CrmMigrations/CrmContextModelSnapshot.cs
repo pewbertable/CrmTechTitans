@@ -110,7 +110,43 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.ToTable("Interactions");
                 });
 
-            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.IndustryMember", b =>
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>
+                {
+                    b.Property<int>("MemberID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AddressID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AddressType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("MemberID", "AddressID");
+
+                    b.HasIndex("AddressID");
+
+                    b.ToTable("MemberAddresses");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberContact", b =>
+                {
+                    b.Property<int>("ContactID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MemberID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ContactType")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ContactID", "MemberID");
+
+                    b.HasIndex("MemberID");
+
+                    b.ToTable("MemberContacts");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberIndustry", b =>
                 {
                     b.Property<int>("IndustryID")
                         .HasColumnType("INTEGER");
@@ -125,42 +161,19 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.ToTable("IndustryMembers");
                 });
 
-            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberOpportunity", b =>
                 {
-                    b.Property<int>("MemberID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AddressID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("AddressID1")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AddressType")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("MemberID", "AddressID");
-
-                    b.HasIndex("AddressID");
-
-                    b.HasIndex("AddressID1");
-
-                    b.ToTable("MemberAddresses");
-                });
-
-            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberContact", b =>
-                {
-                    b.Property<int>("ContactID")
+                    b.Property<int>("OpportunityID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MemberID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ContactID", "MemberID");
+                    b.HasKey("OpportunityID", "MemberID");
 
                     b.HasIndex("MemberID");
 
-                    b.ToTable("MemberContacts");
+                    b.ToTable("MemberOpportunities");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.Member", b =>
@@ -232,36 +245,13 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.ToTable("Opportunities");
                 });
 
-            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.IndustryMember", b =>
-                {
-                    b.HasOne("CrmTechTitans.Models.Industry", "Industry")
-                        .WithMany("IndustryMembers")
-                        .HasForeignKey("IndustryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CrmTechTitans.Models.Member", "Member")
-                        .WithMany("IndustryMembers")
-                        .HasForeignKey("MemberID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Industry");
-
-                    b.Navigation("Member");
-                });
-
             modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>
                 {
                     b.HasOne("CrmTechTitans.Models.Address", "Address")
-                        .WithMany()
+                        .WithMany("MemberAddresses")
                         .HasForeignKey("AddressID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CrmTechTitans.Models.Address", null)
-                        .WithMany("MemberAddresses")
-                        .HasForeignKey("AddressID1");
 
                     b.HasOne("CrmTechTitans.Models.Member", "Member")
                         .WithMany("MemberAddresses")
@@ -293,6 +283,44 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Navigation("Member");
                 });
 
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberIndustry", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Industry", "Industry")
+                        .WithMany("IndustryMembers")
+                        .HasForeignKey("IndustryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CrmTechTitans.Models.Member", "Member")
+                        .WithMany("IndustryMembers")
+                        .HasForeignKey("MemberID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Industry");
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberOpportunity", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Member", "Member")
+                        .WithMany("MemberOpportunities")
+                        .HasForeignKey("MemberID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CrmTechTitans.Models.Opportunity", "Opportunity")
+                        .WithMany("MemberOpportunities")
+                        .HasForeignKey("OpportunityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Opportunity");
+                });
+
             modelBuilder.Entity("CrmTechTitans.Models.Address", b =>
                 {
                     b.Navigation("MemberAddresses");
@@ -315,6 +343,13 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Navigation("MemberAddresses");
 
                     b.Navigation("MemberContacts");
+
+                    b.Navigation("MemberOpportunities");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.Opportunity", b =>
+                {
+                    b.Navigation("MemberOpportunities");
                 });
 #pragma warning restore 612, 618
         }

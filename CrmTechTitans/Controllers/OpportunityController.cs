@@ -3,25 +3,25 @@ using CrmTechTitans.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-//Braydon Pew added 01.22.25
 namespace CrmTechTitans.Controllers
 {
-    public class AddressController : Controller
+    public class OpportunityController : Controller
     {
         private readonly CrmContext _context;
 
-        public AddressController(CrmContext context)
+        public OpportunityController(CrmContext context)
         {
             _context = context;
         }
 
-        // GET: Address
+        // GET: Opportunity
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Addresses.Include(m => m.MemberAddresses).ThenInclude(im => im.Member).ToListAsync());
+            return View(await _context.Opportunities.Include(c => c.MemberOpportunities)
+            .ThenInclude(mc => mc.Member).ToListAsync());
         }
 
-        // GET: Address/Details/5
+        // GET: Opportunity/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -29,39 +29,39 @@ namespace CrmTechTitans.Controllers
                 return NotFound();
             }
 
-            var address = await _context.Addresses
+            var opportunity = await _context.Opportunities
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (address == null)
+            if (opportunity == null)
             {
                 return NotFound();
             }
 
-            return View(address);
+            return View(opportunity);
         }
 
-        // GET: Address/Create
+        // GET: Opportunity/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Address/Create
+        // POST: Opportunity/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Street,City,Province,PostalCode")] Address address)
+        public async Task<IActionResult> Create([Bind("ID,Title,Status,Description,Priority")] Opportunity opportunity)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(address);
+                _context.Add(opportunity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(address);
+            return View(opportunity);
         }
 
-        // GET: Address/Edit/5
+        // GET: Opportunity/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -69,22 +69,22 @@ namespace CrmTechTitans.Controllers
                 return NotFound();
             }
 
-            var address = await _context.Addresses.FindAsync(id);
-            if (address == null)
+            var opportunity = await _context.Opportunities.FindAsync(id);
+            if (opportunity == null)
             {
                 return NotFound();
             }
-            return View(address);
+            return View(opportunity);
         }
 
-        // POST: Address/Edit/5
+        // POST: Opportunity/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Street,City,Province,PostalCode")] Address address)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Title,Status,Description,Priority")] Opportunity opportunity)
         {
-            if (id != address.ID)
+            if (id != opportunity.ID)
             {
                 return NotFound();
             }
@@ -93,12 +93,12 @@ namespace CrmTechTitans.Controllers
             {
                 try
                 {
-                    _context.Update(address);
+                    _context.Update(opportunity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AddressExists(address.ID))
+                    if (!OpportunityExists(opportunity.ID))
                     {
                         return NotFound();
                     }
@@ -109,10 +109,10 @@ namespace CrmTechTitans.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(address);
+            return View(opportunity);
         }
 
-        // GET: Address/Delete/5
+        // GET: Opportunity/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -120,34 +120,34 @@ namespace CrmTechTitans.Controllers
                 return NotFound();
             }
 
-            var address = await _context.Addresses
+            var opportunity = await _context.Opportunities
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (address == null)
+            if (opportunity == null)
             {
                 return NotFound();
             }
 
-            return View(address);
+            return View(opportunity);
         }
 
-        // POST: Address/Delete/5
+        // POST: Opportunity/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var address = await _context.Addresses.FindAsync(id);
-            if (address != null)
+            var opportunity = await _context.Opportunities.FindAsync(id);
+            if (opportunity != null)
             {
-                _context.Addresses.Remove(address);
+                _context.Opportunities.Remove(opportunity);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AddressExists(int id)
+        private bool OpportunityExists(int id)
         {
-            return _context.Addresses.Any(e => e.ID == id);
+            return _context.Opportunities.Any(e => e.ID == id);
         }
     }
 }

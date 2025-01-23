@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using CrmTechTitans.Models.Enumerations;
+﻿using CrmTechTitans.Models.Enumerations;
+using CrmTechTitans.Models.JoinTables;
+using System.ComponentModel.DataAnnotations;
 
 namespace CrmTechTitans.Models
 {
@@ -20,5 +21,7 @@ namespace CrmTechTitans.Models
 
         [Display(Name = "Priority")]
         public PriorityType Priority { get; set; } //Enum
+
+        public ICollection<MemberOpportunity> MemberOpportunities { get; set; } = new HashSet<MemberOpportunity>();
     }
 }

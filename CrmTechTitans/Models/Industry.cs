@@ -16,6 +16,6 @@ namespace CrmTechTitans.Models
         [Required(ErrorMessage = "NAICS code is required")]
         public int NAICS { get; set; }
 
-        public ICollection<IndustryMember> IndustryMembers { get; set; } = new HashSet<IndustryMember>();
+        public ICollection<MemberIndustry> IndustryMembers { get; set; } = new HashSet<MemberIndustry>();
     }
 }

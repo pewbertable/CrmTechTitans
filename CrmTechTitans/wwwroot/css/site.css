@@ -1,22 +1,40 @@
-html {
-  font-size: 14px;
+/* Header styling */
+header {
+    text-align: right; /* Align header content to the right */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    header .navbar {
+        display: flex;
+        justify-content: flex-end; /* Align navbar content to the right */
+    }
+
+    header .navbar-collapse {
+        justify-content: flex-end; /* Ensure navbar items are aligned to the right */
+    }
+
+/* Footer styling */
+footer {
+    background-color: #f8f9fa; /* Light background color */
+    padding: 20px 0; /* Padding for spacing */
+    text-align: center; /* Center footer text */
+    position: relative;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+    footer a {
+        color: #007bff; /* Link color */
+        text-decoration: none; /* Remove underline from links */
+    }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+        footer a:hover {
+            text-decoration: underline; /* Add underline on hover */
+        }
 
+    footer p {
+        font-size: 0.9rem; /* Smaller font size for the footer text */
+        margin: 0; /* Remove default margin */
+    }
+
+/* Optional: Add spacing between content and footer */
 body {
-  margin-bottom: 60px;
+    padding-bottom: 60px; /* Space for footer */
 }

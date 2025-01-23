@@ -138,8 +138,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                 {
                     MemberID = table.Column<int>(type: "INTEGER", nullable: false),
                     AddressID = table.Column<int>(type: "INTEGER", nullable: false),
-                    AddressType = table.Column<int>(type: "INTEGER", nullable: false),
-                    AddressID1 = table.Column<int>(type: "INTEGER", nullable: true)
+                    AddressType = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -150,11 +149,6 @@ namespace CrmTechTitans.Data.CrmMigrations
                         principalTable: "Addresses",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MemberAddresses_Addresses_AddressID1",
-                        column: x => x.AddressID1,
-                        principalTable: "Addresses",
-                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_MemberAddresses_Members_MemberID",
                         column: x => x.MemberID,
@@ -168,7 +162,8 @@ namespace CrmTechTitans.Data.CrmMigrations
                 columns: table => new
                 {
                     MemberID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ContactID = table.Column<int>(type: "INTEGER", nullable: false)
+                    ContactID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ContactType = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,6 +182,30 @@ namespace CrmTechTitans.Data.CrmMigrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MemberOpportunities",
+                columns: table => new
+                {
+                    MemberID = table.Column<int>(type: "INTEGER", nullable: false),
+                    OpportunityID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberOpportunities", x => new { x.OpportunityID, x.MemberID });
+                    table.ForeignKey(
+                        name: "FK_MemberOpportunities_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MemberOpportunities_Opportunities_OpportunityID",
+                        column: x => x.OpportunityID,
+                        principalTable: "Opportunities",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_IndustryMembers_MemberID",
                 table: "IndustryMembers",
@@ -198,13 +217,13 @@ namespace CrmTechTitans.Data.CrmMigrations
                 column: "AddressID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MemberAddresses_AddressID1",
-                table: "MemberAddresses",
-                column: "AddressID1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MemberContacts_MemberID",
                 table: "MemberContacts",
+                column: "MemberID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberOpportunities_MemberID",
+                table: "MemberOpportunities",
                 column: "MemberID");
         }
 
@@ -224,7 +243,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "MemberContacts");
 
             migrationBuilder.DropTable(
-                name: "Opportunities");
+                name: "MemberOpportunities");
 
             migrationBuilder.DropTable(
                 name: "Industries");
@@ -237,6 +256,9 @@ namespace CrmTechTitans.Data.CrmMigrations
 
             migrationBuilder.DropTable(
                 name: "Members");
+
+            migrationBuilder.DropTable(
+                name: "Opportunities");
         }
     }
 }

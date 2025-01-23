@@ -1,4 +1,6 @@
-﻿namespace CrmTechTitans.Models.JoinTables
+﻿using CrmTechTitans.Models.Enumerations;
+
+namespace CrmTechTitans.Models.JoinTables
 {
     public class MemberContact
     {
@@ -7,5 +9,6 @@
 
         public int ContactID { get; set; }
         public Contact? Contact { get; set; }
+        public ContactType ContactType { get; set; }
     }
 }

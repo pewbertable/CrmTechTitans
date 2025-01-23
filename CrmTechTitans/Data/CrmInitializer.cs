@@ -1,5 +1,4 @@
-﻿using CrmTechTitans.Data;
-using CrmTechTitans.Models;
+﻿using CrmTechTitans.Models;
 using CrmTechTitans.Models.Enumerations;
 using CrmTechTitans.Models.JoinTables;
 using Microsoft.EntityFrameworkCore;
@@ -237,16 +236,16 @@ namespace CrmTechTitans.Data
                     if (!context.IndustryMembers.Any())
                     {
                         context.IndustryMembers.AddRange(
-                            new IndustryMember { IndustryID = 1, MemberID = 1 },
-                            new IndustryMember { IndustryID = 2, MemberID = 2 },
-                            new IndustryMember { IndustryID = 2, MemberID = 3 },
-                             new IndustryMember { IndustryID = 1, MemberID = 4 },
-                            new IndustryMember { IndustryID = 2, MemberID = 5 },
-                            new IndustryMember { IndustryID = 2, MemberID = 6 },
-                             new IndustryMember { IndustryID = 1, MemberID = 7 },
-                            new IndustryMember { IndustryID = 2, MemberID = 8 },
-                            new IndustryMember { IndustryID = 2, MemberID = 9 },
-                             new IndustryMember { IndustryID = 2, MemberID = 10 }
+                            new MemberIndustry { IndustryID = 1, MemberID = 1 },
+                            new MemberIndustry { IndustryID = 2, MemberID = 2 },
+                            new MemberIndustry { IndustryID = 2, MemberID = 3 },
+                             new MemberIndustry { IndustryID = 1, MemberID = 4 },
+                            new MemberIndustry { IndustryID = 2, MemberID = 5 },
+                            new MemberIndustry { IndustryID = 2, MemberID = 6 },
+                             new MemberIndustry { IndustryID = 1, MemberID = 7 },
+                            new MemberIndustry { IndustryID = 2, MemberID = 8 },
+                            new MemberIndustry { IndustryID = 2, MemberID = 9 },
+                             new MemberIndustry { IndustryID = 2, MemberID = 10 }
                         ); context.SaveChanges();
                     }
                     //Seed data for address -BP 01-22-2025
@@ -384,16 +383,17 @@ namespace CrmTechTitans.Data
                     if (!context.MemberContacts.Any())
                     {
                         context.MemberContacts.AddRange(
-                            new MemberContact { MemberID = 1, ContactID = 1 },
-                            new MemberContact { MemberID = 2, ContactID = 2 },
-                            new MemberContact { MemberID = 3, ContactID = 3 },
-                            new MemberContact { MemberID = 4, ContactID = 4 },
-                            new MemberContact { MemberID = 5, ContactID = 5 },
-                            new MemberContact { MemberID = 6, ContactID = 6 },
-                            new MemberContact { MemberID = 7, ContactID = 7 },
-                            new MemberContact { MemberID = 8, ContactID = 8 },
-                            new MemberContact { MemberID = 9, ContactID = 9 },
-                            new MemberContact { MemberID = 10, ContactID = 10 }
+                            new MemberContact { MemberID = 1, ContactID = 1, ContactType = ContactType.VIP },
+                            new MemberContact { MemberID = 2, ContactID = 2, ContactType = ContactType.General },
+                            new MemberContact { MemberID = 3, ContactID = 3, ContactType = ContactType.VIP },
+                            new MemberContact { MemberID = 4, ContactID = 4, ContactType = ContactType.General },
+                            new MemberContact { MemberID = 5, ContactID = 5, ContactType = ContactType.VIP },
+                            new MemberContact { MemberID = 6, ContactID = 6, ContactType = ContactType.General },
+                            new MemberContact { MemberID = 7, ContactID = 7, ContactType = ContactType.VIP },
+                            new MemberContact { MemberID = 8, ContactID = 8, ContactType = ContactType.General },
+                            new MemberContact { MemberID = 9, ContactID = 9, ContactType = ContactType.VIP },
+                            new MemberContact { MemberID = 10, ContactID = 10, ContactType = ContactType.General },
+                             new MemberContact { MemberID = 1, ContactID = 10, ContactType = ContactType.General }
                         ); context.SaveChanges();
                     }
                     // Seed data for MemberAddress (Braydon Pew 01-22-2025)
@@ -413,6 +413,114 @@ namespace CrmTechTitans.Data
                         );
                         context.SaveChanges();
                     }
+
+                    //Seed data for Opportunity (Jagraj Grewal)
+
+                    if (!context.Opportunities.Any())
+                    {
+                        context.Opportunities.AddRange(
+                           new Opportunity
+                           {
+
+                               Title = "New Business Opportunity - Tech Innovations",
+                               Status = Status.Qualification,
+                               Description = "Exploring new partnership opportunities in the tech sector.",
+                               Priority = PriorityType.High
+                           },
+                            new Opportunity
+                            {
+
+                                Title = "Member Acquisition Campaign",
+                                Status = Status.Negotiating,
+                                Description = "Negotiating with potential members to join our platform.",
+                                Priority = PriorityType.Medium
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "Major Investment Round",
+                                Status = Status.ClosedNewMember,
+                                Description = "Closed with a new member after a successful investment round.",
+                                Priority = PriorityType.Urgent
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "Product Launch Collaboration",
+                                Status = Status.ClosedNotInterested,
+                                Description = "Collaboration proposal for an upcoming product launch rejected.",
+                                Priority = PriorityType.Low
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "AI Partnership Proposal",
+                                Status = Status.Qualification,
+                                Description = "Exploring AI-based partnership opportunities with leading companies.",
+                                Priority = PriorityType.High
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "International Expansion",
+                                Status = Status.Negotiating,
+                                Description = "Negotiating market expansion in European and Asian markets.",
+                                Priority = PriorityType.Medium
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "SaaS Product Marketing Campaign",
+                                Status = Status.ClosedNewMember,
+                                Description = "Successfully launched a SaaS product in North America.",
+                                Priority = PriorityType.Urgent
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "New Member Subscription Plan",
+                                Status = Status.ClosedNotInterested,
+                                Description = "Subscription plan proposal rejected by the client.",
+                                Priority = PriorityType.Low
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "Cloud Storage Partnership",
+                                Status = Status.Qualification,
+                                Description = "Initiating talks with cloud storage providers for strategic partnerships.",
+                                Priority = PriorityType.Medium
+                            },
+                            new Opportunity
+                            {
+
+                                Title = "E-Commerce Platform Integration",
+                                Status = Status.Negotiating,
+                                Description = "Negotiating with e-commerce platforms for integration with our solutions.",
+                                Priority = PriorityType.High
+                            }
+                        );
+                        context.SaveChanges();
+
+                    }
+
+                    if (!context.MemberOpportunities.Any())
+                    {
+                        context.MemberOpportunities.AddRange(
+                            new MemberOpportunity { MemberID = 1, OpportunityID = 1 },
+                            new MemberOpportunity { MemberID = 2, OpportunityID = 2 },
+                            new MemberOpportunity { MemberID = 3, OpportunityID = 3 },
+                            new MemberOpportunity { MemberID = 4, OpportunityID = 4 },
+                            new MemberOpportunity { MemberID = 5, OpportunityID = 5 },
+                            new MemberOpportunity { MemberID = 6, OpportunityID = 6 },
+                            new MemberOpportunity { MemberID = 7, OpportunityID = 7 },
+                            new MemberOpportunity { MemberID = 8, OpportunityID = 8 },
+                            new MemberOpportunity { MemberID = 9, OpportunityID = 9 },
+                            new MemberOpportunity { MemberID = 10, OpportunityID = 10 }
+                        );
+                        context.SaveChanges();
+                    }
+
 
                 }
                 catch (Exception ex)

@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+              Member
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Street)
             </th>
             <th>
@@ -31,6 +34,18 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @if (item.MemberAddresses.Any())
+                    {
+                        @string.Join(", ", item.MemberAddresses
+                                 .Where(mc => mc.Member != null)
+                                 .Select(mc => mc.Member.MemberName))
+                    }
+                    else
+                    {
+                        <span>No Member associated</span>
+                    }
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Street)
                 </td>

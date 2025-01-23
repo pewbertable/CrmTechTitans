@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using CrmTechTitans.Models.JoinTables;
+﻿using CrmTechTitans.Models.JoinTables;
+using System.ComponentModel.DataAnnotations;
 
 namespace CrmTechTitans.Models
 {
@@ -28,6 +28,7 @@ namespace CrmTechTitans.Models
         [StringLength(100, ErrorMessage = "LastName can't be longer than 100 characters")]
         public string? LastName { get; set; }
 
+
         [Display(Name = "Email")]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please follow the correct email format Example@email.com")]
         [StringLength(255)]
@@ -44,7 +45,7 @@ namespace CrmTechTitans.Models
         [StringLength(100, ErrorMessage = "Linkedin can't be longer than 100 characters")]
         public string? Linkedin { get; set; }
 
-        public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>(); 
+        public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>();
 
     }
 }

@@ -21,26 +21,28 @@ namespace CrmTechTitans.Data
 
         public DbSet<Industry> Industries { get; set; }
 
-        public DbSet<IndustryMember> IndustryMembers { get; set; }
+        public DbSet<MemberIndustry> IndustryMembers { get; set; }
 
         public DbSet<MemberAddress> MemberAddresses { get; set; }
 
         public DbSet<MemberContact> MemberContacts { get; set; }
+
+        public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Configure the many-to-many relationship
-            modelBuilder.Entity<IndustryMember>()
+            modelBuilder.Entity<MemberIndustry>()
                 .HasKey(im => new { im.IndustryID, im.MemberID });
 
-            modelBuilder.Entity<IndustryMember>()
+            modelBuilder.Entity<MemberIndustry>()
                 .HasOne(im => im.Industry)
                 .WithMany(i => i.IndustryMembers)
                 .HasForeignKey(im => im.IndustryID);
 
-            modelBuilder.Entity<IndustryMember>()
+            modelBuilder.Entity<MemberIndustry>()
                 .HasOne(im => im.Member)
                 .WithMany(m => m.IndustryMembers)
                 .HasForeignKey(im => im.MemberID);
@@ -56,7 +58,7 @@ namespace CrmTechTitans.Data
 
             modelBuilder.Entity<MemberAddress>()
                 .HasOne(ma => ma.Address)
-                .WithMany()
+                  .WithMany(m => m.MemberAddresses)
                 .HasForeignKey(ma => ma.AddressID);
 
             //Configure Many-to-Many relationship for MemberContact
@@ -74,6 +76,24 @@ namespace CrmTechTitans.Data
                 .WithMany(m => m.MemberContacts)
                 .HasForeignKey(mc => mc.MemberID);
 
+            modelBuilder.Entity<MemberContact>()
+            .Property(mc => mc.ContactType)
+            .HasConversion<int>();
+
+            //Configure Many-to-Many relationship for MemberContact
+
+            modelBuilder.Entity<MemberOpportunity>()
+              .HasKey(mc => new { mc.OpportunityID, mc.MemberID });
+
+            modelBuilder.Entity<MemberOpportunity>()
+                .HasOne(mc => mc.Opportunity)
+                .WithMany(c => c.MemberOpportunities)
+                .HasForeignKey(mc => mc.OpportunityID);
+
+            modelBuilder.Entity<MemberOpportunity>()
+                .HasOne(mc => mc.Member)
+                .WithMany(m => m.MemberOpportunities)
+                .HasForeignKey(mc => mc.MemberID);
         }
 
 

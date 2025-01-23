@@ -46,10 +46,12 @@ namespace CrmTechTitans.Models
 
         [Display(Name = "Membership Status")]
         public MembershipStatus MembershipStatus { get; set; }
-        public ICollection<IndustryMember> IndustryMembers { get; set; } = new HashSet<IndustryMember>();
+        public ICollection<MemberIndustry> IndustryMembers { get; set; } = new HashSet<MemberIndustry>();
         public ICollection<MemberAddress> MemberAddresses { get; set; } = new HashSet<MemberAddress>(); // Added relationship -Braydon Pew 01-22-2025
 
-        public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>(); 
+        public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>();
+
+        public ICollection<MemberOpportunity> MemberOpportunities { get; set; } = new HashSet<MemberOpportunity>();
 
 
     }

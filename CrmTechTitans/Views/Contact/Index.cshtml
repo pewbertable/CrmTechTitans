@@ -19,6 +19,9 @@
                 Member
             </th>
             <th>
+                Contact Type
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
@@ -46,6 +49,19 @@
                     else
                     {
                         <span>No Member associated</span>
+                    }
+                </td>
+                <td>
+                    @if (item.MemberContacts.Any())
+                    {
+                        @foreach (var memberContact in item.MemberContacts)
+                        {
+                            <div>@memberContact.ContactType</div>
+                        }
+                    }
+                    else
+                    {
+                        <span>No Contact Type available</span>
                     }
                 </td>
             <td>
