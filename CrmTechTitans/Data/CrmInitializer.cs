@@ -1,4 +1,4 @@
-﻿using CRM.Data;
+﻿using CrmTechTitans.Data;
 using CrmTechTitans.Models;
 using CrmTechTitans.Models.Enumerations;
 using CrmTechTitans.Models.JoinTables;
@@ -396,10 +396,31 @@ namespace CrmTechTitans.Data
                             new MemberContact { MemberID = 10, ContactID = 10 }
                         ); context.SaveChanges();
                     }
+                    // Seed data for MemberAddress (Braydon Pew 01-22-2025)
+                    if (!context.MemberAddresses.Any())
+                    {
+                        context.MemberAddresses.AddRange(
+                            new MemberAddress { MemberID = 1, AddressID = 1, AddressType = AddressType.Office },
+                            new MemberAddress { MemberID = 2, AddressID = 2, AddressType = AddressType.Billing },
+                            new MemberAddress { MemberID = 3, AddressID = 3, AddressType = AddressType.Shipping },
+                            new MemberAddress { MemberID = 4, AddressID = 4, AddressType = AddressType.Office },
+                            new MemberAddress { MemberID = 5, AddressID = 5, AddressType = AddressType.Billing },
+                            new MemberAddress { MemberID = 6, AddressID = 1, AddressType = AddressType.Shipping },
+                            new MemberAddress { MemberID = 7, AddressID = 2, AddressType = AddressType.Office },
+                            new MemberAddress { MemberID = 8, AddressID = 3, AddressType = AddressType.Billing },
+                            new MemberAddress { MemberID = 9, AddressID = 4, AddressType = AddressType.Shipping },
+                            new MemberAddress { MemberID = 10, AddressID = 5, AddressType = AddressType.Office }
+                        );
+                        context.SaveChanges();
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception();
+                    // Log the exception details --bp 01-23-2025
+                    Console.WriteLine($"An error occurred while seeding the database: {ex.Message}");
+                    Console.WriteLine(ex.StackTrace);
+                    throw;
                 }
             }
 

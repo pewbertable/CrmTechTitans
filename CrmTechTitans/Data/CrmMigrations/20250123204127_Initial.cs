@@ -75,7 +75,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "Members",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     MemberName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     MembershipType = table.Column<int>(type: "INTEGER", nullable: false),
@@ -89,7 +89,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Members", x => x.Id);
+                    table.PrimaryKey("PK_Members", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,6 +99,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
                     Priority = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -127,7 +128,62 @@ namespace CrmTechTitans.Data.CrmMigrations
                         name: "FK_IndustryMembers_Members_MemberID",
                         column: x => x.MemberID,
                         principalTable: "Members",
-                        principalColumn: "Id",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MemberAddresses",
+                columns: table => new
+                {
+                    MemberID = table.Column<int>(type: "INTEGER", nullable: false),
+                    AddressID = table.Column<int>(type: "INTEGER", nullable: false),
+                    AddressType = table.Column<int>(type: "INTEGER", nullable: false),
+                    AddressID1 = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberAddresses", x => new { x.MemberID, x.AddressID });
+                    table.ForeignKey(
+                        name: "FK_MemberAddresses_Addresses_AddressID",
+                        column: x => x.AddressID,
+                        principalTable: "Addresses",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MemberAddresses_Addresses_AddressID1",
+                        column: x => x.AddressID1,
+                        principalTable: "Addresses",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_MemberAddresses_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MemberContacts",
+                columns: table => new
+                {
+                    MemberID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ContactID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberContacts", x => new { x.ContactID, x.MemberID });
+                    table.ForeignKey(
+                        name: "FK_MemberContacts_Contacts_ContactID",
+                        column: x => x.ContactID,
+                        principalTable: "Contacts",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MemberContacts_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -135,17 +191,26 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "IX_IndustryMembers_MemberID",
                 table: "IndustryMembers",
                 column: "MemberID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberAddresses_AddressID",
+                table: "MemberAddresses",
+                column: "AddressID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberAddresses_AddressID1",
+                table: "MemberAddresses",
+                column: "AddressID1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberContacts_MemberID",
+                table: "MemberContacts",
+                column: "MemberID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Addresses");
-
-            migrationBuilder.DropTable(
-                name: "Contacts");
-
             migrationBuilder.DropTable(
                 name: "IndustryMembers");
 
@@ -153,10 +218,22 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "Interactions");
 
             migrationBuilder.DropTable(
+                name: "MemberAddresses");
+
+            migrationBuilder.DropTable(
+                name: "MemberContacts");
+
+            migrationBuilder.DropTable(
                 name: "Opportunities");
 
             migrationBuilder.DropTable(
                 name: "Industries");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Contacts");
 
             migrationBuilder.DropTable(
                 name: "Members");

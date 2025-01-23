@@ -1,4 +1,4 @@
-﻿using CRM.Data;
+﻿using CrmTechTitans.Data;
 using CrmTechTitans.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

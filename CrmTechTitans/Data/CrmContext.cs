@@ -2,7 +2,7 @@
 using CrmTechTitans.Models.JoinTables;
 using Microsoft.EntityFrameworkCore;
 
-namespace CRM.Data
+namespace CrmTechTitans.Data
 {
     public class CrmContext : DbContext
     {
@@ -47,17 +47,17 @@ namespace CRM.Data
 
             // Configure the many-to-many relationship for MemberAddress
             modelBuilder.Entity<MemberAddress>()
-                .HasKey(ma => new { ma.MemberId, ma.AddressId });
+                .HasKey(ma => new { ma.MemberID, ma.AddressID });
 
             modelBuilder.Entity<MemberAddress>()
                 .HasOne(ma => ma.Member)
                 .WithMany(m => m.MemberAddresses)
-                .HasForeignKey(ma => ma.MemberId);
+                .HasForeignKey(ma => ma.MemberID);
 
             modelBuilder.Entity<MemberAddress>()
                 .HasOne(ma => ma.Address)
                 .WithMany()
-                .HasForeignKey(ma => ma.AddressId);
+                .HasForeignKey(ma => ma.AddressID);
 
             //Configure Many-to-Many relationship for MemberContact
 

@@ -6,11 +6,11 @@ namespace CrmTechTitans.Models.JoinTables
     // MemberAddress join table
     public class MemberAddress
     {
-        public int MemberId { get; set; }
-        public required Member Member { get; set; }
+        public int MemberID { get; set; }
+        public Member? Member { get; set; }
 
-        public int AddressId { get; set; }
-        public required Address Address { get; set; }
+        public int AddressID { get; set; }
+        public Address? Address { get; set; }
 
         public AddressType AddressType { get; set; }
     }

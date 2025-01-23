@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CrmTechTitans.Models.Enumerations;
+using CrmTechTitans.Models.JoinTables;
 
 namespace CrmTechTitans.Models
 {
@@ -22,5 +23,8 @@ namespace CrmTechTitans.Models
         [StringLength(20, ErrorMessage = "Postal code can't be longer than 20 characters")]
         [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code format (should be in the format 'A#A #A#' )")]
         public string? PostalCode { get; set; }
+
+        // New ICollection properties - added 3pm 2025-01-23 b.p.
+        public ICollection<MemberAddress> MemberAddresses { get; set; } = new HashSet<MemberAddress>();
     }
 }
