@@ -249,6 +249,48 @@ namespace CrmTechTitans.Data
                              new IndustryMember { IndustryID = 2, MemberID = 10 }
                         ); context.SaveChanges();
                     }
+                    //Seed data for address -BP 01-22-2025
+                    if (!context.Addresses.Any())
+                    {
+                        context.Addresses.AddRange(
+                            new Address
+                            {
+                                Street = "123 Main St",
+                                City = "Calgary",
+                                Province = Province.Alberta,
+                                PostalCode = "T2P 1J9"
+                            },
+                            new Address
+                            {
+                                Street = "456 Elm St",
+                                City = "Vancouver",
+                                Province = Province.BritishColumbia,
+                                PostalCode = "V5K 0A1"
+                            },
+                            new Address
+                            {
+                                Street = "789 Maple Ave",
+                                City = "Toronto",
+                                Province = Province.Ontario,
+                                PostalCode = "M5H 2N2"
+                            },
+                            new Address
+                            {
+                                Street = "101 Pine St",
+                                City = "Montreal",
+                                Province = Province.Quebec,
+                                PostalCode = "H3B 1A7"
+                            },
+                            new Address
+                            {
+                                Street = "202 Oak St",
+                                City = "Halifax",
+                                Province = Province.NovaScotia,
+                                PostalCode = "B3J 2K9"
+                            }
+                        );
+                        context.SaveChanges();
+                    }
                 }
                 catch (Exception ex)
                 {

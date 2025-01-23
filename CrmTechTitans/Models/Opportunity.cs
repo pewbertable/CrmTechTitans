@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CrmTechTitans.Models.Enumerations;
 
-namespace CRM.Models
+namespace CrmTechTitans.Models
 {
     public class Opportunity
     {

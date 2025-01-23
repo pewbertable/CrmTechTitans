@@ -31,7 +31,7 @@ namespace CrmTechTitans.Controllers
             }
 
             var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (member == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace CrmTechTitans.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,MemberName,MembershipType,ContactedBy,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
         {
-            if (id != member.Id)
+            if (id != member.ID)
             {
                 return NotFound();
             }
@@ -99,7 +99,7 @@ namespace CrmTechTitans.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MemberExists(member.Id))
+                    if (!MemberExists(member.ID))
                     {
                         return NotFound();
                     }
@@ -122,7 +122,7 @@ namespace CrmTechTitans.Controllers
             }
 
             var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (member == null)
             {
                 return NotFound();
@@ -148,7 +148,7 @@ namespace CrmTechTitans.Controllers
 
         private bool MemberExists(int id)
         {
-            return _context.Members.Any(e => e.Id == id);
+            return _context.Members.Any(e => e.ID == id);
         }
     }
 }

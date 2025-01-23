@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CRM.Models
+namespace CrmTechTitans.Models
 {
     public class Contact
     {

@@ -1,5 +1,4 @@
-﻿using CRM.Models;
-using CrmTechTitans.Models;
+﻿using CrmTechTitans.Models;
 using CrmTechTitans.Models.JoinTables;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +23,8 @@ namespace CRM.Data
 
         public DbSet<IndustryMember> IndustryMembers { get; set; }
 
+        public DbSet<MemberAddress> MemberAddresses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -41,6 +42,20 @@ namespace CRM.Data
                 .HasOne(im => im.Member)
                 .WithMany(m => m.IndustryMembers)
                 .HasForeignKey(im => im.MemberID);
+
+            // Configure the many-to-many relationship for MemberAddress
+            modelBuilder.Entity<MemberAddress>()
+                .HasKey(ma => new { ma.MemberId, ma.AddressId });
+
+            modelBuilder.Entity<MemberAddress>()
+                .HasOne(ma => ma.Member)
+                .WithMany(m => m.MemberAddresses)
+                .HasForeignKey(ma => ma.MemberId);
+
+            modelBuilder.Entity<MemberAddress>()
+                .HasOne(ma => ma.Address)
+                .WithMany()
+                .HasForeignKey(ma => ma.AddressId);
         }
 
 
