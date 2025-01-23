@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tVrEGgeq4Sw=",
+  "dgSpecHash": "EIuVG9t9KHE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitans2\\CrmTechTitans\\CrmTechTitans.csproj",
+  "projectFilePath": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitansupdate\\CrmTechTitans\\CrmTechTitans.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\brayd\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\brayd\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

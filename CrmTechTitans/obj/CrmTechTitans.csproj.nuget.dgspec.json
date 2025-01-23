@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitans2\\CrmTechTitans\\CrmTechTitans.csproj": {}
+    "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitansupdate\\CrmTechTitans\\CrmTechTitans.csproj": {}
   },
   "projects": {
-    "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitans2\\CrmTechTitans\\CrmTechTitans.csproj": {
+    "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitansupdate\\CrmTechTitans\\CrmTechTitans.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitans2\\CrmTechTitans\\CrmTechTitans.csproj",
+        "projectUniqueName": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitansupdate\\CrmTechTitans\\CrmTechTitans.csproj",
         "projectName": "CrmTechTitans",
-        "projectPath": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitans2\\CrmTechTitans\\CrmTechTitans.csproj",
+        "projectPath": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitansupdate\\CrmTechTitans\\CrmTechTitans.csproj",
         "packagesPath": "C:\\Users\\brayd\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitans2\\CrmTechTitans\\obj\\",
+        "outputPath": "C:\\Users\\brayd\\Source\\Repos\\CrmTechTitansupdate\\CrmTechTitans\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
