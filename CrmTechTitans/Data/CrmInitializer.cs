@@ -234,7 +234,7 @@ namespace CrmTechTitans.Data
                         context.SaveChanges();
 
                     }
-                    if (!context.Members.Any())
+                    if (!context.IndustryMembers.Any())
                     {
                         context.IndustryMembers.AddRange(
                             new IndustryMember { IndustryID = 1, MemberID = 1 },
@@ -290,6 +290,111 @@ namespace CrmTechTitans.Data
                             }
                         );
                         context.SaveChanges();
+                    }
+
+                    //Seed data for Contact (Ayebanimi Edougha)
+                    if (!context.Contacts.Any())
+                    {
+                        context.Contacts.AddRange(
+                            new Contact
+                            {
+                                FirstName = "John",
+                                LastName = "Doe",
+                                Email = "JohnDoe@gmail.com",
+                                Phone = "9058885301",
+                                Linkedin = "https://linkedin.com/in/johndoe"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Jane",
+                                LastName = "Smith",
+                                Email = "jane.smith@gmail.com",
+                                Phone = "0987654321",
+                                Linkedin = "https://linkedin.com/in/janesmith"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Albert",
+                                LastName = "Green",
+                                Email = "albertgreen@greeninnovations.com",
+                                Phone = "1122334455",
+                                Linkedin = "https://linkedin.com/in/albertgreen"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Maria",
+                                LastName = "Johnson",
+                                Email = "mariajohnson@citylogistics.com",
+                                Phone = "2233445566",
+                                Linkedin = "https://linkedin.com/in/mariajohnson"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Emily",
+                                LastName = "Wright",
+                                Email = "emilywright@healthcareplus.com",
+                                Phone = "3344556677",
+                                Linkedin = "https://linkedin.com/in/emilywright"
+                            },
+                            new Contact
+                            {
+                                FirstName = "James",
+                                LastName = "Carter",
+                                Email = "jamescarter@techelectronics.com",
+                                Phone = "4455667788",
+                                Linkedin = "https://linkedin.com/in/jamescarter"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Daniel",
+                                LastName = "Lee",
+                                Email = "daniellee@autopartsco.com",
+                                Phone = "5566778899",
+                                Linkedin = "https://linkedin.com/in/daniellee"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Linda",
+                                LastName = "Miller",
+                                Email = "lindamiller@foodiesmarket.com",
+                                Phone = "6677889900",
+                                Linkedin = "https://linkedin.com/in/lindamiller"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Nina",
+                                LastName = "Roberts",
+                                Email = "ninaroberts@globaltransport.com",
+                                Phone = "7788990011",
+                                Linkedin = "https://linkedin.com/in/ninaroberts"
+                            },
+                            new Contact
+                            {
+                                FirstName = "Oliver",
+                                LastName = "Thomas",
+                                Email = "oliverthomas@universaltechhub.com",
+                                Phone = "8899001122",
+                                Linkedin = "https://linkedin.com/in/oliverthomas"
+                            }
+                            );
+                        context.SaveChanges();
+                    }
+
+                    //Seed data for MemberContact (Ayebanimi Edougha)
+                    if (!context.MemberContacts.Any())
+                    {
+                        context.MemberContacts.AddRange(
+                            new MemberContact { MemberID = 1, ContactID = 1 },
+                            new MemberContact { MemberID = 2, ContactID = 2 },
+                            new MemberContact { MemberID = 3, ContactID = 3 },
+                            new MemberContact { MemberID = 4, ContactID = 4 },
+                            new MemberContact { MemberID = 5, ContactID = 5 },
+                            new MemberContact { MemberID = 6, ContactID = 6 },
+                            new MemberContact { MemberID = 7, ContactID = 7 },
+                            new MemberContact { MemberID = 8, ContactID = 8 },
+                            new MemberContact { MemberID = 9, ContactID = 9 },
+                            new MemberContact { MemberID = 10, ContactID = 10 }
+                        ); context.SaveChanges();
                     }
                 }
                 catch (Exception ex)

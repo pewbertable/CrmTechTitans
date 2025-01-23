@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CrmTechTitans.Models.JoinTables;
 
 namespace CrmTechTitans.Models
 {
@@ -43,6 +44,7 @@ namespace CrmTechTitans.Models
         [StringLength(100, ErrorMessage = "Linkedin can't be longer than 100 characters")]
         public string? Linkedin { get; set; }
 
+        public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>(); 
 
     }
 }

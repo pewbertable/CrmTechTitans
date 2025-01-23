@@ -25,6 +25,8 @@ namespace CRM.Data
 
         public DbSet<MemberAddress> MemberAddresses { get; set; }
 
+        public DbSet<MemberContact> MemberContacts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -56,6 +58,22 @@ namespace CRM.Data
                 .HasOne(ma => ma.Address)
                 .WithMany()
                 .HasForeignKey(ma => ma.AddressId);
+
+            //Configure Many-to-Many relationship for MemberContact
+
+            modelBuilder.Entity<MemberContact>()
+              .HasKey(mc => new { mc.ContactID, mc.MemberID });
+
+            modelBuilder.Entity<MemberContact>()
+                .HasOne(mc => mc.Contact)
+                .WithMany(c => c.MemberContacts)
+                .HasForeignKey(mc => mc.ContactID);
+
+            modelBuilder.Entity<MemberContact>()
+                .HasOne(mc => mc.Member)
+                .WithMany(m => m.MemberContacts)
+                .HasForeignKey(mc => mc.MemberID);
+
         }
 
 

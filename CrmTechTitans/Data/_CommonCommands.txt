@@ -3,3 +3,4 @@ Update-Database -Context ApplicationDbContext
 
 Add-Migration -Context CrmContext -o Data\CrmMigrations Initial
 Update-Database -Context CrmContext 
+
