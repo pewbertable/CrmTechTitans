@@ -1,97 +1,66 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Member>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Member Index";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/tables.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MemberName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MembershipType)
-            </th>
-            <th>
-               Industries
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContactedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanySize)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyWebsite)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MemberSince)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastContactDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MembershipStatus)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MemberName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MembershipType)
-            </td>
-                <td>
-                    @if (item.IndustryMembers.Any())  // Check if there are industries associated with the member
-                    {
-                        @string.Join(", ", item.IndustryMembers.Select(im => im.Industry.Name))
-                    }
-                    else
-                    {
-                        <span>No industries associated</span>
-                        // Display a fallback message if no industries are associated
-                    }
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanySize)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyWebsite)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MemberSince)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastContactDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MembershipStatus)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container">
+    <h1>Member Index</h1>
+    <div class="create-new">
+        <a asp-action="Create">Create New</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.MemberName)</th>
+                    <th>@Html.DisplayNameFor(model => model.MembershipType)</th>
+                    <th>Industries</th>
+                    <th>@Html.DisplayNameFor(model => model.ContactedBy)</th>
+                    <th>@Html.DisplayNameFor(model => model.CompanySize)</th>
+                    <th>@Html.DisplayNameFor(model => model.CompanyWebsite)</th>
+                    <th>@Html.DisplayNameFor(model => model.MemberSince)</th>
+                    <th>@Html.DisplayNameFor(model => model.LastContactDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.Notes)</th>
+                    <th>@Html.DisplayNameFor(model => model.MembershipStatus)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.MemberName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.MembershipType)</td>
+                        <td>
+                            @if (item.IndustryMembers.Any())
+                            {
+                                @string.Join(", ", item.IndustryMembers.Select(im => im.Industry.Name))
+                            }
+                            else
+                            {
+                                <span class="no-industries">No industries associated</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.ContactedBy)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CompanySize)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CompanyWebsite)</td>
+                        <td>@Html.DisplayFor(modelItem => item.MemberSince)</td>
+                        <td>@Html.DisplayFor(modelItem => item.LastContactDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Notes)</td>
+                        <td>@Html.DisplayFor(modelItem => item.MembershipStatus)</td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
