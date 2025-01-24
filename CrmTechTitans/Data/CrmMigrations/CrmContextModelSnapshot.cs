@@ -110,6 +110,27 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.ToTable("Interactions");
                 });
 
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.InteractionMember", b =>
+                {
+                    b.Property<int>("InteractionMemberID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InteractionID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MemberID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InteractionMemberID");
+
+                    b.HasIndex("InteractionID");
+
+                    b.HasIndex("MemberID");
+
+                    b.ToTable("interactionMembers");
+                });
+
             modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>
                 {
                     b.Property<int>("MemberID")
@@ -245,6 +266,25 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.ToTable("Opportunities");
                 });
 
+            modelBuilder.Entity("CrmTechTitans.Models.JoinTables.InteractionMember", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Interaction", "Interaction")
+                        .WithMany("InteractionMembers")
+                        .HasForeignKey("InteractionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CrmTechTitans.Models.Member", "Member")
+                        .WithMany("InteractionMembers")
+                        .HasForeignKey("MemberID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interaction");
+
+                    b.Navigation("Member");
+                });
+
             modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>
                 {
                     b.HasOne("CrmTechTitans.Models.Address", "Address")
@@ -336,9 +376,16 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Navigation("IndustryMembers");
                 });
 
+            modelBuilder.Entity("CrmTechTitans.Models.Interaction", b =>
+                {
+                    b.Navigation("InteractionMembers");
+                });
+
             modelBuilder.Entity("CrmTechTitans.Models.Member", b =>
                 {
                     b.Navigation("IndustryMembers");
+
+                    b.Navigation("InteractionMembers");
 
                     b.Navigation("MemberAddresses");
 

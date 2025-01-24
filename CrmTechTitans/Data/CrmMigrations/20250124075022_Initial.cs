@@ -133,6 +133,32 @@ namespace CrmTechTitans.Data.CrmMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "interactionMembers",
+                columns: table => new
+                {
+                    InteractionMemberID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MemberID = table.Column<int>(type: "INTEGER", nullable: false),
+                    InteractionID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_interactionMembers", x => x.InteractionMemberID);
+                    table.ForeignKey(
+                        name: "FK_interactionMembers_Interactions_InteractionID",
+                        column: x => x.InteractionID,
+                        principalTable: "Interactions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_interactionMembers_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MemberAddresses",
                 columns: table => new
                 {
@@ -212,6 +238,16 @@ namespace CrmTechTitans.Data.CrmMigrations
                 column: "MemberID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_interactionMembers_InteractionID",
+                table: "interactionMembers",
+                column: "InteractionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_interactionMembers_MemberID",
+                table: "interactionMembers",
+                column: "MemberID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MemberAddresses_AddressID",
                 table: "MemberAddresses",
                 column: "AddressID");
@@ -234,7 +270,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "IndustryMembers");
 
             migrationBuilder.DropTable(
-                name: "Interactions");
+                name: "interactionMembers");
 
             migrationBuilder.DropTable(
                 name: "MemberAddresses");
@@ -247,6 +283,9 @@ namespace CrmTechTitans.Data.CrmMigrations
 
             migrationBuilder.DropTable(
                 name: "Industries");
+
+            migrationBuilder.DropTable(
+                name: "Interactions");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

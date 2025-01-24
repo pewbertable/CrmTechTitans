@@ -53,6 +53,6 @@ namespace CrmTechTitans.Models
 
         public ICollection<MemberOpportunity> MemberOpportunities { get; set; } = new HashSet<MemberOpportunity>();
 
-
+        public ICollection<InteractionMember> InteractionMembers { get; set; } = new HashSet<InteractionMember>();
     }
 }

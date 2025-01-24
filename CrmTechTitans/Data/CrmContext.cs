@@ -28,6 +28,7 @@ namespace CrmTechTitans.Data
         public DbSet<MemberContact> MemberContacts { get; set; }
 
         public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
+        public DbSet<InteractionMember> interactionMembers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,6 +95,20 @@ namespace CrmTechTitans.Data
                 .HasOne(mc => mc.Member)
                 .WithMany(m => m.MemberOpportunities)
                 .HasForeignKey(mc => mc.MemberID);
+
+            //Configure Many-to-Many relationship for InteractionMember
+            modelBuilder.Entity<InteractionMember>()
+                .HasKey(im => im.InteractionMemberID);
+
+            modelBuilder.Entity<InteractionMember>()
+                .HasOne(im => im.Member)
+                .WithMany(m => m.InteractionMembers)
+                .HasForeignKey(im => im.MemberID);
+
+            modelBuilder.Entity<InteractionMember>()
+                .HasOne(im => im.Interaction)
+                .WithMany(i => i.InteractionMembers)
+                .HasForeignKey(im => im.InteractionID);
         }
 
 
