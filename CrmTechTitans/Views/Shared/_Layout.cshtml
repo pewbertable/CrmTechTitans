@@ -1,13 +1,12 @@
-﻿﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <title>@ViewData["Title"] - CrmTechTitans</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <div class="main-container">
@@ -15,6 +14,12 @@
             <div class="logo">
                 <img src="/images/logo.png" alt="Niagara Industry Association Logo" />
             </div>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+               asp-area=""
+               asp-controller="Home"
+               asp-action="Index">
+                Dashboard
+            </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Member" ? "active" : "")"
                asp-area=""
                asp-controller="Member"
@@ -39,11 +44,13 @@
                asp-action="Index">
                 Opportunities
             </a>
-
-            <a class="nav-link text-dark" asp-area="" asp-controller="Industry" asp-action="Index">All Industry</a>
-
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
+               asp-area=""
+               asp-controller="Industry"
+               asp-action="Index">
+                All Industry
+            </a>
             <partial name="_LoginPartial" />
-
         </div>
 
         <div class="content-container">
@@ -65,3 +72,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
