@@ -8,65 +8,79 @@
     <header class="page-header">
         <h1>All Members</h1>
         <p>Browse the full list of members in the Niagara Industry Association. Use the "Create New" button to add a new member to the directory.</p>
-        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Member</a> <!-- Custom class applied here -->
+        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Member</a>
     </header>
 
-    <section class="table-section">
-        <table class="table styled-table">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().MemberName)</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().MembershipType)</th>
-                    <th>Industries</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().ContactedBy)</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().CompanySize)</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().CompanyWebsite)</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().MemberSince)</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().LastContactDate)</th>
-                    <th>@Html.DisplayNameFor(model => model.FirstOrDefault().MembershipStatus)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr class="mb-3">
-                        <td>@Html.DisplayFor(modelItem => item.MemberName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.MembershipType)</td>
-                        <td>
-                            @if (item.IndustryMembers != null && item.IndustryMembers.Any())
-                            {
-                                @string.Join(", ", item.IndustryMembers.Select(im => im.Industry.Name))
+    <section class="members-grid">
+        @foreach (var item in Model)
+        {
+            <div class="member-card">
+                <div class="member-card-header">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">
+                            @(item.MemberName?.Length > 0 ? item.MemberName[0].ToString() : "")
+                        </div>
+                    </div>
+                    <div class="member-info">
+                        <h2 class="member-name">@item.MemberName</h2>
+                        <p class="member-type">@item.MembershipType</p>
+                    </div>
+                </div>
+                <div class="member-card-content">
+                    <div class="member-detail">
+                        <i class="fas fa-industry"></i>
+                        <span>
+                            @{
+                                var industries = item.IndustryMembers?.Select(im => im.Industry.Name);
+                                @(industries != null && industries.Any() ? string.Join(", ", industries) : "No industries associated")
                             }
-                            else
-                            {
-                                <span class="text-muted">No industries associated</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.ContactedBy)</td>
-                        <td>@Html.DisplayFor(modelItem => item.CompanySize)</td>
-                        <td>
-                            <a href="@item.CompanyWebsite" target="_blank" class="link-primary">@Html.DisplayFor(modelItem => item.CompanyWebsite)</a>
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.MemberSince)</td>
-                        <td>@Html.DisplayFor(modelItem => item.LastContactDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.MembershipStatus)</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn-secondary">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn-secondary">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn-danger">
-                                    <i class="fas fa-trash-alt"></i> Delete
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-user"></i>
+                        <span>@(item.ContactedBy ?? "N/A")</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-users"></i>
+                        <span>@(item.CompanySize.ToString() ?? "N/A")</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-globe"></i>
+                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
+                        {
+                            <a href="@item.CompanyWebsite" target="_blank" class="web-link">@item.CompanyWebsite</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No website available</span>
+                        }
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>@item.MemberSince.ToShortDateString()</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>@(item.LastContactDate?.ToShortDateString() ?? "N/A")</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-check-circle"></i>
+                        <span>@item.MembershipStatus</span>
+                    </div>
+                </div>
+                <div class="member-card-footer">
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                </div>
+            </div>
+        }
     </section>
 </div>
+
