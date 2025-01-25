@@ -1,84 +1,72 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Contact>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Contact Index";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/tables.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FullFormalName)
-            </th>
-            <th>
-                Member
-            </th>
-            <th>
-                Contact Type
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Linkedin)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullFormalName)
-            </td>
-                <td>
-                    @if (item.MemberContacts.Any())
-                    {
-                        @string.Join(", ", item.MemberContacts
-                                 .Where(mc => mc.Member != null) 
-                                 .Select(mc => mc.Member.MemberName))
-                    }
-                    else
-                    {
-                        <span>No Member associated</span>
-                    }
-                </td>
-                <td>
-                    @if (item.MemberContacts.Any())
-                    {
-                        @foreach (var memberContact in item.MemberContacts)
-                        {
-                            <div>@memberContact.ContactType</div>
-                        }
-                    }
-                    else
-                    {
-                        <span>No Contact Type available</span>
-                    }
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Linkedin)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container">
+    <h1>Contact Index</h1>
+    <div class="create-new">
+        <a asp-action="Create">Create New</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.FullFormalName)</th>
+                    <th>Member</th>
+                    <th>Contact Type</th>
+                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                    <th>@Html.DisplayNameFor(model => model.Linkedin)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.FullFormalName)</td>
+                        <td>
+                            @if (item.MemberContacts.Any())
+                            {
+                                @string.Join(", ", item.MemberContacts
+                                         .Where(mc => mc.Member != null)
+                                         .Select(mc => mc.Member.MemberName))
+                            }
+                            else
+                            {
+                                <span class="no-data">No Member associated</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.MemberContacts.Any())
+                            {
+                                @foreach (var memberContact in item.MemberContacts)
+                                {
+                                    <div>@memberContact.ContactType</div>
+                                }
+                            }
+                            else
+                            {
+                                <span class="no-data">No Contact Type available</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Linkedin)</td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

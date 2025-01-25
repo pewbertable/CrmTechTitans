@@ -1,68 +1,58 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Opportunity>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Opportunity Index";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/tables.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Member
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Priority)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-                <td>
-                    @if (item.MemberOpportunities.Any())
-                    {
-                        @string.Join(", ", item.MemberOpportunities
-                                 .Where(mc => mc.Member != null)
-                                 .Select(mc => mc.Member.MemberName))
-                    }
-                    else
-                    {
-                        <span>No Member associated</span>
-                    }
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Priority)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="container">
+    <h1>Opportunity Index</h1>
+    <div class="create-new">
+        <a asp-action="Create">Create New</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>@Html.DisplayNameFor(model => model.Title)</th>
+                    <th>@Html.DisplayNameFor(model => model.Status)</th>
+                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    <th>@Html.DisplayNameFor(model => model.Priority)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (item.MemberOpportunities.Any())
+                            {
+                                @string.Join(", ", item.MemberOpportunities
+                                         .Where(mo => mo.Member != null)
+                                         .Select(mo => mo.Member.MemberName))
+                            }
+                            else
+                            {
+                                <span class="no-data">No Member associated</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Priority)</td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

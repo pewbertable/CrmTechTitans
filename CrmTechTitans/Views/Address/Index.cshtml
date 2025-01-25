@@ -1,69 +1,58 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Address>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Address Index";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/tables.css" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-              Member
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Street)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Province)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostalCode)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @if (item.MemberAddresses.Any())
-                    {
-                        @string.Join(", ", item.MemberAddresses
-                                 .Where(mc => mc.Member != null)
-                                 .Select(mc => mc.Member.MemberName))
-                    }
-                    else
-                    {
-                        <span>No Member associated</span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Street)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Province)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PostalCode)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container">
+    <h1>Address Index</h1>
+    <div class="create-new">
+        <a asp-action="Create">Create New</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>@Html.DisplayNameFor(model => model.Street)</th>
+                    <th>@Html.DisplayNameFor(model => model.City)</th>
+                    <th>@Html.DisplayNameFor(model => model.Province)</th>
+                    <th>@Html.DisplayNameFor(model => model.PostalCode)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (item.MemberAddresses.Any())
+                            {
+                                @string.Join(", ", item.MemberAddresses
+                                         .Where(ma => ma.Member != null)
+                                         .Select(ma => ma.Member.MemberName))
+                            }
+                            else
+                            {
+                                <span class="no-data">No Member associated</span>
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Street)</td>
+                        <td>@Html.DisplayFor(modelItem => item.City)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Province)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
