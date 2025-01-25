@@ -1,4 +1,6 @@
-﻿@model CrmTechTitans.Models.Member
+﻿@using CrmTechTitans.Models.Enumerations
+
+@model CrmTechTitans.Models.Member
 
 @{
     ViewData["Title"] = "Create";
@@ -29,9 +31,9 @@
                 <!-- Membership Type -->
                 <div class="form-group mb-4">
                     <label asp-for="MembershipType" class="control-label fw-bold">Membership Type</label>
-                    <select asp-for="MembershipType" class="form-select">
-                        <option value="">-- Select Membership Type --</option>
-                        <!-- Add dynamic options here -->
+                    <select asp-for="MembershipType" class="form-select"
+                            asp-items="Html.GetEnumSelectList<MembershipType>()">
+                        <option value="">Select Membership Type</option>
                     </select>
                     <span asp-validation-for="MembershipType" class="text-danger"></span>
                 </div>
@@ -46,8 +48,9 @@
                 <!-- Company Size -->
                 <div class="form-group mb-4">
                     <label asp-for="CompanySize" class="control-label fw-bold">Company Size</label>
-                    <select asp-for="CompanySize" class="form-select">
-                        <option value="">-- Select Company Size --</option>
+                    <select asp-for="CompanySize" class="form-select"
+                            asp-items="Html.GetEnumSelectList<CompanySize>()">
+                        <option value="">Select Company Size</option>
                     </select>
                     <span asp-validation-for="CompanySize" class="text-danger"></span>
                 </div>
@@ -83,10 +86,9 @@
                 <!-- Membership Status -->
                 <div class="form-group mb-4">
                     <label asp-for="MembershipStatus" class="control-label fw-bold">Membership Status</label>
-                    <select asp-for="MembershipStatus" class="form-select">
-                        <option value="">-- Select Membership Status --</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
+                    <select asp-for="MembershipStatus" class="form-select"
+                            asp-items="Html.GetEnumSelectList<MembershipStatus>()">
+                        <option value="">Select Membership Status</option>
                     </select>
                     <span asp-validation-for="MembershipStatus" class="text-danger"></span>
                 </div>

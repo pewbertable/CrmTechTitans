@@ -1,4 +1,6 @@
-﻿@model CrmTechTitans.Models.Member
+﻿@using CrmTechTitans.Models.Enumerations
+
+@model CrmTechTitans.Models.Member
 
 @{
     ViewData["Title"] = "Edit Member";
@@ -30,7 +32,9 @@
                     <tr>
                         <th class="col-sm-3 text-end text-danger fw-bold">Membership Type:</th>
                         <td class="col-sm-9">
-                            <select asp-for="MembershipType" class="form-control">
+                            <select asp-for="MembershipType" class="form-control"
+                                    asp-items="Html.GetEnumSelectList<MembershipType>()">
+                                <option value="">Select Membership Type</option>
                             </select>
                             <span asp-validation-for="MembershipType" class="text-danger"></span>
                         </td>
@@ -45,8 +49,9 @@
                     <tr>
                         <th class="col-sm-3 text-end text-danger fw-bold">Company Size:</th>
                         <td class="col-sm-9">
-                            <select asp-for="CompanySize" class="form-control">
-                                <!-- Populate dynamically -->
+                            <select asp-for="CompanySize" class="form-control"
+                                    asp-items="Html.GetEnumSelectList<CompanySize>()">
+                                <option value="">Select Company Size</option>
                             </select>
                             <span asp-validation-for="CompanySize" class="text-danger"></span>
                         </td>
@@ -83,8 +88,9 @@
                     <tr>
                         <th class="col-sm-3 text-end text-danger fw-bold">Membership Status:</th>
                         <td class="col-sm-9">
-                            <select asp-for="MembershipStatus" class="form-control">
-                                <!-- Populate dynamically -->
+                            <select asp-for="MembershipStatus" class="form-control"
+                                    asp-items="Html.GetEnumSelectList<MembershipStatus>()">
+                                <option value="">Select Membership Status</option>
                             </select>
                             <span asp-validation-for="MembershipStatus" class="text-danger"></span>
                         </td>
