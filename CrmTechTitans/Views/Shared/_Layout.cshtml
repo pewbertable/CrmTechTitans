@@ -44,11 +44,17 @@
                asp-action="Index">
                 Opportunities
             </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
+               asp-area=""
+               asp-controller="Interaction"
+               asp-action="Index">
+                Interactions
+            </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
                asp-area=""
                asp-controller="Industry"
                asp-action="Index">
-                All Industry
+                Industries
             </a>
             <partial name="_LoginPartial" />
         </div>

@@ -521,6 +521,82 @@ namespace CrmTechTitans.Data
                         context.SaveChanges();
                     }
 
+                    //Seed data for Interaction table(Ankirta Kaur)
+                    if (!context.Interactions.Any())
+                    {
+                        context.Interactions.AddRange(
+                            new Interaction
+                            {
+                                interaction = "Initial Consultation Call"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Technical Support Discussion"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Annual Membership Review"
+                            },
+                            new Interaction
+                            {
+                                interaction = "New Product Launch Briefing"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Marketing Strategy Meeting"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Partnership Opportunity Discussion"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Subscription Feedback Session"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Technical Integration Workshop"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Customer Success Call"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Renewal Discussion"
+                            }
+                        );
+                        context.SaveChanges();
+                    }
+
+                    if (!context.InteractionMembers.Any())
+                    {
+                        context.InteractionMembers.AddRange(
+                            new InteractionMember { MemberID = 1, InteractionID = 1 },
+                            new InteractionMember { MemberID = 2, InteractionID = 1 },
+                            new InteractionMember { MemberID = 3, InteractionID = 2 },
+                            new InteractionMember { MemberID = 4, InteractionID = 2 },
+                            new InteractionMember { MemberID = 5, InteractionID = 3 },
+                            new InteractionMember { MemberID = 6, InteractionID = 3 },
+                            new InteractionMember { MemberID = 7, InteractionID = 4 },
+                            new InteractionMember { MemberID = 8, InteractionID = 4 },
+                            new InteractionMember { MemberID = 9, InteractionID = 5 },
+                            new InteractionMember { MemberID = 10, InteractionID = 5 },
+                            new InteractionMember { MemberID = 2, InteractionID = 6 },
+                            new InteractionMember { MemberID = 4, InteractionID = 6 },
+                            new InteractionMember { MemberID = 1, InteractionID = 7 },
+                            new InteractionMember { MemberID = 5, InteractionID = 7 },
+                            new InteractionMember { MemberID = 3, InteractionID = 8 },
+                            new InteractionMember { MemberID = 6, InteractionID = 8 },
+                            new InteractionMember { MemberID = 7, InteractionID = 9 },
+                            new InteractionMember { MemberID = 8, InteractionID = 9 },
+                            new InteractionMember { MemberID = 9, InteractionID = 10 },
+                            new InteractionMember { MemberID = 10, InteractionID = 10 }
+                        );
+                        context.SaveChanges();
+                    }
+
+
 
                 }
                 catch (Exception ex)
