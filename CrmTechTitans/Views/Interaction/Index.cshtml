@@ -1,0 +1,54 @@
+﻿@model IEnumerable<CrmTechTitans.Models.Interaction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<link rel="stylesheet" href="~/css/tables.css" />
+
+<div class="container">
+    <h1>Member Interactions</h1>
+    <div class="create-new">
+        <a asp-action="Create">Create New</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+        <tr>
+                    <th>Member</th>
+            <th>
+                @Html.DisplayNameFor(model => model.interaction)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                        <td>
+                            @if (item.InteractionMembers.Any())
+                            {
+                                @string.Join(", ", item.InteractionMembers
+                                         .Where(mo => mo.Member != null)
+                                         .Select(mo => mo.Member.MemberName))
+                            }
+                            else
+                            {
+                                <span class="no-data">No Member associated</span>
+                            }
+                        </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.interaction)
+            </td>
+            <td>
+                <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id" class="details">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="delete">Delete</a>
+                </div>
+            </td>
+        </tr>
+}
+            </tbody>
+        </table>
+    </div>
+</div>

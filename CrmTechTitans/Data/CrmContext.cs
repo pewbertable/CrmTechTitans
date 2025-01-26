@@ -28,7 +28,7 @@ namespace CrmTechTitans.Data
         public DbSet<MemberContact> MemberContacts { get; set; }
 
         public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
-        public DbSet<InteractionMember> interactionMembers { get; set; }
+        public DbSet<InteractionMember> InteractionMembers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
