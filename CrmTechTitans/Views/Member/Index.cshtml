@@ -8,7 +8,7 @@
     <header class="page-header">
         <h1>All Members</h1>
         <p>Browse the full list of members in the Niagara Industry Association. Use the "Create New" button to add a new member to the directory.</p>
-        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Member</a>
+        <a asp-action="Create" class="button-1 custom-btn-spacing">Create New Member</a>
     </header>
 
     <section class="members-grid">
@@ -69,10 +69,10 @@
                     </div>
                 </div>
                 <div class="member-card-footer">
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="button-2">
                         <i class="fas fa-edit"></i> Edit
                     </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
+                    <a asp-action="Details" asp-route-id="@item.ID" class="button-2">
                         <i class="fas fa-info-circle"></i> Details
                     </a>
                     <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">

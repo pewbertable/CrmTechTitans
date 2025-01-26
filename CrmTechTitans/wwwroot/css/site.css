@@ -8,6 +8,102 @@ body {
     padding: 0;
 }
 
+.button-1 {
+    appearance: none;
+    backface-visibility: hidden;
+    background-color: #27ae60;
+    border-radius: 6px;
+    border-style: none;
+    box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: normal;
+    line-height: 1.5;
+    outline: none;
+    overflow: hidden;
+    padding: 10px 15px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    margin: .3rem;
+    transform: translate3d(0, 0, 0);
+    transition: all .3s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.button-1:hover {
+    background-color: #1e8449;
+    opacity: 1;
+    transform: translateY(0);
+    transition-duration: .35s;
+}
+
+.button-1:active {
+    transform: translateY(2px);
+    transition-duration: .35s;
+}
+
+.button-1:hover {
+    box-shadow: rgba(39, 174, 96, .2) 0 6px 12px;
+}
+
+.button-2 {
+    appearance: none;
+    backface-visibility: hidden;
+    background-color: #6f747e;
+    border-radius: 6px;
+    border-style: none;
+    box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: normal;
+    line-height: 1.5;
+    outline: none;
+    overflow: hidden;
+    padding: 10px 15px;
+    position: relative;
+    margin: .3rem;
+    text-align: center;
+    text-decoration: none;
+    transform: translate3d(0, 0, 0);
+    transition: all .3s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+    .button-2:hover {
+        background-color: #545860;
+        opacity: 1;
+        transform: translateY(0);
+        transition-duration: .35s;
+    }
+
+    .button-2:active {
+        transform: translateY(2px);
+        transition-duration: .35s;
+    }
+
+    .button-2:hover {
+        box-shadow: rgba(39, 174, 96, .2) 0 6px 12px;
+    }
+
 .main-container {
     display: flex;
     flex: 1; /* Ensures the main container takes up all available space */
