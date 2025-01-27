@@ -1,33 +1,30 @@
-﻿@model IEnumerable<CrmTechTitans.Models.Address>
+@model IEnumerable<CrmTechTitans.Models.Address>
 
 @{
-    ViewData["Title"] = "Address Index";
+    ViewData["Title"] = "All Addresses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/tables.css" />
+<div class="main-content">
+    <header class="page-header">
+        <h1>All Addresses</h1>
+        <p>Browse the list of addresses in the Niagara Industry Association. Use the "Create New Address" button to add a new address to the directory.</p>
+        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Address</a>
+    </header>
 
-<div class="container">
-    <h1>Address Index</h1>
-    <div class="create-new">
-        <a asp-action="Create">Create New</a>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Member</th>
-                    <th>@Html.DisplayNameFor(model => model.Street)</th>
-                    <th>@Html.DisplayNameFor(model => model.City)</th>
-                    <th>@Html.DisplayNameFor(model => model.Province)</th>
-                    <th>@Html.DisplayNameFor(model => model.PostalCode)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
+    <section class="members-grid">
+        @foreach (var item in Model)
+        {
+            <div class="member-card">
+                <div class="member-card-header">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">
+                            @(item.Street?.Length > 0 ? item.Street[0].ToString() : "A")
+                        </div>
+                    </div>
+                    <div class="member-info">
+                        <h2 class="member-name">@item.Street</h2>
+                        <p class="member-type">
                             @if (item.MemberAddresses.Any())
                             {
                                 @string.Join(", ", item.MemberAddresses
@@ -36,23 +33,37 @@
                             }
                             else
                             {
-                                <span class="no-data">No Member associated</span>
+                                <span>No Member associated</span>
                             }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Street)</td>
-                        <td>@Html.DisplayFor(modelItem => item.City)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Province)</td>
-                        <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
-                        <td>
-                            <div class="actions">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                        </p>
+                    </div>
+                </div>
+                <div class="member-card-content">
+                    <div class="member-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>@item.City</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-map"></i>
+                        <span>@item.Province</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>@item.PostalCode</span>
+                    </div>
+                </div>
+                <div class="member-card-footer">
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                </div>
+            </div>
+        }
+    </section>
 </div>
