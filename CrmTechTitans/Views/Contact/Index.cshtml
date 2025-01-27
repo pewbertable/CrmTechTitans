@@ -1,35 +1,45 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Contact>
 
 @{
-    ViewData["Title"] = "Contact Index";
+    ViewData["Title"] = "All Contacts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/tables.css" />
+<div class="main-content">
+    <header class="page-header">
+        <h1>All Contacts</h1>
+        <p>Browse the full list of contacts in the Niagara Industry Association. Use the "Create New" button to add a new contact to the directory.</p>
+        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Contact</a>
+    </header>
 
-<div class="container">
-    <h1>Contact Index</h1>
-    <div class="create-new">
-        <a asp-action="Create">Create New</a>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.FullFormalName)</th>
-                    <th>Member</th>
-                    <th>Contact Type</th>
-                    <th>@Html.DisplayNameFor(model => model.Email)</th>
-                    <th>@Html.DisplayNameFor(model => model.Phone)</th>
-                    <th>@Html.DisplayNameFor(model => model.Linkedin)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.FullFormalName)</td>
-                        <td>
+    <section class="members-grid">
+        @foreach (var item in Model)
+        {
+            <div class="member-card">
+                <div class="member-card-header">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">
+                            @(item.FirstName?.Length > 0 ? item.FirstName[0].ToString() : "")
+                        </div>
+                    </div>
+                    <div class="member-info">
+                        <h2 class="member-name">@item.FullFormalName</h2>
+                        <p class="member-type">
+                            @if (item.MemberContacts.Any())
+                            {
+                                @string.Join(", ", item.MemberContacts.Select(mc => mc.ContactType))
+                            }
+                            else
+                            {
+                                <span>No Contact Type</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+                <div class="member-card-content">
+                    <div class="member-detail">
+                        <i class="fas fa-building"></i>
+                        <span>
                             @if (item.MemberContacts.Any())
                             {
                                 @string.Join(", ", item.MemberContacts
@@ -38,35 +48,43 @@
                             }
                             else
                             {
-                                <span class="no-data">No Member associated</span>
+                                <span>No Member associated</span>
                             }
-                        </td>
-                        <td>
-                            @if (item.MemberContacts.Any())
-                            {
-                                @foreach (var memberContact in item.MemberContacts)
-                                {
-                                    <div>@memberContact.ContactType</div>
-                                }
-                            }
-                            else
-                            {
-                                <span class="no-data">No Contact Type available</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Phone)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Linkedin)</td>
-                        <td>
-                            <div class="actions">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                        </span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-envelope"></i>
+                        <span>@item.Email</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-phone"></i>
+                        <span>@item.Phone</span>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fab fa-linkedin"></i>
+                        @if (!string.IsNullOrEmpty(item.Linkedin))
+                        {
+                            <a href="@item.Linkedin" target="_blank" class="web-link">@item.Linkedin</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No LinkedIn profile available</span>
+                        }
+                    </div>
+                </div>
+                <div class="member-card-footer">
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
+                        <i class="fas fa-info-circle"></i> Details
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                </div>
+            </div>
+        }
+    </section>
 </div>
+

@@ -1,42 +1,61 @@
 ﻿@model CrmTechTitans.Models.Address
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Address Details";
 }
 
-<h1>Details</h1>
+<div class="main-content">
+    <header class="page-header">
+        <h1>Address Details</h1>
+    </header>
 
-<div>
-    <h4>Address</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Street)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Street)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Province)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Province)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PostalCode)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PostalCode)
-        </dd>
-    </dl>
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">Address Information</h2>
+            </div>
+        </div>
+        <div class="member-card-content">
+            <div class="member-detail">
+                <i class="fas fa-road"></i>
+                <span>
+                    <strong>@Html.DisplayNameFor(model => model.Street):</strong>
+                    @Html.DisplayFor(model => model.Street)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-city"></i>
+                <span>
+                    <strong>@Html.DisplayNameFor(model => model.City):</strong>
+                    @Html.DisplayFor(model => model.City)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-flag"></i>
+                <span>
+                    <strong>@Html.DisplayNameFor(model => model.Province):</strong>
+                    @Html.DisplayFor(model => model.Province)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-mail-bulk"></i>
+                <span>
+                    <strong>@Html.DisplayNameFor(model => model.PostalCode):</strong>
+                    @Html.DisplayFor(model => model.PostalCode)
+                </span>
+            </div>
+        </div>
+        <div class="member-card-footer">
+            <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="button-2">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

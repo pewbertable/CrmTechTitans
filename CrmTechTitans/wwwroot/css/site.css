@@ -331,3 +331,58 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Form Styles -bp 01-26 */
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+    .form-control:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+.text-danger {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Adjustments for member-detail in forms */
+.member-detail {
+    align-items: flex-start;
+}
+
+    .member-detail i {
+        margin-top: 8px;
+    }
+
+.member-card-footer {
+    justify-content: space-between;
+}
+
+/* Remove hover effect for form cards */
+.member-card:has(form):hover {
+    transform: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
