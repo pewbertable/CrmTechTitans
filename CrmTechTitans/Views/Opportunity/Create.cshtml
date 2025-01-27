@@ -21,8 +21,8 @@
                 <h2 class="member-name">New Opportunity</h2>
             </div>
         </div>
-        <div class="member-card-content">
-            <form asp-action="Create">
+        <form asp-action="Create">
+            <div class="member-card-content">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="member-detail">
@@ -64,16 +64,16 @@
                         <span asp-validation-for="Priority" class="text-danger"></span>
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="member-card-footer">
-            <button type="submit" class="button-1">
-                <i class="fas fa-save"></i> Create
-            </button>
-            <a asp-action="Index" class="button-2">
-                <i class="fas fa-arrow-left"></i> Back to List
-            </a>
-        </div>
+            </div>
+            <div class="member-card-footer">
+                <button type="submit" class="button-1">
+                    <i class="fas fa-save"></i> Create
+                </button>
+                <a asp-action="Index" class="button-2">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 
