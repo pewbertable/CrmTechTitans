@@ -1,24 +1,42 @@
 ﻿@model CrmTechTitans.Models.Interaction
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Interaction Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="main-content">
+    <header class="page-header">
+        <h1>Interaction Details</h1>
+        <p class="text-muted">Detailed information about the selected interaction.</p>
+    </header>
 
-<div>
-    <h4>Members Interaction</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.interaction)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.interaction)
-        </dd>
-    </dl>
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">Interaction Information</h2>
+            </div>
+        </div>
+        <div class="member-card-content">
+            <div class="member-detail">
+                <i class="fas fa-comment"></i>
+                <span>
+                    <strong>Interaction:</strong>
+                    @Html.DisplayFor(model => model.interaction)
+                </span>
+            </div>
+        </div>
+        <div class="member-card-footer">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="button-1">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="button-2">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

@@ -1,42 +1,55 @@
 ﻿@model CrmTechTitans.Models.Opportunity
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Opportunity Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="main-content">
+    <header class="page-header">
+        <h1>Opportunity Details</h1>
+        <p class="text-muted">Detailed information about the selected opportunity.</p>
+    </header>
 
-<div>
-    <h4>Opportunity</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Priority)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Priority)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">@Model.Title</h2>
+            </div>
+        </div>
+        <div class="member-card-content">
+            <div class="member-detail">
+                <i class="fas fa-tasks"></i>
+                <span>
+                    <strong>Status:</strong>
+                    @Html.DisplayFor(model => model.Status)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-align-left"></i>
+                <span>
+                    <strong>Description:</strong>
+                    @Html.DisplayFor(model => model.Description)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-flag"></i>
+                <span>
+                    <strong>Priority:</strong>
+                    @Html.DisplayFor(model => model.Priority)
+                </span>
+            </div>
+        </div>
+        <div class="member-card-footer">
+            <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="button-2">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
 </div>

@@ -6,71 +6,85 @@
 }
 
 <div class="main-content">
-    <!-- Page Header -->
-    <div class="page-header text-center">
+    <header class="page-header">
         <h1>Delete Member</h1>
-        <p class="text-muted">Are you sure you want to delete this member? This action cannot be undone.</p>
-    </div>
+        <p class="text-danger">Are you sure you want to delete this member? This action cannot be undone.</p>
+    </header>
 
-    <!-- Member Details Section -->
-    <div class="details-section bg-white p-4 rounded shadow-sm mx-auto" style="max-width: 800px;">
-        <h4 class="text-danger mb-4 text-center">Member Details</h4>
-        <table class="table table-borderless table-sm align-middle">
-            <tbody>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3" style="width: 30%;">Member:</th>
-                    <td>@Html.DisplayFor(model => model.MemberName)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Membership Type:</th>
-                    <td>@Html.DisplayFor(model => model.MembershipType)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Contacted By:</th>
-                    <td>@Html.DisplayFor(model => model.ContactedBy)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Company Size:</th>
-                    <td>@Html.DisplayFor(model => model.CompanySize)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Website:</th>
-                    <td>
-                        <a href="@Model.CompanyWebsite" target="_blank" rel="noopener noreferrer" class="web-link">
-                            <i class="fas fa-external-link-alt me-1"></i>@Html.DisplayFor(model => model.CompanyWebsite)
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Member Since:</th>
-                    <td>@Html.DisplayFor(model => model.MemberSince)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Last Contact Date:</th>
-                    <td>@Html.DisplayFor(model => model.LastContactDate)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Notes:</th>
-                    <td>@Html.DisplayFor(model => model.Notes)</td>
-                </tr>
-                <tr>
-                    <th class="text-end text-danger fw-bold pe-3">Membership Status:</th>
-                    <td>@Html.DisplayFor(model => model.MembershipStatus)</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Button Section -->
-    <div class="button-container mt-4 text-end">
-        <form asp-action="Delete" class="d-inline">
-            <input type="hidden" asp-for="ID" />
-            <button type="submit" class="button-2">
-                <i class="fas fa-trash-alt"></i> Delete
-            </button>
-        </form>
-        <a asp-action="Index" class="button-2">
-            <i class="fas fa-arrow-left"></i> Cancel
-        </a>
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                <i class="fas fa-user-times"></i>
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">@Model.MemberName</h2>
+                <p class="member-type">@Model.MembershipType</p>
+            </div>
+        </div>
+        <div class="member-card-content">
+            <div class="member-detail">
+                <i class="fas fa-user-tie"></i>
+                <span>
+                    <strong>Contacted By:</strong>
+                    @Html.DisplayFor(model => model.ContactedBy)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-building"></i>
+                <span>
+                    <strong>Company Size:</strong>
+                    @Html.DisplayFor(model => model.CompanySize)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-globe"></i>
+                <span>
+                    <strong>Website:</strong>
+                    <a href="@Model.CompanyWebsite" target="_blank" rel="noopener noreferrer" class="web-link">
+                        @Html.DisplayFor(model => model.CompanyWebsite)
+                    </a>
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-calendar-alt"></i>
+                <span>
+                    <strong>Member Since:</strong>
+                    @Html.DisplayFor(model => model.MemberSince)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-phone"></i>
+                <span>
+                    <strong>Last Contact Date:</strong>
+                    @Html.DisplayFor(model => model.LastContactDate)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-sticky-note"></i>
+                <span>
+                    <strong>Notes:</strong>
+                    @Html.DisplayFor(model => model.Notes)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-check-circle"></i>
+                <span>
+                    <strong>Membership Status:</strong>
+                    @Html.DisplayFor(model => model.MembershipStatus)
+                </span>
+            </div>
+        </div>
+        <div class="member-card-footer">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="ID" />
+                <button type="submit" class="button-2">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </form>
+            <a asp-action="Index" class="button-1">
+                <i class="fas fa-arrow-left"></i> Cancel
+            </a>
+        </div>
     </div>
 </div>
+
