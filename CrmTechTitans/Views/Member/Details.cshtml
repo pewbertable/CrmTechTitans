@@ -21,11 +21,37 @@
             </div>
         </div>
         <div class="member-card-content">
+            <!-- Existing member details -->
             <div class="member-detail">
                 <i class="fas fa-user-tie"></i>
                 <span>
                     <strong>Contacted By:</strong>
                     @Html.DisplayFor(model => model.ContactedBy)
+                </span>
+            </div>
+            <!-- Industries Section -->
+            <div class="member-detail">
+                <i class="fas fa-industry"></i>
+                <span>
+                    <strong>Industries:</strong>
+                    @if (Model.IndustryMembers.Any())
+                    {
+                        <ul>
+                            @foreach (var memberIndustry in Model.IndustryMembers)
+                            {
+                                if (memberIndustry.Industry != null)
+                                {
+                                    <li>
+                                        @memberIndustry.Industry.Name (NAICS: @memberIndustry.Industry.NAICS)
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No industries associated</span>
+                    }
                 </span>
             </div>
             <div class="member-detail">
@@ -72,6 +98,63 @@
                     @Html.DisplayFor(model => model.MembershipStatus)
                 </span>
             </div>
+            <div class="member-detail">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>
+                    <strong>Address:</strong>
+                    @if (Model.MemberAddresses.Any())
+                    {
+                        <ul>
+                            @foreach (var memberAddress in Model.MemberAddresses)
+                            {
+                                if (memberAddress.Address != null)
+                                {
+                                    <li>@memberAddress.Address.Summary</li>
+                                }
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No address associated</span>
+                    }
+                </span>
+            </div>
+
+            <!-- Contacts Section -->
+            <div class="member-detail">
+                <i class="fas fa-address-book"></i>
+                <span>
+                    <strong>Contacts:</strong>
+                    @if (Model.MemberContacts.Any())
+                    {
+                        <ul>
+                            @foreach (var memberContact in Model.MemberContacts)
+                            {
+                                if (memberContact.Contact != null)
+                                {
+                                    <li>
+                                        <strong>@memberContact.ContactType:</strong>
+                                        @memberContact.Contact.FullFormalName
+                                        @if (!string.IsNullOrEmpty(memberContact.Contact.Email))
+                                        {
+                                            <span> | @memberContact.Contact.Email</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(memberContact.Contact.Phone))
+                                        {
+                                            <span> | @memberContact.Contact.Phone</span>
+                                        }
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No contacts associated</span>
+                    }
+                </span>
+            </div>
         </div>
         <div class="member-card-footer">
             <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
@@ -83,4 +166,3 @@
         </div>
     </div>
 </div>
-
