@@ -6,82 +6,147 @@
 
 <div class="main-content">
     <header class="page-header">
-        <a asp-action="Create" class="btn btn-danger">
-            <i class="fas fa-user-plus"></i> Create New Member
-        </a>
+        <div class="view-actions">
+            <a asp-action="Create" class="btn btn-danger">
+                <i class="fas fa-user-plus"></i> Create New
+            </a>
+            <div class="view-toggle">
+                <button class="btn btn-secondary active" data-view="cards">
+                    <i class="fas fa-th-large"></i> Cards
+                </button>
+                <button class="btn btn-secondary" data-view="table">
+                    <i class="fas fa-table"></i> Table
+                </button>
+            </div>
+        </div>
     </header>
 
-    <section class="members-grid">
+    <!-- Card View -->
+    <section class="members-grid" id="cards-view">
         @foreach (var item in Model)
-
         {
             <div class="member-card">
-                <div class="member-card-header">
-                    <div class="member-avatar">
-                        <div class="avatar-placeholder">
-                            @(item.MemberName?.Length > 0 ? item.MemberName[0].ToString() : "")
+
+                <div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
+                    @item.MembershipStatus.ToString()
+                </div>
+                <div class="card-header">
+                    <div class="company-logo">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    
+                    <div class="company-info">
+                        <h2 class="company-name">@item.MemberName</h2>
+                        <p class="membership-type">@item.MembershipType</p>
+                    </div>
+                </div>
+
+                <div class="card-content">
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <div class="data-label">Company Size</div>
+                                <div class="data-value">@item.CompanySize employees</div>
+                            </div>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <div>
+                                <div class="data-label">Member Since</div>
+                                <div class="data-value">@item.MemberSince.ToString("MMM yyyy")</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="member-info">
-                        <h2 class="member-name">@item.MemberName</h2>
-                        <p class="member-type">@item.MembershipType</p>
-                    </div>
                 </div>
-                <div class="member-card-content">
-                    <div class="member-detail">
-                        <i class="fas fa-industry"></i>
-                        <span>
-                            @{
-                                var industries = item.IndustryMembers?.Select(im => im.Industry.Name);
-                                @(industries != null && industries.Any() ? string.Join(", ", industries) : "No industries associated")
-                            }
-                        </span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-user"></i>
-                        <span>@(item.ContactedBy ?? "N/A")</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-users"></i>
-                        <span>@(item.CompanySize.ToString() ?? "N/A")</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-globe"></i>
-                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
 
-                        {
-                            <a href="@item.CompanyWebsite" target="_blank" class="web-link">@item.CompanyWebsite</a>
-                        }
-
-                        else
-
-                        {
-                            <span class="text-muted">No website available</span>
-                        }
+                <div class="card-footer">
+                    
+                    <div class="card-actions">
+                        <a href="#" class="btn btn-link text-danger">
+                            <i class="fas fa-archive"></i>
+                            <span class="action-label">Archive</span>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn-secondary btn-link text-primary">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="action-label">Details</span>
+                        </a>
                     </div>
-                    <div class="member-detail">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>@item.MemberSince.ToShortDateString()</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-phone"></i>
-                        <span>@(item.LastContactDate?.ToShortDateString() ?? "N/A")</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-check-circle"></i>
-                        <span>@item.MembershipStatus</span>
-                    </div>
-                </div>
-                <div class="member-card-footer">
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="button-2">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="button-2">
-                        <i class="fas fa-info-circle"></i> Details
-                    </a>
-                  
                 </div>
             </div>
         }
     </section>
+
+    <!-- Table View -->
+    <section class="table-responsive" id="table-view" style="display: none;">
+        <table class="classic-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th class="hide-on-mobile">Type</th>
+                    <th class="hide-on-mobile">Company Size</th>
+                    <th>Member Since</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="Name">@item.MemberName</td>
+                        <td class="hide-on-mobile" data-label="Type">@item.MembershipType</td>
+                        <td class="hide-on-mobile" data-label="Company Size">@item.CompanySize</td>
+                        <td data-label="Member Since">@item.MemberSince.ToShortDateString()</td>
+                        <td data-label="Status"><span class="status-tag">@item.MembershipStatus</span></td>
+                        <td data-label="Actions" class="action-buttons">
+                            <a href="#" class="btn-sm btn-archive">
+                                <i class="fas fa-archive"></i>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn-sm btn-details">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 </div>
+
+<script>
+    // Initialize view immediately after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+        const preferredView = localStorage.getItem('preferredView') || 'cards';
+        const cardsView = document.getElementById('cards-view');
+        const tableView = document.getElementById('table-view');
+
+        // Set initial display states
+        cardsView.style.display = preferredView === 'cards' ? 'grid' : 'none';
+        tableView.style.display = preferredView === 'table' ? 'block' : 'none';
+
+        // Update button states
+        document.querySelectorAll('.view-toggle button').forEach(button => {
+            button.classList.toggle('active', button.dataset.view === preferredView);
+        });
+    });
+
+    document.querySelectorAll('.view-toggle button').forEach(button => {
+        button.addEventListener('click', () => {
+            // Toggle active class
+            document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+
+            // Toggle views
+            const view = button.dataset.view;
+            const cardsView = document.getElementById('cards-view');
+            const tableView = document.getElementById('table-view');
+
+            cardsView.style.display = view === 'cards' ? 'grid' : 'none';
+            tableView.style.display = view === 'table' ? 'block' : 'none';
+
+            // Save preference
+            localStorage.setItem('preferredView', view);
+        });
+    });
+</script>

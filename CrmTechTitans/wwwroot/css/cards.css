@@ -1,161 +1,210 @@
-﻿
+﻿/* === Modern Card Design === */
+.members-grid {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+}
 
-/* === Member Cards: Improved Styling === */
 .member-card {
-    background-color: #ffffff;
-    border-radius: 12px; /* Slightly rounded for a modern feel */
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08); /* Soft shadow */
+    transition: transform 0.2s ease;
+    position: relative;
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #e0e0e0;
 }
 
     .member-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12); /* More visible lift effect */
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
-/* === Member Card Header === */
-.member-card-header {
+/* Card Header */
+.card-header {
+    padding: 20px;
+    padding-top: 50px;
+    background: #f8f9fa;
     display: flex;
     align-items: center;
-    padding: 18px;
-    background-color: #4b545c; /* Muted dark gray */
-    color: #fff;
-    font-weight: bold;
+    gap: 15px;
+    border-bottom: 1px solid #eee;
 }
 
-/* Avatar Styling */
-.member-avatar {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.3);
+.company-logo {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    background: #e9ecef;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 15px;
+    color: #6c757d;
+    font-size: 24px;
 }
 
-.avatar-placeholder {
-    color: #fff;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* Member Info */
-.member-info {
+.company-info {
     flex-grow: 1;
 }
 
-.member-name {
-    font-size: 18px;
-    font-weight: bold;
+.company-name {
     margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+    font-weight: 600;
 }
 
-.member-type {
-    font-size: 14px;
-    margin-top: 3px;
-    color: #dfe3e6;
+.membership-type {
+    margin: 4px 0 0;
+    color: #6c757d;
+    font-size: 0.9rem;
 }
 
-/* === Member Card Content === */
-.member-card-content {
-    padding: 18px;
+/* Card Content */
+.card-content {
+    padding: 20px;
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
 }
 
-/* Member Details */
-.member-detail {
+.data-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.data-item {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    gap: 12px;
 }
 
-    .member-detail i {
-        width: 18px;
-        margin-right: 8px;
-        color: #d42d27; /* Maintains CRM theme */
-    }
+.data-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-    .member-detail span,
-    .member-detail a {
-        font-size: 14px;
-        color: #333;
-        word-break: break-word;
-    }
+.data-value {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-top: 2px;
+}
 
-    .member-detail a {
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-        .member-detail a:hover {
-            text-decoration: underline;
-        }
-
-/* === Card Footer - Actions === */
-.member-card-footer {
-    display: flex;
+/* Card Footer */
+.card-footer {
     justify-content: space-between;
-    padding: 14px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #e9ecef;
+    align-items: center;
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
 }
 
-    .member-card-footer a {
-        flex: 1;
-        margin: 0 5px;
-        text-align: center;
-        padding: 10px;
-        font-size: 14px;
-        border-radius: 5px;
-        transition: 0.2s ease-in-out;
-    }
-
-    /* Secondary Button */
-    .member-card-footer .btn-secondary {
-        background-color: #6c757d;
-        color: #fff;
-        border: none;
-    }
-
-        .member-card-footer .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-    /* Delete Button */
-    .member-card-footer .btn-danger {
-        background-color: #dc3545;
-        color: #fff;
-        border: none;
-    }
-
-        .member-card-footer .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-/* === Members Grid Layout === */
-.members-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjusted min size */
-    gap: 20px;
-    padding: 20px;
+/* Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    width: fit-content;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #f8f9fa;
+    font-weight: 500;
+    text-transform: capitalize;
 }
 
-/* === Responsive Adjustments === */
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-inactive {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.btn-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+}
+
+    .btn-link.text-danger {
+        color: #dc3545 !important;
+    }
+
+    .btn-link.text-primary {
+        color: #2c3e50 !important;
+    }
+
+    .btn-link:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+.action-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .members-grid {
         grid-template-columns: 1fr;
     }
 
-    .member-card-footer {
+    .card-header {
+        padding: 15px;
+    }
+
+    .company-logo {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .card-footer {
         flex-direction: column;
-        gap: 8px;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .action-label {
+        display: none;
+    }
+
+    .card-actions {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .data-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .btn-link {
+        padding: 8px;
     }
 }
