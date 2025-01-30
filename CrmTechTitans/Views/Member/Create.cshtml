@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="member-card-content">
-            <form asp-action="Create">
+            <form asp-action="Create" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="member-detail">
@@ -111,6 +111,7 @@
                         <span asp-validation-for="MembershipStatus" class="text-danger"></span>
                     </div>
                 </div>
+
                 <div class="member-card-footer">
                     <button type="submit" class="button-1">
                         <i class="fas fa-save"></i> Create
@@ -121,7 +122,6 @@
                 </div>
             </form>
         </div>
-       
     </div>
 </div>
 
@@ -130,4 +130,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
