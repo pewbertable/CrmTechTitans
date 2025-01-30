@@ -2,63 +2,59 @@
 
 @{
     ViewData["Title"] = "All Opportunities";
+
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="main-content">
-    <header class="page-header">
-        <h1>All Opportunities</h1>
-        <p>Browse the list of opportunities in the Niagara Industry Association. Use the "Create New Opportunity" button to add a new opportunity to the directory.</p>
-        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Opportunity</a>
-    </header>
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
 
-    <section class="members-grid">
-        @foreach (var item in Model)
-        {
-            <div class="member-card">
-                <div class="member-card-header">
-                    <div class="member-info">
-                        <h2 class="member-name">@item.Title</h2>
-                        <p class="member-type">
-                            @if (item.MemberOpportunities.Any())
-                            {
-                                @string.Join(", ", item.MemberOpportunities
-                                         .Where(mo => mo.Member != null)
-                                         .Select(mo => mo.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span>No Member associated</span>
-                            }
-                        </p>
-                    </div>
-                </div>
-                <div class="member-card-content">
-                    <div class="member-detail">
-                        <i class="fas fa-flag"></i>
-                        <span>@item.Status</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-align-left"></i>
-                        <span>@item.Description</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span>@item.Priority</span>
-                    </div>
-                </div>
-                <div class="member-card-footer">
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-info-circle"></i> Details
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </a>
-                </div>
-            </div>
-        }
-    </section>
+        <header class="page-header">
+     
+        </header>
+
+        <section class="members-table-container">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Associated Members</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Status</td>
+                            <td>@item.Description</td>
+                            <td>@item.Priority</td>
+                            <td>
+                                @(item.MemberOpportunities.Any()
+                                    ? string.Join(", ", item.MemberOpportunities
+                                    .Where(mo => mo.Member != null)
+                                    .Select(mo => mo.Member.MemberName))
+                                    : "No Member Associated")
+                            </td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
+                                    Edit
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
+                                    Details
+                                </a>
+                              
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    </div>
 </div>
