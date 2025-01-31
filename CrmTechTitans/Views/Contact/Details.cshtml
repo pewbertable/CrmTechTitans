@@ -21,6 +21,7 @@
             </div>
         </div>
         <div class="member-card-content">
+            <!-- Contact Details -->
             <div class="member-detail">
                 <i class="fas fa-envelope"></i>
                 <span>
@@ -42,6 +43,32 @@
                     <a href="@Model.Linkedin" target="_blank" rel="noopener noreferrer" class="web-link">
                         @Html.DisplayFor(model => model.Linkedin)
                     </a>
+                </span>
+            </div>
+
+            <!-- Associated Members -->
+            <div class="member-detail">
+                <i class="fas fa-users"></i>
+                <span>
+                    <strong>Associated Members:</strong>
+                    @if (Model.MemberContacts != null && Model.MemberContacts.Any())
+                    {
+                        <ul>
+                            @foreach (var memberContact in Model.MemberContacts)
+                            {
+                                <li>
+                                    <a asp-controller="Member" asp-action="Details" asp-route-id="@memberContact.Member.ID">
+                                        @memberContact.Member.MemberName
+                                    </a>
+                                    <span class="text-muted">(Role: @memberContact.ContactType)</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No members associated</span>
+                    }
                 </span>
             </div>
         </div>

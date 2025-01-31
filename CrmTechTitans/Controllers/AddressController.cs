@@ -30,7 +30,9 @@ namespace CrmTechTitans.Controllers
             }
 
             var address = await _context.Addresses
-                .FirstOrDefaultAsync(m => m.ID == id);
+                  .Include(a => a.MemberAddresses)
+            .ThenInclude(ma => ma.Member) // Include the Member entity
+        .FirstOrDefaultAsync(a => a.ID == id);
             if (address == null)
             {
                 return NotFound();

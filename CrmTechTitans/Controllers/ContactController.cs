@@ -39,6 +39,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var contact = await _context.Contacts
+                .Include(c => c.MemberContacts) // Include MemberContacts
+            .ThenInclude(mc => mc.Member) // Include Member entity
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (contact == null)
             {

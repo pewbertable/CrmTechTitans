@@ -18,11 +18,12 @@
             <table class="table custom-table">
                 <thead>
                     <tr>
-                        <th>Street</th>
-                        <th>City</th>
+                        <th>Members</th>
+                      
+                        <th>Municipality</th>
                         <th>Province</th>
-                        <th>Postal Code</th>
-                        <th>Associated Members</th>
+                       
+                       
                         <th class="text-center"></th>
                     </tr>
                 </thead>
@@ -31,10 +32,6 @@
 
                     {
                         <tr>
-                            <td>@item.Street</td>
-                            <td>@item.City</td>
-                            <td>@item.Province</td>
-                            <td>@item.PostalCode</td>
                             <td>
                                 @(item.MemberAddresses.Any()
                                     ? string.Join(", ", item.MemberAddresses
@@ -42,6 +39,11 @@
                                     .Select(ma => ma.Member.MemberName))
                                     : "No Member Associated")
                             </td>
+                           
+                            <td>@item.City</td>
+                            <td>@item.Province</td>
+                           
+                           
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
                                     Edit

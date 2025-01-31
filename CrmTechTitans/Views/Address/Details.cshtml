@@ -19,34 +19,41 @@
             </div>
         </div>
         <div class="member-card-content">
+            <!-- Member Name -->
+            <div class="member-detail">
+                <i class="fas fa-user"></i>
+                <span>
+                    <strong>Member Names:</strong>
+                    @if (Model.MemberAddresses != null && Model.MemberAddresses.Any())
+                    {
+                        @string.Join(", ", Model.MemberAddresses.Select(ma => ma.Member?.MemberName))
+                    }
+                    else
+                    {
+                        <span>No member associated</span>
+                    }
+                </span>
+            </div>
+
+            <!-- Address Summary -->
             <div class="member-detail">
                 <i class="fas fa-road"></i>
                 <span>
-                    <strong>@Html.DisplayNameFor(model => model.Street):</strong>
-                    @Html.DisplayFor(model => model.Street)
+                    <strong>Address:</strong>
+                    @Model.Street, @Model.City, @Model.Province, @Model.PostalCode
                 </span>
             </div>
+
+            <!-- Municipality (City Name) -->
             <div class="member-detail">
                 <i class="fas fa-city"></i>
                 <span>
-                    <strong>@Html.DisplayNameFor(model => model.City):</strong>
-                    @Html.DisplayFor(model => model.City)
+                    <strong>Municipality:</strong>
+                    @Model.City
                 </span>
             </div>
-            <div class="member-detail">
-                <i class="fas fa-flag"></i>
-                <span>
-                    <strong>@Html.DisplayNameFor(model => model.Province):</strong>
-                    @Html.DisplayFor(model => model.Province)
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-mail-bulk"></i>
-                <span>
-                    <strong>@Html.DisplayNameFor(model => model.PostalCode):</strong>
-                    @Html.DisplayFor(model => model.PostalCode)
-                </span>
-            </div>
+
+           
         </div>
         <div class="member-card-footer">
             <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
@@ -58,4 +65,3 @@
         </div>
     </div>
 </div>
-

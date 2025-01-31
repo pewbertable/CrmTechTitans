@@ -21,6 +21,7 @@
             </div>
         </div>
         <div class="member-card-content">
+            <!-- Industry Details -->
             <div class="member-detail">
                 <i class="fas fa-tag"></i>
                 <span>
@@ -35,6 +36,31 @@
                     @Html.DisplayFor(model => model.NAICS)
                 </span>
             </div>
+
+            <!-- Associated Members -->
+            <div class="member-detail">
+                <i class="fas fa-users"></i>
+                <span>
+                    <strong>Associated Members:</strong>
+                    @if (Model.IndustryMembers != null && Model.IndustryMembers.Any())
+                    {
+                        <ul>
+                            @foreach (var industryMember in Model.IndustryMembers)
+                            {
+                                <li>
+                                    <a asp-controller="Member" asp-action="Details" asp-route-id="@industryMember.Member.ID">
+                                        @industryMember.Member.MemberName
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No members associated</span>
+                    }
+                </span>
+            </div>
         </div>
         <div class="member-card-footer">
             <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
@@ -46,4 +72,3 @@
         </div>
     </div>
 </div>
-

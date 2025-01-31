@@ -20,9 +20,9 @@
                     <tr>
                         <th>Title</th>
                         <th>Status</th>
-                        <th>Description</th>
+                       
                         <th>Priority</th>
-                        <th>Associated Members</th>
+                       
                         <th class="text-center"></th>
                     </tr>
                 </thead>
@@ -33,15 +33,9 @@
                         <tr>
                             <td>@item.Title</td>
                             <td>@item.Status</td>
-                            <td>@item.Description</td>
+                           
                             <td>@item.Priority</td>
-                            <td>
-                                @(item.MemberOpportunities.Any()
-                                    ? string.Join(", ", item.MemberOpportunities
-                                    .Where(mo => mo.Member != null)
-                                    .Select(mo => mo.Member.MemberName))
-                                    : "No Member Associated")
-                            </td>
+                          
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
                                     Edit

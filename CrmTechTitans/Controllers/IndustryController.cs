@@ -34,6 +34,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var industry = await _context.Industries
+                 .Include(i => i.IndustryMembers) // Include IndustryMembers
+            .ThenInclude(im => im.Member) // Include Member entity
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (industry == null)
             {
