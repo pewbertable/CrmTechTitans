@@ -38,6 +38,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var interaction = await _context.Interactions
+                .Include(c => c.InteractionMembers)
+            .ThenInclude(mc => mc.Member)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (interaction == null)
             {

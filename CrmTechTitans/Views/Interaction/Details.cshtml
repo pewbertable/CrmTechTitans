@@ -21,11 +21,48 @@
             </div>
         </div>
         <div class="member-card-content">
+            <!-- Associated Members -->
+            <div class="member-detail">
+                <i class="fas fa-users"></i>
+                <span>
+                    <strong>Associated Members:</strong>
+                    @if (Model.InteractionMembers.Any())
+                    {
+                        @string.Join(", ", Model.InteractionMembers
+                                 .Where(im => im.Member != null)
+                                 .Select(im => im.Member.MemberName))
+                    }
+                    else
+                    {
+                        <text>No Member Associated</text>
+                    }
+                </span>
+            </div>
+
+            <!-- Interaction -->
             <div class="member-detail">
                 <i class="fas fa-comment"></i>
                 <span>
                     <strong>Interaction:</strong>
                     @Html.DisplayFor(model => model.interaction)
+                </span>
+            </div>
+
+            <!-- Date -->
+            <div class="member-detail">
+                <i class="fas fa-calendar-alt"></i>
+                <span>
+                    <strong>Date:</strong>
+                    @Html.DisplayFor(model => model.Date)
+                </span>
+            </div>
+
+            <!-- Person -->
+            <div class="member-detail">
+                <i class="fas fa-user"></i>
+                <span>
+                    <strong>Person:</strong>
+                    @Html.DisplayFor(model => model.Person)
                 </span>
             </div>
         </div>
@@ -39,4 +76,3 @@
         </div>
     </div>
 </div>
-
