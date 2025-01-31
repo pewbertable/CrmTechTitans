@@ -1,7 +1,13 @@
 ﻿using CrmTechTitans.Data;
 using CrmTechTitans.Models;
+using CrmTechTitans.Models.Enumerations;
+using CrmTechTitans.Models.JoinTables;
+using CrmTechTitans.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CrmTechTitans.Controllers
 {
@@ -19,7 +25,8 @@ namespace CrmTechTitans.Controllers
         {
             return View(await _context.Members
                 .Include(m => m.IndustryMembers)
-                .ThenInclude(im => im.Industry).ToListAsync());
+                .ThenInclude(im => im.Industry)
+                .ToListAsync());
         }
 
         // GET: Member/Details/5
@@ -31,7 +38,14 @@ namespace CrmTechTitans.Controllers
             }
 
             var member = await _context.Members
+                .Include(m => m.MemberContacts)
+                    .ThenInclude(mc => mc.Contact)
+                .Include(m => m.MemberAddresses)
+                    .ThenInclude(ma => ma.Address)
+                .Include(m => m.IndustryMembers)
+                    .ThenInclude(im => im.Industry)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (member == null)
             {
                 return NotFound();
@@ -43,25 +57,77 @@ namespace CrmTechTitans.Controllers
         // GET: Member/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new MemberCreateViewModel
+            {
+                Contacts = new List<ContactViewModel> { new ContactViewModel() }, // Add one empty contact
+                Addresses = new List<AddressViewModel> { new AddressViewModel() }, // Add one empty address
+                AvailableIndustries = _context.Industries.ToList() // Populate available industries
+            };
+
+            return View(model);
         }
 
         // POST: Member/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MemberName,MembershipType,ContactedBy,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
+        public async Task<IActionResult> Create(MemberCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(member);
+                // Create Member
+                var member = new Member
+                {
+                    MemberName = model.MemberName,
+                    // Set other member properties...
+                };
+
+                // Add Addresses
+                foreach (var addressModel in model.Addresses)
+                {
+                    var address = new Address
+                    {
+                        Street = addressModel.Street,
+                        City = addressModel.City,
+                        Province = addressModel.Province,
+                        PostalCode = addressModel.PostalCode
+                    };
+                    member.MemberAddresses.Add(new MemberAddress { Address = address, AddressType = addressModel.AddressType });
+                }
+
+                // Add Contacts
+                foreach (var contactModel in model.Contacts)
+                {
+                    var contact = new Contact
+                    {
+                        FirstName = contactModel.FirstName,
+                        LastName = contactModel.LastName,
+                        Email = contactModel.Email,
+                        Phone = contactModel.Phone
+                    };
+                    member.MemberContacts.Add(new MemberContact { Contact = contact, ContactType = contactModel.ContactType });
+                }
+
+                // Add Selected Industries
+                foreach (var industryId in model.SelectedIndustryIds)
+                {
+                    var industry = await _context.Industries.FindAsync(industryId);
+                    if (industry != null)
+                    {
+                        member.IndustryMembers.Add(new MemberIndustry { Industry = industry });
+                    }
+                }
+
+                // Save to Database
+                _context.Members.Add(member);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(member);
-        }
 
+            // If the model is invalid, repopulate available industries
+            model.AvailableIndustries = _context.Industries.ToList();
+            return View(model);
+        }
         // GET: Member/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -70,22 +136,54 @@ namespace CrmTechTitans.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members.FindAsync(id);
+            var member = await _context.Members
+                .Include(m => m.MemberContacts)
+                    .ThenInclude(mc => mc.Contact)
+                .Include(m => m.MemberAddresses)
+                    .ThenInclude(ma => ma.Address)
+                .Include(m => m.IndustryMembers)
+                    .ThenInclude(im => im.Industry)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (member == null)
             {
                 return NotFound();
             }
-            return View(member);
-        }
 
+            // Map Member to ViewModel
+            var model = new MemberCreateViewModel
+            {
+                ID = member.ID,
+                MemberName = member.MemberName,
+                // Map other member properties...
+                Addresses = member.MemberAddresses.Select(ma => new AddressViewModel
+                {
+                    Street = ma.Address.Street,
+                    City = ma.Address.City,
+                    Province = ma.Address.Province,
+                    PostalCode = ma.Address.PostalCode,
+                    AddressType = ma.AddressType // Map address type
+                }).ToList(),
+                Contacts = member.MemberContacts.Select(mc => new ContactViewModel
+                {
+                    FirstName = mc.Contact.FirstName,
+                    LastName = mc.Contact.LastName,
+                    Email = mc.Contact.Email,
+                    Phone = mc.Contact.Phone,
+                    ContactType = mc.ContactType
+                }).ToList(),
+                SelectedIndustryIds = member.IndustryMembers.Select(im => im.IndustryID).ToList(), // Selected industry IDs
+                AvailableIndustries = _context.Industries.ToList() // Populate available industries
+            };
+
+            return View(model);
+        }
         // POST: Member/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,MemberName,MembershipType,ContactedBy,CompanySize,CompanyWebsite,MemberSince,LastContactDate,Notes,MembershipStatus")] Member member)
+        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model)
         {
-            if (id != member.ID)
+            if (id != model.ID)
             {
                 return NotFound();
             }
@@ -94,12 +192,68 @@ namespace CrmTechTitans.Controllers
             {
                 try
                 {
+                    // Fetch the existing member from the database
+                    var member = await _context.Members
+                        .Include(m => m.MemberContacts)
+                        .Include(m => m.MemberAddresses)
+                        .Include(m => m.IndustryMembers)
+                        .FirstOrDefaultAsync(m => m.ID == id);
+
+                    if (member == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update Member properties
+                    member.MemberName = model.MemberName;
+                    // Update other member properties...
+
+                    // Update Addresses
+                    member.MemberAddresses.Clear();
+                    foreach (var addressModel in model.Addresses)
+                    {
+                        var address = new Address
+                        {
+                            Street = addressModel.Street,
+                            City = addressModel.City,
+                            Province = addressModel.Province,
+                            PostalCode = addressModel.PostalCode
+                        };
+                        member.MemberAddresses.Add(new MemberAddress { Address = address, AddressType = addressModel.AddressType });
+                    }
+
+                    // Update Contacts
+                    member.MemberContacts.Clear();
+                    foreach (var contactModel in model.Contacts)
+                    {
+                        var contact = new Contact
+                        {
+                            FirstName = contactModel.FirstName,
+                            LastName = contactModel.LastName,
+                            Email = contactModel.Email,
+                            Phone = contactModel.Phone
+                        };
+                        member.MemberContacts.Add(new MemberContact { Contact = contact, ContactType = contactModel.ContactType });
+                    }
+
+                    // Update Industries
+                    member.IndustryMembers.Clear();
+                    foreach (var industryId in model.SelectedIndustryIds)
+                    {
+                        var industry = await _context.Industries.FindAsync(industryId);
+                        if (industry != null)
+                        {
+                            member.IndustryMembers.Add(new MemberIndustry { Industry = industry });
+                        }
+                    }
+
+                    // Save changes
                     _context.Update(member);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MemberExists(member.ID))
+                    if (!MemberExists(id))
                     {
                         return NotFound();
                     }
@@ -110,9 +264,11 @@ namespace CrmTechTitans.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(member);
-        }
 
+            // If the model is invalid, repopulate available industries
+            model.AvailableIndustries = _context.Industries.ToList();
+            return View(model);
+        }
         // GET: Member/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
