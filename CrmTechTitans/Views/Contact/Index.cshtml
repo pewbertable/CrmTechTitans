@@ -1,78 +1,139 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Contact>
 
 @{
-    ViewData["Title"] = "All Contacts";
-
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "All Contacts";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="crm-container">
-    <!-- Main Content -->
-    <div class="main-content">
-       
 
-        <section class="members-table-container">
-            <table class="table custom-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Company</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>LinkedIn</th>
-                        <th class="text-center"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
 
-                    {
-                        <tr>
-                            <td>@item.FullFormalName</td>
-                            <td>
-                                @(item.MemberContacts.Any()
-                                    ? string.Join(", ", item.MemberContacts.Select(mc => mc.ContactType))
-                                    : "No Contact Type")
-                            </td>
-                            <td>
-                                @(item.MemberContacts.Any()
-                                    ? string.Join(", ", item.MemberContacts
-                                    .Where(mc => mc.Member != null)
-                                    .Select(mc => mc.Member.MemberName))
-                                    : "No Member Associated")
-                            </td>
-                            <td>@item.Email</td>
-                            <td>@item.Phone</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(item.Linkedin))
+<div class="main-content">
+	<header class="page-header">
+		<h1>All Contacts</h1>
+		<p>Browse the full list of contacts in the Niagara Industry Association. Use the "Create New" button to add a new contact to the directory.</p>
+		<a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Contact</a>
+	</header>
 
-                                {
-                                    <a href="@item.Linkedin" target="_blank" class="linkedin-link">
-                                        <i class="fab fa-linkedin"></i> View Profile
-                                    </a>
-                                }
+	<!-- Filter and Search Form -->
+	<form asp-action="Index" method="get">
+		<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 
-                                else
+		<div class="form-horizontal">
+			<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+					data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+				Filter/Search @ViewData["numberFilters"]
+			</button><br />
 
-                                {
-                                    <span class="linkedin-placeholder">No LinkedIn</span>
-                                }
-                            </td>
+			<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+				<div class="card card-body bg-light">
+					<div class="row">
+						
 
-                            <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
-                                    Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
-                                    Details
-                                </a>
-                              
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </div>
+						<!-- Search by Name -->
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label">Search by Name:</label>
+								@Html.TextBox("SearchString",
+								null,
+								new { @class = "form-control", placeholder = "Search by First Name or Last Name" })
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2 align-self-end">
+							<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+							<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--Sorting-->
+		<div class="btn-group mt-2" role="group">
+			<a href="@Url.Action("Index", new { sortField = "FirstName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+				Sort by First Name
+			</a>
+			<a href="@Url.Action("Index", new { sortField = "LastName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+				Sort by Last Name
+			</a>
+		</div>
+	</form>
+
+	<section class="members-grid">
+		@foreach (var item in Model)
+		{
+			<div class="member-card">
+				<div class="member-card-header">
+					<div class="member-avatar">
+						<div class="avatar-placeholder">
+							@(item.FirstName?.Length > 0 ? item.FirstName[0].ToString() : "")
+						</div>
+					</div>
+					<div class="member-info">
+						<h2 class="member-name">@item.FullFormalName</h2>
+						<p class="member-type">
+							@if (item.MemberContacts.Any())
+							{
+								@string.Join(", ", item.MemberContacts.Select(mc => mc.ContactType))
+							}
+							else
+							{
+								<span>No Contact Type</span>
+							}
+						</p>
+					</div>
+				</div>
+				<div class="member-card-content">
+					<div class="member-detail">
+						<i class="fas fa-building"></i>
+						<span>
+							@if (item.MemberContacts.Any())
+							{
+								@string.Join(", ", item.MemberContacts
+																	.Where(mc => mc.Member != null)
+																	.Select(mc => mc.Member.MemberName))
+							}
+							else
+							{
+								<span>No Member associated</span>
+							}
+						</span>
+					</div>
+					<div class="member-detail">
+						<i class="fas fa-envelope"></i>
+						<span>@item.Email</span>
+					</div>
+					<div class="member-detail">
+						<i class="fas fa-phone"></i>
+						<span>@item.Phone</span>
+					</div>
+					<div class="member-detail">
+						<i class="fab fa-linkedin"></i>
+						@if (!string.IsNullOrEmpty(item.Linkedin))
+						{
+							<a href="@item.Linkedin" target="_blank" class="web-link">@item.Linkedin</a>
+						}
+						else
+						{
+							<span class="text-muted">No LinkedIn profile available</span>
+						}
+					</div>
+				</div>
+				<div class="member-card-footer">
+					<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
+						<i class="fas fa-edit"></i> Edit
+					</a>
+					<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
+						<i class="fas fa-info-circle"></i> Details
+					</a>
+					<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
+						<i class="fas fa-trash-alt"></i> Delete
+					</a>
+				</div>
+			</div>
+		}
+	</section>
 </div>
+
