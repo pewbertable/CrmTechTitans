@@ -64,7 +64,9 @@ namespace CrmTechTitans.Data.CrmMigrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    interaction = table.Column<string>(type: "TEXT", nullable: true)
+                    interaction = table.Column<string>(type: "TEXT", nullable: true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Person = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

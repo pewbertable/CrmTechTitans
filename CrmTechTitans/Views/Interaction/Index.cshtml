@@ -18,8 +18,11 @@
             <table class="table custom-table">
                 <thead>
                     <tr>
-                        <th>Interaction</th>
                         <th>Associated Members</th>
+                        <th>Interaction</th>
+                        <th>Date</th>
+                        <th>Person</th>
+                        
                         <th class="text-center"></th>
                     </tr>
                 </thead>
@@ -28,7 +31,6 @@
 
                     {
                         <tr>
-                            <td>@item.interaction</td>
                             <td>
                                 @(item.InteractionMembers.Any()
                                     ? string.Join(", ", item.InteractionMembers
@@ -36,6 +38,10 @@
                                     .Select(im => im.Member.MemberName))
                                     : "No Member Associated")
                             </td>
+                            <td>@item.interaction</td>
+                            <td>@item.Date</td>
+                            <td>@item.Person</td>
+                            
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
                                     Edit
