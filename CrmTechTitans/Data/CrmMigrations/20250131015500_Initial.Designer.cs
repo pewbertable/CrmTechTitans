@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmTechTitans.Data.CrmMigrations
 {
     [DbContext(typeof(CrmContext))]
-    [Migration("20250130215817_Initial")]
+    [Migration("20250131015500_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -104,6 +104,12 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("interaction")
                         .HasColumnType("TEXT");

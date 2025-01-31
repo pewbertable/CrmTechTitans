@@ -23,7 +23,9 @@ namespace CrmTechTitans.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Interactions.Include(c => c.InteractionMembers)
-            .ThenInclude(mc => mc.Member).ToListAsync());
+            .ThenInclude(mc => mc.Member)
+
+            .ToListAsync());
         
         }
 
