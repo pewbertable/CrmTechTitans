@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CrmTechTitans.Data;
 using CrmTechTitans.Models;
+using Microsoft.AspNetCore.Components.QuickGrid;
 
 namespace CrmTechTitans.Controllers
 {
@@ -20,9 +21,83 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Industry
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString, string? NAICSCode,
+     string? actionButton, string sortDirection = "asc", string sortField = "Name")
         {
-            return View(await _context.Industries.Include(m => m.IndustryMembers).ThenInclude(im => im.Member).ToListAsync());
+            // List of sort options
+            string[] sortOptions = new[] { "Name", "NAICS" };
+
+            // Count the number of filters applied
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+
+            // Start querying Industries
+            var industries = _context.Industries.AsNoTracking();
+
+            // Filter by Industry Name
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                industries = industries.Where(i => i.Name.ToLower().Contains(SearchString.ToLower()));
+                numberFilters++;
+            }
+
+            // Fix: Convert NAICSCode string to int before filtering
+            if (!string.IsNullOrEmpty(NAICSCode) && int.TryParse(NAICSCode, out int naicsCodeInt))
+            {
+                industries = industries.Where(i => i.NAICS == naicsCodeInt);
+                numberFilters++;
+            }
+
+            // Provide feedback about applied filters
+            if (numberFilters != 0)
+            {
+                ViewData["Filtering"] = "btn-danger";
+                ViewData["numberFilters"] = "(" + numberFilters.ToString() + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                ViewData["ShowFilter"] = "show";
+            }
+
+            // Sorting logic
+            if (!String.IsNullOrEmpty(actionButton))
+            {
+                if (sortOptions.Contains(actionButton))
+                {
+                    if (actionButton == sortField)
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;
+                }
+            }
+
+            // Apply Sorting
+            if (sortField == "NAICS")
+            {
+                industries = sortDirection == "asc"
+                    ? industries.OrderBy(i => i.NAICS).ThenBy(i => i.Name)
+                    : industries.OrderByDescending(i => i.NAICS).ThenByDescending(i => i.Name);
+            }
+            else // Default: Sorting by Industry Name
+            {
+                industries = sortDirection == "asc"
+                    ? industries.OrderBy(i => i.Name).ThenBy(i => i.NAICS)
+                    : industries.OrderByDescending(i => i.Name).ThenByDescending(i => i.NAICS);
+            }
+
+            // Set sort for next request
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            // Populate NAICS Code dropdown
+            ViewBag.NAICSCodeList = new SelectList(await _context.Industries
+                .Select(i => i.NAICS.ToString()) 
+                .Distinct()
+                .OrderBy(n => n)
+                .ToListAsync());
+
+            // Execute the query
+            var industryList = await industries.ToListAsync();
+
+            return View(industryList);
         }
 
         // GET: Industry/Details/5

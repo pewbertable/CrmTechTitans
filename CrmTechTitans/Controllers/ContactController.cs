@@ -20,14 +20,72 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Contact
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString,
+     string? actionButton, string sortDirection = "asc", string sortField = "FirstName")
         {
-        var contacts = await _context.Contacts
-            .Include(c => c.MemberContacts) 
-            .ThenInclude(mc => mc.Member)   
-            .ToListAsync();
+            // List of sort options for sorting by FirstName or LastName
+            string[] sortOptions = new[] { "FirstName", "LastName" };
 
-            return View(contacts);
+            // Count the number of filters applied 
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+
+          var contacts = _context.Contacts
+            .Include(c => c.MemberContacts)
+            .ThenInclude(mc => mc.Member)
+             .AsNoTracking();
+
+            //Add Filtering
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                contacts = contacts.Where(c => c.FirstName.ToLower().Contains(SearchString.ToLower()) || c.LastName.ToLower().Contains(SearchString.ToLower()));
+                numberFilters++;
+            }
+
+            // Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                
+                ViewData["Filtering"] = "btn-danger";
+                ViewData["numberFilters"] = "(" + numberFilters.ToString() + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                ViewData["ShowFilter"] = "show";
+            }
+
+            //check if a sort change has been requested
+            if (!String.IsNullOrEmpty(actionButton)) 
+            {
+                if (sortOptions.Contains(actionButton)) 
+                {
+                    if (actionButton == sortField) 
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton; 
+                }
+            }
+
+            // Apply sorting based on the selected field and direction
+            if (sortField == "LastName")
+            {
+                contacts = sortDirection == "asc"
+                    ? contacts.OrderBy(c => c.LastName).ThenBy(c => c.FirstName)
+                    : contacts.OrderByDescending(c => c.LastName).ThenByDescending(c => c.FirstName);
+            }
+            else // Sorting by FirstName
+            {
+                contacts = sortDirection == "asc"
+                    ? contacts.OrderBy(c => c.FirstName).ThenBy(c => c.LastName)
+                    : contacts.OrderByDescending(c => c.FirstName).ThenByDescending(c => c.LastName);
+            }
+
+            // Set sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            // Execute the query and get the result
+            var contactsList = await contacts.ToListAsync();
+
+            return View(contactsList);
         }
 
         // GET: Contact/Details/5
