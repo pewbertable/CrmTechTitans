@@ -594,25 +594,16 @@ namespace CrmTechTitans.Data
                     {
                         context.InteractionMembers.AddRange(
                             new InteractionMember { MemberID = 1, InteractionID = 1 },
-                            new InteractionMember { MemberID = 2, InteractionID = 1 },
-                            new InteractionMember { MemberID = 3, InteractionID = 2 },
-                            new InteractionMember { MemberID = 4, InteractionID = 2 },
-                            new InteractionMember { MemberID = 5, InteractionID = 3 },
-                            new InteractionMember { MemberID = 6, InteractionID = 3 },
-                            new InteractionMember { MemberID = 7, InteractionID = 4 },
-                            new InteractionMember { MemberID = 8, InteractionID = 4 },
-                            new InteractionMember { MemberID = 9, InteractionID = 5 },
-                            new InteractionMember { MemberID = 10, InteractionID = 5 },
-                            new InteractionMember { MemberID = 2, InteractionID = 6 },
-                            new InteractionMember { MemberID = 4, InteractionID = 6 },
-                            new InteractionMember { MemberID = 1, InteractionID = 7 },
-                            new InteractionMember { MemberID = 5, InteractionID = 7 },
-                            new InteractionMember { MemberID = 3, InteractionID = 8 },
-                            new InteractionMember { MemberID = 6, InteractionID = 8 },
-                            new InteractionMember { MemberID = 7, InteractionID = 9 },
-                            new InteractionMember { MemberID = 8, InteractionID = 9 },
-                            new InteractionMember { MemberID = 9, InteractionID = 10 },
+                            new InteractionMember { MemberID = 2, InteractionID = 2 },
+                            new InteractionMember { MemberID = 3, InteractionID = 3 },
+                            new InteractionMember { MemberID = 4, InteractionID = 4 },
+                            new InteractionMember { MemberID = 5, InteractionID = 5 },
+                            new InteractionMember { MemberID = 6, InteractionID = 6 },
+                            new InteractionMember { MemberID = 7, InteractionID = 7 },
+                            new InteractionMember { MemberID = 8, InteractionID = 8 },
+                            new InteractionMember { MemberID = 9, InteractionID = 9 },
                             new InteractionMember { MemberID = 10, InteractionID = 10 }
+                            
                         );
                         context.SaveChanges();
                     }
