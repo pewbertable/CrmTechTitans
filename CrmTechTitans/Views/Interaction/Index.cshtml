@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "All Interactions";
-
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,27 +10,29 @@
     <div class="main-content">
 
         <header class="page-header">
-      
+            <h1>All Interactions</h1>
+            <p>Filter interactions by associated member name.</p>
+
+            <!-- Client-side Search Input -->
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by Member Name..." onkeyup="filterTable()">
         </header>
 
         <section class="members-table-container">
-            <table class="table custom-table">
+            <table class="table custom-table" id="interactionTable">
                 <thead>
                     <tr>
                         <th>Associated Members</th>
                         <th>Interaction</th>
                         <th>Date</th>
                         <th>Person</th>
-                        
                         <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
-
                     {
                         <tr>
-                            <td>
+                            <td class="member-name">
                                 @(item.InteractionMembers.Any()
                                     ? string.Join(", ", item.InteractionMembers
                                     .Where(im => im.Member != null)
@@ -39,9 +40,8 @@
                                     : "No Member Associated")
                             </td>
                             <td>@item.interaction</td>
-                            <td>@item.Date</td>
+                            <td>@item.Date.ToString("yyyy-MM-dd")</td>
                             <td>@item.Person</td>
-                            
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
                                     Edit
@@ -49,7 +49,6 @@
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details">
                                     Details
                                 </a>
-                             
                             </td>
                         </tr>
                     }
@@ -58,3 +57,26 @@
         </section>
     </div>
 </div>
+
+<!-- JavaScript for Client-Side Filtering -->
+<script>
+    function filterTable() {
+        var input, filter, table, rows, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("interactionTable");
+        rows = table.getElementsByTagName("tr");
+
+        for (i = 1; i < rows.length; i++) {
+            td = rows[i].getElementsByClassName("member-name")[0]; // Get member name column
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

@@ -1,168 +1,169 @@
 ﻿@model CrmTechTitans.Models.Member
 
 @{
-    ViewData["Title"] = "Member Details";
+	ViewData["Title"] = "Member Details";
 }
 
 <div class="main-content">
-    <header class="page-header">
-        <h1>Member Details</h1>
-        <p class="text-muted">Below is the detailed information of the selected member.</p>
-    </header>
+	<header class="page-header">
+		<h1>Member Details</h1>
+		<p class="text-muted">Below is the detailed information of the selected member.</p>
+	</header>
 
-    <div class="member-card">
-        <div class="member-card-header">
-            <div class="member-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="member-info">
-                <h2 class="member-name">@Model.MemberName</h2>
-                <p class="member-type">@Model.MembershipType</p>
-            </div>
-        </div>
-        <div class="member-card-content">
-            <!-- Existing member details -->
-            <div class="member-detail">
-                <i class="fas fa-user-tie"></i>
-                <span>
-                    <strong>Contacted By:</strong>
-                    @Html.DisplayFor(model => model.ContactedBy)
-                </span>
-            </div>
-            <!-- Industries Section -->
-            <div class="member-detail">
-                <i class="fas fa-industry"></i>
-                <span>
-                    <strong>Industries:</strong>
-                    @if (Model.IndustryMembers.Any())
-                    {
-                        <ul>
-                            @foreach (var memberIndustry in Model.IndustryMembers)
-                            {
-                                if (memberIndustry.Industry != null)
-                                {
-                                    <li>
-                                        @memberIndustry.Industry.Name (NAICS: @memberIndustry.Industry.NAICS)
-                                    </li>
-                                }
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <span>No industries associated</span>
-                    }
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-building"></i>
-                <span>
-                    <strong>Company Size:</strong>
-                    @Html.DisplayFor(model => model.CompanySize)
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-globe"></i>
-                <span>
-                    <strong>Website:</strong>
-                    <a href="@Model.CompanyWebsite" target="_blank" rel="noopener noreferrer" class="web-link">
-                        @Html.DisplayFor(model => model.CompanyWebsite)
-                    </a>
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-calendar-alt"></i>
-                <span>
-                    <strong>Member Since:</strong>
-                    @Html.DisplayFor(model => model.MemberSince)
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-phone"></i>
-                <span>
-                    <strong>Last Contact Date:</strong>
-                    @Html.DisplayFor(model => model.LastContactDate)
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-sticky-note"></i>
-                <span>
-                    <strong>Notes:</strong>
-                    @Html.DisplayFor(model => model.Notes)
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-check-circle"></i>
-                <span>
-                    <strong>Membership Status:</strong>
-                    @Html.DisplayFor(model => model.MembershipStatus)
-                </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>
-                    <strong>Address:</strong>
-                    @if (Model.MemberAddresses.Any())
-                    {
-                        <ul>
-                            @foreach (var memberAddress in Model.MemberAddresses)
-                            {
-                                if (memberAddress.Address != null)
-                                {
-                                    <li>@memberAddress.Address.Summary</li>
-                                }
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <span>No address associated</span>
-                    }
-                </span>
-            </div>
+	<div class="member-card">
+		<div class="member-card-header">
+			<div class="member-avatar">
+				<i class="fas fa-user"></i>
+			</div>
+			<div class="member-info">
+				<h2 class="member-name">@Model.MemberName</h2>
+				<p class="member-type">@Model.MembershipType</p>
+			</div>
+		</div>
+		<div class="member-card-content">
+			<!-- Existing member details -->
+			<div class="member-detail">
+				<i class="fas fa-user-tie"></i>
+				<span>
+					<strong>Contacted By:</strong>
+					@Html.DisplayFor(model => model.ContactedBy)
+				</span>
+			</div>
+			<!-- Industries Section -->
+			<div class="member-detail">
+				<i class="fas fa-industry"></i>
+				<span>
+					<strong>Industries:</strong>
+					@if (Model.IndustryMembers.Any())
+					{
+						<ul>
+							@foreach (var memberIndustry in Model.IndustryMembers)
+							{
+								if (memberIndustry.Industry != null)
+								{
+									<li>
+										@memberIndustry.Industry.Name (NAICS: @memberIndustry.Industry.NAICS)
+									</li>
+								}
+							}
+						</ul>
+					}
+					else
+					{
+						<span>No industries associated</span>
+					}
+				</span>
+			</div>
+			<div class="member-detail">
+				<i class="fas fa-building"></i>
+				<span>
+					<strong>Company Size:</strong>
+					@Html.DisplayFor(model => model.CompanySize)
+				</span>
+			</div>
+			<div class="member-detail">
+				<i class="fas fa-globe"></i>
+				<span>
+					<strong>Website:</strong>
+					<a href="@Model.CompanyWebsite" target="_blank" rel="noopener noreferrer" class="web-link">
+						@Html.DisplayFor(model => model.CompanyWebsite)
+					</a>
+				</span>
+			</div>
+			<div class="member-detail">
+				<i class="fas fa-calendar-alt"></i>
+				<span>
+					<strong>Member Since:</strong>
+					@Model.MemberSince.ToString("yyyy-MM-dd")
+				</span>
+			</div>
+			<div class="member-detail">
+				<i class="fas fa-phone"></i>
+				<span>
+					<strong>Last Contact Date:</strong>
+					@(Model.LastContactDate.HasValue ? Model.LastContactDate.Value.ToString("yyyy-MM-dd") : "N/A")
+				</span>
+			</div>
 
-            <!-- Contacts Section -->
-            <div class="member-detail">
-                <i class="fas fa-address-book"></i>
-                <span>
-                    <strong>Contacts:</strong>
-                    @if (Model.MemberContacts.Any())
-                    {
-                        <ul>
-                            @foreach (var memberContact in Model.MemberContacts)
-                            {
-                                if (memberContact.Contact != null)
-                                {
-                                    <li>
-                                        <strong>@memberContact.ContactType:</strong>
-                                        @memberContact.Contact.FullFormalName
-                                        @if (!string.IsNullOrEmpty(memberContact.Contact.Email))
-                                        {
-                                            <span> | @memberContact.Contact.Email</span>
-                                        }
-                                        @if (!string.IsNullOrEmpty(memberContact.Contact.Phone))
-                                        {
-                                            <span> | @memberContact.Contact.Phone</span>
-                                        }
-                                    </li>
-                                }
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <span>No contacts associated</span>
-                    }
-                </span>
-            </div>
-        </div>
-        <div class="member-card-footer">
-            <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
-                <i class="fas fa-edit"></i> Edit
-            </a>
-            <a asp-action="Index" class="button-2">
-                <i class="fas fa-arrow-left"></i> Back to List
-            </a>
-        </div>
-    </div>
+			<div class="member-detail">
+				<i class="fas fa-sticky-note"></i>
+				<span>
+					<strong>Notes:</strong>
+					@Html.DisplayFor(model => model.Notes)
+				</span>
+			</div>
+			<div class="member-detail">
+				<i class="fas fa-check-circle"></i>
+				<span>
+					<strong>Membership Status:</strong>
+					@Html.DisplayFor(model => model.MembershipStatus)
+				</span>
+			</div>
+			<div class="member-detail">
+				<i class="fas fa-map-marker-alt"></i>
+				<span>
+					<strong>Address:</strong>
+					@if (Model.MemberAddresses.Any())
+					{
+						<ul>
+							@foreach (var memberAddress in Model.MemberAddresses)
+							{
+								if (memberAddress.Address != null)
+								{
+									<li>@memberAddress.Address.Summary</li>
+								}
+							}
+						</ul>
+					}
+					else
+					{
+						<span>No address associated</span>
+					}
+				</span>
+			</div>
+
+			<!-- Contacts Section -->
+			<div class="member-detail">
+				<i class="fas fa-address-book"></i>
+				<span>
+					<strong>Contacts:</strong>
+					@if (Model.MemberContacts.Any())
+					{
+						<ul>
+							@foreach (var memberContact in Model.MemberContacts)
+							{
+								if (memberContact.Contact != null)
+								{
+									<li>
+										<strong>@memberContact.ContactType:</strong>
+										@memberContact.Contact.FullFormalName
+										@if (!string.IsNullOrEmpty(memberContact.Contact.Email))
+										{
+											<span> | @memberContact.Contact.Email</span>
+										}
+										@if (!string.IsNullOrEmpty(memberContact.Contact.Phone))
+										{
+											<span> | @memberContact.Contact.Phone</span>
+										}
+									</li>
+								}
+							}
+						</ul>
+					}
+					else
+					{
+						<span>No contacts associated</span>
+					}
+				</span>
+			</div>
+		</div>
+		<div class="member-card-footer">
+			<a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
+				<i class="fas fa-edit"></i> Edit
+			</a>
+			<a asp-action="Index" class="button-2">
+				<i class="fas fa-arrow-left"></i> Back to List
+			</a>
+		</div>
+	</div>
 </div>
