@@ -6,13 +6,14 @@
 
 <div class="main-content">
     <header class="page-header">
-        <h1>All Members</h1>
-        <p>Browse the full list of members in the Niagara Industry Association. Use the "Create New" button to add a new member to the directory.</p>
-        <a asp-action="Create" class="button-1 custom-btn-spacing">Create New Member</a>
+        <a asp-action="Create" class="btn btn-danger">
+            <i class="fas fa-user-plus"></i> Create New Member
+        </a>
     </header>
 
     <section class="members-grid">
         @foreach (var item in Model)
+
         {
             <div class="member-card">
                 <div class="member-card-header">
@@ -47,10 +48,13 @@
                     <div class="member-detail">
                         <i class="fas fa-globe"></i>
                         @if (!string.IsNullOrEmpty(item.CompanyWebsite))
+
                         {
                             <a href="@item.CompanyWebsite" target="_blank" class="web-link">@item.CompanyWebsite</a>
                         }
+
                         else
+
                         {
                             <span class="text-muted">No website available</span>
                         }
@@ -75,12 +79,9 @@
                     <a asp-action="Details" asp-route-id="@item.ID" class="button-2">
                         <i class="fas fa-info-circle"></i> Details
                     </a>
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </a>
+                  
                 </div>
             </div>
         }
     </section>
 </div>
-

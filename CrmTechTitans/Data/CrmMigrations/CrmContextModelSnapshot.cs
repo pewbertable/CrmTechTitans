@@ -128,7 +128,7 @@ namespace CrmTechTitans.Data.CrmMigrations
 
                     b.HasIndex("MemberID");
 
-                    b.ToTable("interactionMembers");
+                    b.ToTable("InteractionMembers");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>

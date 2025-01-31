@@ -10,6 +10,8 @@ namespace CrmTechTitans.Models
         [Display(Name = "Interaction")]
         public string? interaction { get; set; }
 
+       
+
         public ICollection<InteractionMember> InteractionMembers { get; set; } = new HashSet<InteractionMember>();
 
     }

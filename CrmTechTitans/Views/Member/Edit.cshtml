@@ -1,5 +1,5 @@
 ﻿@using CrmTechTitans.Models.Enumerations
-@model CrmTechTitans.Models.Member
+@model CrmTechTitans.Models.ViewModels.MemberCreateViewModel
 
 @{
     ViewData["Title"] = "Edit Member";
@@ -25,6 +25,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ID" />
 
+                <!-- Member Details -->
                 <div class="member-detail">
                     <i class="fas fa-user"></i>
                     <div class="form-group">
@@ -111,9 +112,105 @@
                         <span asp-validation-for="MembershipStatus" class="text-danger"></span>
                     </div>
                 </div>
+
+                <!-- Addresses Section -->
+                <div class="member-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Addresses</h3>
+                    @for (int i = 0; i < Model.Addresses.Count; i++)
+                    {
+                        <div class="address-form">
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].Street" class="control-label">Street</label>
+                                <input asp-for="Addresses[i].Street" class="form-control" placeholder="Enter Street Address" />
+                                <span asp-validation-for="Addresses[i].Street" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].City" class="control-label">City</label>
+                                <input asp-for="Addresses[i].City" class="form-control" placeholder="Enter City" />
+                                <span asp-validation-for="Addresses[i].City" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].Province" class="control-label">Province</label>
+                                <select asp-for="Addresses[i].Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()">
+                                    <option value="">Select Province</option>
+                                </select>
+                                <span asp-validation-for="Addresses[i].Province" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].PostalCode" class="control-label">Postal Code</label>
+                                <input asp-for="Addresses[i].PostalCode" class="form-control" placeholder="Enter Postal Code" />
+                                <span asp-validation-for="Addresses[i].PostalCode" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].AddressType" class="control-label">Address Type</label>
+                                <select asp-for="Addresses[i].AddressType" class="form-control" asp-items="Html.GetEnumSelectList<AddressType>()">
+                                    <option value="">Select Address Type</option>
+                                </select>
+                                <span asp-validation-for="Addresses[i].AddressType" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    <button type="button" id="add-address" class="button-1">Add Address</button>
+                </div>
+
+                <!-- Contacts Section -->
+                <div class="member-detail">
+                    <i class="fas fa-address-book"></i>
+                    <h3>Contacts</h3>
+                    @for (int i = 0; i < Model.Contacts.Count; i++)
+                    {
+                        <div class="contact-form">
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].FirstName" class="control-label">First Name</label>
+                                <input asp-for="Contacts[i].FirstName" class="form-control" placeholder="Enter First Name" />
+                                <span asp-validation-for="Contacts[i].FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].LastName" class="control-label">Last Name</label>
+                                <input asp-for="Contacts[i].LastName" class="form-control" placeholder="Enter Last Name" />
+                                <span asp-validation-for="Contacts[i].LastName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].Email" class="control-label">Email</label>
+                                <input asp-for="Contacts[i].Email" class="form-control" placeholder="Enter Email" />
+                                <span asp-validation-for="Contacts[i].Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].Phone" class="control-label">Phone</label>
+                                <input asp-for="Contacts[i].Phone" class="form-control" placeholder="Enter Phone Number" />
+                                <span asp-validation-for="Contacts[i].Phone" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].ContactType" class="control-label">Contact Type</label>
+                                <select asp-for="Contacts[i].ContactType" class="form-control" asp-items="Html.GetEnumSelectList<ContactType>()">
+                                    <option value="">Select Contact Type</option>
+                                </select>
+                                <span asp-validation-for="Contacts[i].ContactType" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    <button type="button" id="add-contact" class="button-1">Add Contact</button>
+                </div>
+
+                <!-- Industries Section -->
+                <div class="member-detail">
+                    <i class="fas fa-industry"></i>
+                    <h3>Industries</h3>
+                    <div class="form-group">
+                        <label>Select Industries</label>
+                        <select asp-for="SelectedIndustryIds" class="form-control" multiple>
+                            @foreach (var industry in Model.AvailableIndustries)
+                            {
+                                <option value="@industry.ID">@industry.Name (NAICS: @industry.NAICS)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="SelectedIndustryIds" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="member-card-footer">
-                <button type="submit" class="button-1">
+                <button type="submit" class="btn btn-success">
                     <i class="fas fa-save"></i> Save Changes
                 </button>
                 <a asp-action="Index" class="button-2">
@@ -125,6 +222,101 @@
 </div>
 
 @section Scripts {
+    <script>
+        // Add Contact
+        document.getElementById('add-contact').addEventListener('click', function () {
+            const contactForm = document.createElement('div');
+            contactForm.classList.add('contact-form');
+            contactForm.innerHTML = `
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].FirstName" class="form-control" placeholder="Enter First Name" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].LastName" class="form-control" placeholder="Enter Last Name" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].Email" class="form-control" placeholder="Enter Email" />
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].Phone" class="form-control" placeholder="Enter Phone Number" />
+                </div>
+                <div class="form-group">
+                    <label>Contact Type</label>
+                    <select name="Contacts[${document.querySelectorAll('.contact-form').length}].ContactType" class="form-control">
+                        <option value="">Select Contact Type</option>
+        @foreach (var value in Enum.GetValues(typeof(ContactType)))
+        {
+                                <option value="@value">@value</option>
+        }
+                    </select>
+                </div>
+            `;
+            document.querySelector('#add-contact').before(contactForm);
+        });
+
+         // Add Address
+        document.getElementById('add-address').addEventListener('click', function () {
+            const addressForm = document.createElement('div');
+            addressForm.classList.add('address-form');
+            addressForm.innerHTML = `
+                <div class="form-group">
+                    <label>Street</label>
+                    <input name="Addresses[${document.querySelectorAll('.address-form').length}].Street" class="form-control" placeholder="Enter Street Address" />
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input name="Addresses[${document.querySelectorAll('.address-form').length}].City" class="form-control" placeholder="Enter City" />
+                </div>
+                <div class="form-group">
+                    <label>Province</label>
+                    <select name="Addresses[${document.querySelectorAll('.address-form').length}].Province" class="form-control">
+                        <option value="">Select Province</option>
+        @foreach (var value in Enum.GetValues(typeof(Province)))
+        {
+                                <option value="@value">@value</option>
+        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Postal Code</label>
+                    <input name="Addresses[${document.querySelectorAll('.address-form').length}].PostalCode" class="form-control" placeholder="Enter Postal Code" />
+                </div>
+                <div class="form-group">
+                    <label>Address Type</label>
+                    <select name="Addresses[${document.querySelectorAll('.address-form').length}].AddressType" class="form-control">
+                        <option value="">Select Address Type</option>
+        @foreach (var value in Enum.GetValues(typeof(AddressType)))
+        {
+                                <option value="@value">@value</option>
+        }
+                    </select>
+                </div>
+            `;
+            document.querySelector('#add-address').before(addressForm);
+        });
+
+        // Add Industry
+        document.getElementById('add-industry').addEventListener('click', function () {
+            const industryForm = document.createElement('div');
+            industryForm.classList.add('industry-form');
+            industryForm.innerHTML = `
+                <div class="form-group">
+                    <label>Industry Name</label>
+                    <input name="Industries[${document.querySelectorAll('.industry-form').length}].Name" class="form-control" placeholder="Enter Industry Name" />
+                </div>
+                <div class="form-group">
+                    <label>NAICS Code</label>
+                    <input name="Industries[${document.querySelectorAll('.industry-form').length}].NAICS" class="form-control" placeholder="Enter NAICS Code" />
+                </div>
+            `;
+            document.querySelector('#add-industry').before(industryForm);
+        });
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
