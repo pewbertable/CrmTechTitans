@@ -1,41 +1,70 @@
+@using CrmTechTitans.Models.Enumerations
 @model IEnumerable<CrmTechTitans.Models.Opportunity>
 
 @{
     ViewData["Title"] = "All Opportunities";
-
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="crm-container">
     <!-- Main Content -->
     <div class="main-content">
-
         <header class="page-header">
-     
+            <h2>All Opportunities</h2>
         </header>
 
         <section class="members-table-container">
-            <table class="table custom-table">
+            <!-- Filter Inputs -->
+            <div class="filter-container mb-3">
+                <div class="row">
+                    <!-- Status Filter -->
+                    <div class="col-md-4">
+                        <label for="statusFilter">Filter by Status:</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">All</option>
+                            @foreach (var status in Enum.GetValues(typeof(Status)))
+                            {
+                                <option value="@status">@status</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Priority Filter -->
+                    <div class="col-md-4">
+                        <label for="priorityFilter">Filter by Priority:</label>
+                        <select id="priorityFilter" class="form-control">
+                            <option value="">All</option>
+                            @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
+                            {
+                                <option value="@priority">@priority</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="col-md-4 align-self-end">
+                        <button id="resetFilters" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opportunities Table -->
+            <table class="table custom-table" id="opportunitiesTable">
                 <thead>
                     <tr>
                         <th>Title</th>
                         <th>Status</th>
-                       
                         <th>Priority</th>
-                       
                         <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
-
                     {
                         <tr>
                             <td>@item.Title</td>
                             <td>@item.Status</td>
-                           
                             <td>@item.Priority</td>
-                          
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
                                     Edit
@@ -43,7 +72,6 @@
                                 <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
                                     Details
                                 </a>
-                              
                             </td>
                         </tr>
                     }
@@ -52,3 +80,39 @@
         </section>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Filter function
+            function filterTable() {
+                var statusFilter = $('#statusFilter').val().toLowerCase();
+                var priorityFilter = $('#priorityFilter').val().toLowerCase();
+
+                $('#opportunitiesTable tbody tr').each(function () {
+                    var rowStatus = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var rowPriority = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var statusMatch = statusFilter === "" || rowStatus === statusFilter;
+                    var priorityMatch = priorityFilter === "" || rowPriority === priorityFilter;
+
+                    if (statusMatch && priorityMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Attach filter function to input events
+            $('#statusFilter, #priorityFilter').on('change', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function (e) {
+                e.preventDefault(); // Prevent form submission
+                $('#statusFilter, #priorityFilter').val(''); // Clear filter values
+                filterTable(); // Reapply filtering to show all rows
+            });
+        });
+    </script>
+}

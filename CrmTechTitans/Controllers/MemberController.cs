@@ -21,12 +21,48 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Member
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string statusFilter, string sortField, string sortDirection)
         {
-            return View(await _context.Members
+            // Start with the base query
+            var members = _context.Members
                 .Include(m => m.IndustryMembers)
-                .ThenInclude(im => im.Industry)
-                .ToListAsync());
+                    .ThenInclude(im => im.Industry)
+                .AsQueryable();
+
+            // Filter by Member Name
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                members = members.Where(m => m.MemberName.Contains(searchString));
+            }
+
+            // Filter by Member Status
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                var status = Enum.Parse<MembershipStatus>(statusFilter);
+                members = members.Where(m => m.MembershipStatus == status);
+            }
+
+            // Sorting
+            switch (sortField)
+            {
+                case "MemberName":
+                    members = sortDirection == "asc" ? members.OrderBy(m => m.MemberName) : members.OrderByDescending(m => m.MemberName);
+                    break;
+                case "MembershipStatus":
+                    members = sortDirection == "asc" ? members.OrderBy(m => m.MembershipStatus) : members.OrderByDescending(m => m.MembershipStatus);
+                    break;
+                default:
+                    members = members.OrderBy(m => m.MemberName); // Default sorting
+                    break;
+            }
+
+            // Pass sorting and filtering data to the view
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+            ViewData["SearchString"] = searchString;
+            ViewData["statusFilter"] = statusFilter;
+
+            return View(await members.ToListAsync());
         }
 
         // GET: Member/Details/5
@@ -128,6 +164,7 @@ namespace CrmTechTitans.Controllers
             model.AvailableIndustries = _context.Industries.ToList();
             return View(model);
         }
+
         // GET: Member/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -178,6 +215,7 @@ namespace CrmTechTitans.Controllers
 
             return View(model);
         }
+
         // POST: Member/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -269,6 +307,7 @@ namespace CrmTechTitans.Controllers
             model.AvailableIndustries = _context.Industries.ToList();
             return View(model);
         }
+
         // GET: Member/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "All Addresses";
-
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,25 +10,27 @@
     <div class="main-content">
 
         <header class="page-header">
-            
+            <h2>All Addresses</h2>
         </header>
 
+        <!-- Filter Inputs -->
+        <div class="filter-container">
+            <input type="text" id="municipalityFilter" placeholder="Filter by Municipality..." class="form-control">
+            <input type="text" id="provinceFilter" placeholder="Filter by Province..." class="form-control">
+        </div>
+
         <section class="members-table-container">
-            <table class="table custom-table">
+            <table class="table custom-table" id="addressTable">
                 <thead>
                     <tr>
                         <th>Members</th>
-                      
                         <th>Municipality</th>
                         <th>Province</th>
-                       
-                       
                         <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
-
                     {
                         <tr>
                             <td>
@@ -39,11 +40,8 @@
                                     .Select(ma => ma.Member.MemberName))
                                     : "No Member Associated")
                             </td>
-                           
                             <td>@item.City</td>
                             <td>@item.Province</td>
-                           
-                           
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
                                     Edit
@@ -51,7 +49,6 @@
                                 <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
                                     Details
                                 </a>
-                               
                             </td>
                         </tr>
                     }
@@ -60,3 +57,32 @@
         </section>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Filter function
+            function filterTable() {
+                var municipalityFilter = $('#municipalityFilter').val().toLowerCase();
+                var provinceFilter = $('#provinceFilter').val().toLowerCase();
+
+                $('#addressTable tbody tr').each(function () {
+                    var municipalityText = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var provinceText = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var municipalityMatch = municipalityText.includes(municipalityFilter);
+                    var provinceMatch = provinceText.includes(provinceFilter);
+
+                    if (municipalityMatch && provinceMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Attach filter function to input events
+            $('#municipalityFilter, #provinceFilter').on('input', filterTable);
+        });
+    </script>
+}

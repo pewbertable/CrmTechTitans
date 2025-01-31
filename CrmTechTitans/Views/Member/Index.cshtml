@@ -21,12 +21,68 @@
         </div>
     </header>
 
+    <!-- Filter and Search Form -->
+    <form asp-action="Index" method="get">
+        <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+        <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+        <div class="form-horizontal">
+            <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+                    data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                Filter/Search @ViewData["numberFilters"]
+            </button><br />
+
+            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                <div class="card card-body bg-light">
+                    <div class="row">
+                        <!-- Search by Member Name -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Search by Member Name:</label>
+                                @Html.TextBox("SearchString",
+                                         null,
+                                         new { @class = "form-control", placeholder = "Search by Member Name" })
+                            </div>
+                        </div>
+
+                        <!-- Filter by Member Status -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Filter by Status:</label>
+                                <select name="statusFilter" class="form-control">
+                                    <option value="">All Statuses</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 align-self-end">
+                            <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                            <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sorting -->
+        <div class="btn-group mt-2" role="group">
+            <a href="@Url.Action("Index", new { sortField = "MemberName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by Member Name
+            </a>
+            <a href="@Url.Action("Index", new { sortField = "MembershipStatus", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by Status
+            </a>
+        </div>
+    </form>
+
     <!-- Card View -->
     <section class="members-grid" id="cards-view">
         @foreach (var item in Model)
         {
             <div class="member-card">
-
                 <div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
                     @item.MembershipStatus.ToString()
                 </div>
@@ -34,7 +90,6 @@
                     <div class="company-logo">
                         <i class="fas fa-building"></i>
                     </div>
-                    
                     <div class="company-info">
                         <h2 class="company-name">@item.MemberName</h2>
                         <p class="membership-type">@item.MembershipType</p>
@@ -61,7 +116,6 @@
                 </div>
 
                 <div class="card-footer">
-                    
                     <div class="card-actions">
                         <a href="#" class="btn btn-link text-danger">
                             <i class="fas fa-archive"></i>
