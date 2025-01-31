@@ -12,6 +12,65 @@
         <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Industry</a>
     </header>
 
+    <!-- Filter and Search Form -->
+    <form asp-action="Index" method="get">
+        <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+        <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+        <div class="form-horizontal">
+            <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                Filter/Search @ViewData["numberFilters"]
+            </button>
+            <br />
+
+            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                <div class="card card-body bg-light">
+                    <div class="row">
+                        <!-- Search by Industry Name -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Search by Industry Name:</label>
+                                @Html.TextBox("SearchString",
+                                         null,
+                                         new { @class = "form-control", placeholder = "Enter industry name" })
+                            </div>
+                        </div>
+
+                        <!-- Filter by NAICS Code -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Filter by NAICS Code:</label>
+                                @Html.DropDownList("NAICSCode",
+                                         ViewBag.NAICSCodeList as SelectList,
+                                         "-- Select NAICS Code --",
+                                         new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-2 align-self-end">
+                            <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                            <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sorting -->
+        <div class="btn-group mt-2" role="group">
+            <a href="@Url.Action("Index", new { sortField = "Name", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by Industry Name
+            </a>
+            <a href="@Url.Action("Index", new { sortField = "NAICS", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by NAICS Code
+            </a>
+        </div>
+    </form>
+
+
     <section class="members-grid">
         @foreach (var item in Model)
         {
