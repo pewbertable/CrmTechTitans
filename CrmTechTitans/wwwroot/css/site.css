@@ -15,22 +15,25 @@ body {
 }
 
 /* === Sidebar: Sliding, Clean & Professional === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
 .sidebar {
     position: fixed;
     left: 0;
     top: 0;
-    width: 12rem; /* 192px */
-    max-width: 230px;
+    width: 11rem; /* Reduced width for a sleeker look */
+    max-width: 210px;
     height: 100%;
     background-color: #424242; /* Dark grey for professional look */
     color: white;
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 18px;
     transition: transform 0.3s ease-in-out;
     transform: translateX(-100%); /* Initially hidden */
     z-index: 1000;
+    font-family: 'Inter', sans-serif;
 }
 
     /* Show Sidebar when Active */
@@ -41,15 +44,15 @@ body {
 /* === Sidebar Toggle Button (Hamburger) === */
 .sidebar-toggle {
     position: fixed;
-    top: 15px;
-    left: 15px;
+    top: 12px;
+    left: 12px;
     background-color: #424242;
     color: white;
     border: none;
-    padding: 10px 12px;
+    padding: 8px 10px;
     cursor: pointer;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     transition: background 0.3s;
     z-index: 1100;
 }
@@ -58,12 +61,13 @@ body {
         background-color: #5a5a5a;
     }
 
-/* === Sidebar Links - Clean & Readable === */
+/* === Sidebar Links - Clean & Readable with Icons === */
 .sidebar a {
-    display: block;
-    padding: 12px 15px;
-    margin: 5px 5px;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    margin: 4px 4px;
+    font-size: 14px;
     color: #ffffff;
     font-weight: 500;
     text-decoration: none;
@@ -71,40 +75,46 @@ body {
     transition: background 0.3s, padding 0.2s;
 }
 
-    /* === Sidebar Hover & Active Effect === */
+    .sidebar a i {
+        margin-right: 8px; /* Space between icon and text */
+        font-size: 1.2rem; /* Reduced icon size */
+    }
+
     .sidebar a:hover,
     .sidebar a.active {
-        padding-left: 18px;
+        background: rgba(255, 255, 255, 0.15);
+        padding-left: 16px;
+        font-weight: 600;
     }
 
 /* === Content Adjustments to Prevent Overlap === */
 .content-container {
     margin-left: 0;
     transition: margin-left 0.3s ease-in-out;
-    padding: 20px;
+    padding: 18px;
 }
 
 /* Move content when sidebar is open */
 .sidebar.active ~ .content-container {
-    margin-left: 230px; /* Shift content when sidebar is visible */
+    margin-left: 210px; /* Adjusted content shift */
 }
 
 /* === Responsive Adjustments === */
 @media (max-width: 1024px) {
     .sidebar {
-        max-width: 250px;
-        padding: 15px;
+        max-width: 230px;
+        padding: 14px;
     }
 
         .sidebar a {
-            padding: 10px 12px;
-            font-size: 14px;
+            padding: 9px 10px;
+            font-size: 13px;
         }
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        max-width: 220px;
+        max-width: 200px;
         padding: 10px;
     }
 
@@ -116,7 +126,6 @@ body {
         margin-left: 0; /* Prevent content shift on smaller screens */
     }
 }
-
 
 
 /* === Content Area: Takes More Space Now === */
