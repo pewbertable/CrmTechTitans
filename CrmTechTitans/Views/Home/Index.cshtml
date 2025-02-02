@@ -1,180 +1,165 @@
-﻿@model CrmTechTitans.ViewModels.DashboardVM
+﻿<!-- Index.cshtml -->
+@model CrmTechTitans.ViewModels.DashboardVM
 @section Styles {
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 }
-
 @section Scripts {
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 }
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard Overview";
 }
 
 <div class="main-content">
     <header class="page-header">
+        <h1>Member Management Dashboard</h1>
+        <div class="dashboard-tabs" id="dashboardTabs">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="membership">Membership Types</button>
+            <button class="tab-btn" data-tab="opportunities">Opportunities</button>
+        </div>
     </header>
 
-    <section class="dashboard-grid">
-        <div class="dashboard-section">
-            <h2>Membership Overview</h2>
-            <div class="cards-grid">
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Total Members</h3>
-                            <p class="dashboard-card-value" id="total-members">@Model.MemberCountSummary.TotalMembers</p>
-                        </div>
-                    </div>
+    <section class="tab-content active" id="overview">
+        <div class="metrics-grid">
+            <!-- Total Members Card -->
+            <div class="metric-card accent-blue">
+                <div class="metric-icon">
+                    <i class="fas fa-users"></i>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-user-check"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Active Members</h3>
-                            <p class="dashboard-card-value" id="active-members">@Model.MemberCountSummary.ActiveMembers</p>
-                        </div>
-                    </div>
+                <div class="metric-info">
+                    <h3>Total Members</h3>
+                    <span>@Model.MemberCountSummary.TotalMembers</span>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-user-times"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Inactive Members</h3>
-                            <p class="dashboard-card-value" id="inactive-members">@Model.MemberCountSummary.InactiveMembers</p>
-                        </div>
-                    </div>
+            </div>
+
+            <!-- Active Members Card -->
+            <div class="metric-card accent-green">
+                <div class="metric-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Active Members</h3>
+                    <span>@Model.MemberCountSummary.ActiveMembers</span>
+                </div>
+            </div>
+
+            <!-- Inactive Members Card -->
+            <div class="metric-card accent-red">
+                <div class="metric-icon">
+                    <i class="fas fa-user-times"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Inactive Members</h3>
+                    <span>@Model.MemberCountSummary.InactiveMembers</span>
                 </div>
             </div>
         </div>
 
-        <div class="dashboard-section">
-            <h2>Members by Membership Type</h2>
-            <div class="cards-grid">
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Associate</h3>
-                            <p class="dashboard-card-value" id="asso">@Model.MembershipTypeSummary.AssociateCount</p>
-                        </div>
-                    </div>
+        <div class="chart-container">
+            <canvas id="membersPerMonthChart"></canvas>
+        </div>
+    </section>
+
+    <section class="tab-content" id="membership">
+        <div class="metrics-grid">
+            <!-- Membership Type Cards -->
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-user-tie"></i>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Chamber Associate</h3>
-                            <p class="dashboard-card-value" id="chamAsso">@Model.MembershipTypeSummary.ChamberAssociateCount</p>
-                        </div>
-                    </div>
+                <div class="metric-info">
+                    <h3>Associate</h3>
+                    <span>@Model.MembershipTypeSummary.AssociateCount</span>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-industry"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Non-Local Industrial</h3>
-                            <p class="dashboard-card-value" id="locIndus">@Model.MembershipTypeSummary.NonLocalIndustrialCount</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-building"></i>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-landmark"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Government Association</h3>
-                            <p class="dashboard-card-value" id="govAsso">@Model.MembershipTypeSummary.GovernmentAssociationCount</p>
-                        </div>
-                    </div>
+                <div class="metric-info">
+                    <h3>Chamber Associate</h3>
+                    <span>@Model.MembershipTypeSummary.ChamberAssociateCount</span>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Local</h3>
-                            <p class="dashboard-card-value" id="loc">@Model.MembershipTypeSummary.LocalCount</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-industry"></i>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-ellipsis-h"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Others</h3>
-                            <p class="dashboard-card-value" id="othr">@Model.MembershipTypeSummary.OtherCount</p>
-                        </div>
-                    </div>
+                <div class="metric-info">
+                    <h3>Non-Local Industrial</h3>
+                    <span>@Model.MembershipTypeSummary.NonLocalIndustrialCount</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Government Association</h3>
+                    <span>@Model.MembershipTypeSummary.GovernmentAssociationCount</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Local</h3>
+                    <span>@Model.MembershipTypeSummary.LocalCount</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Others</h3>
+                    <span>@Model.MembershipTypeSummary.OtherCount</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="dashboard-section">
-            <h2>Members by Opportunity Status</h2>
-            <div class="cards-grid">
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-clipboard-check"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Qualification</h3>
-                            <p class="dashboard-card-value" id="qual">@Model.OpportunityCountSummary.QualificationCount</p>
-                        </div>
-                    </div>
+    <section class="tab-content" id="opportunities">
+        <div class="metrics-grid">
+            <!-- Opportunity Status Cards -->
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-clipboard-check"></i>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-handshake"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Negotiating</h3>
-                            <p class="dashboard-card-value" id="nego">@Model.OpportunityCountSummary.NegotiationCount</p>
-                        </div>
-                    </div>
+                <div class="metric-info">
+                    <h3>Qualification</h3>
+                    <span>@Model.OpportunityCountSummary.QualificationCount</span>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Closed - New Members</h3>
-                            <p class="dashboard-card-value" id="clnew">@Model.OpportunityCountSummary.ClosedNewMembersCount</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-handshake"></i>
                 </div>
-                <div class="dashboard-card">
-                    <div class="dashboard-card-header">
-                        <div class="dashboard-avatar">
-                            <i class="fas fa-user-slash"></i>
-                        </div>
-                        <div class="dashboard-info">
-                            <h3 class="dashboard-card-title">Closed - Not Interested</h3>
-                            <p class="dashboard-card-value" id="clnot">@Model.OpportunityCountSummary.ClosedNotInterestedCount</p>
-                        </div>
-                    </div>
+                <div class="metric-info">
+                    <h3>Negotiating</h3>
+                    <span>@Model.OpportunityCountSummary.NegotiationCount</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Closed - New Members</h3>
+                    <span>@Model.OpportunityCountSummary.ClosedNewMembersCount</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                <div class="metric-info">
+                    <h3>Closed - Not Interested</h3>
+                    <span>@Model.OpportunityCountSummary.ClosedNotInterestedCount</span>
                 </div>
             </div>
         </div>
     </section>
 </div>
-
