@@ -78,18 +78,7 @@
                 <div class="member-card-header">
                     <div class="member-info">
                         <h2 class="member-name">@item.Name</h2>
-                        <p class="member-type">
-                            @if (item.IndustryMembers.Any())
-                            {
-                                @string.Join(", ", item.IndustryMembers
-                                         .Where(im => im.Member != null)
-                                         .Select(im => im.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span>No Member associated</span>
-                            }
-                        </p>
+                       
                     </div>
                 </div>
                 <div class="member-card-content">
