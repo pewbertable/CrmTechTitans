@@ -1,10 +1,12 @@
-﻿/* dashboard.css */
+﻿/* Updated Dashboard Styling */
 :root {
-    --primary: #2c3e50;
-    --secondary: #3498db;
-    --accent: #e74c3c;
+    --primary: #2c3e50; /* Dark theme primary color */
+    --secondary: #444; /* Neutral grey for buttons */
+    --accent: #e74c3c; /* Red for accents */
+    --highlight: #e74c3c; /* Red for hover effects */
     --light-bg: #f9f9f9;
-    --border-radius: 12px;
+    --border-radius: 10px;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .main-content {
@@ -13,73 +15,106 @@
     padding: 0 1rem;
 }
 
+/* Header Styling */
 .page-header {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     margin-bottom: 2rem;
 }
 
     .page-header h1 {
         color: var(--primary);
         font-weight: 600;
-        margin-bottom: 1.5rem;
+        margin: 0;
+        font-size: 1.8rem;
     }
 
+/* Dashboard Tabs */
 .dashboard-tabs {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin-bottom: 2rem;
+    background: var(--light-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
 }
 
 .tab-btn {
-    padding: 0.8rem 2rem;
+    padding: 10px 20px;
     border: none;
     border-radius: var(--border-radius);
     background: #f0f0f0;
-    color: #666;
+    color: var(--primary);
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease-in-out;
 }
 
+    .tab-btn:hover {
+        background: var(--highlight);
+        color: white;
+    }
+
     .tab-btn.active {
-        background: var(--secondary);
+        background: #e44444;
         color: white;
         transform: translateY(-2px);
     }
 
+/* Tab Content */
 .tab-content {
     display: none;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
     .tab-content.active {
         display: block;
     }
 
+/* Metrics Grid */
 .metrics-grid {
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+/* Metric Cards */
 .metric-card {
     background: white;
     padding: 1.5rem;
     border-radius: var(--border-radius);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease-in-out;
     display: flex;
     align-items: center;
     gap: 1rem;
+    border-left: 5px solid var(--secondary);
 }
 
     .metric-card:hover {
-        transform: translateY(-3px);
+        transform: translateY(-5px);
+        border-left-color: var(--highlight); /* Red on hover */
     }
 
+/* Different Accent Colors */
+.accent-blue {
+    border-left: 5px solid #3498db;
+}
+
+.accent-red {
+    border-left: 5px solid #e44444;
+}
+
+/* Metric Icon */
 .metric-icon {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -88,14 +123,15 @@
 }
 
     .metric-icon i {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
         color: var(--primary);
     }
 
+/* Metric Info */
 .metric-info h3 {
     margin: 0;
     font-size: 1rem;
-    color: #666;
+    color: var(--primary);
     font-weight: 500;
 }
 
@@ -105,24 +141,18 @@
     color: var(--primary);
 }
 
-.accent-blue {
-    border-left: 4px solid #3498db;
-}
-
-.accent-green {
-    border-left: 4px solid #2ecc71;
-}
-
-.accent-red {
-    border-left: 4px solid #e74c3c;
-}
-
+/* Chart Container */
 .chart-container {
     position: relative;
     height: 400px;
     margin-top: 2rem;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    box-shadow: var(--box-shadow);
 }
 
+/* Fade-in animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -135,12 +165,18 @@
     }
 }
 
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .dashboard-tabs {
         flex-direction: column;
+        text-align: center;
     }
 
     .tab-btn {
         width: 100%;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 }

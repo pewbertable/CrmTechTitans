@@ -9,15 +9,25 @@
     <div class="main-content">
         <header class="page-header">
             <h1>All Contacts</h1>
-            <p>Browse the full list of contacts in the Niagara Industry Association. Use the "Fiter by Name or Email" to filter contact to the directory.</p>
         </header>
 
-        <!-- Filter Inputs -->
+        <!-- Filter Section -->
         <div class="filter-container">
-            <input type="text" id="nameFilter" placeholder="Filter by Name..." class="form-control">
-            <input type="text" id="emailFilter" placeholder="Filter by Email..." class="form-control">
+            <div class="row">
+                <!-- Filter by Name -->
+                <div class="col-md-4">
+                    <label for="nameFilter" class="filter-label">Search by Name:</label>
+                    <input type="text" id="nameFilter" class="form-control search-input" placeholder="Enter contact name">
+                </div>
+
+                <!-- Filter by Email -->
+                <div class="col-md-4">
+                    <label for="emailFilter" class="filter-label">Search by Email:</label>
+                    <input type="text" id="emailFilter" class="form-control search-input" placeholder="Enter email">
+                </div>
+
+            </div>
         </div>
-        <p></p>
 
         <section class="members-table-container">
             <table class="table custom-table" id="contactsTable">
@@ -38,8 +48,8 @@
                             <td>
                                 @(item.MemberContacts.Any()
                                     ? string.Join(", ", item.MemberContacts
-                                        .Where(mc => mc.Member != null)
-                                        .Select(mc => mc.Member.MemberName))
+                                    .Where(mc => mc.Member != null)
+                                    .Select(mc => mc.Member.MemberName))
                                     : "No Company Associated")
                             </td>
                             <td>@item.Email</td>
@@ -67,18 +77,20 @@
                     var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
                     var emailText = $(this).find('td:nth-child(3)').text().toLowerCase();
 
-                    var nameMatch = nameText.includes(nameFilter);
-                    var emailMatch = emailText.includes(emailFilter);
+                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                    var emailMatch = emailFilter === "" || emailText.includes(emailFilter);
 
-                    if (nameMatch && emailMatch) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
+                    $(this).toggle(nameMatch && emailMatch);
                 });
             }
 
             $('#nameFilter, #emailFilter').on('input', filterTable);
+
+            $('#resetFilters').on('click', function () {
+                $('#nameFilter').val('');
+                $('#emailFilter').val('');
+                filterTable();
+            });
         });
     </script>
 }

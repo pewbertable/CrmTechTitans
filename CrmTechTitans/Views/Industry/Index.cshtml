@@ -1,4 +1,4 @@
-@model IEnumerable<CrmTechTitans.Models.Industry>
+﻿@model IEnumerable<CrmTechTitans.Models.Industry>
 
 @{
     ViewData["Title"] = "All Industries";
@@ -10,27 +10,25 @@
     <div class="main-content">
         <header class="page-header">
             <h1>All Industries</h1>
-            <p>Browse the list of industries associated with the Niagara Industry Association. Use the filters to narrow down results.</p>
         </header>
 
+        <!-- Filter Section -->
         <div class="filter-container">
             <div class="row">
                 <!-- Search by Industry Name -->
                 <div class="col-md-4">
-                    <label for="SearchString"></label>
-                    <input type="text" id="SearchString" class="form-control" placeholder="Enter industry name">
+                    <label for="SearchString" class="filter-label">Search Industry Name:</label>
+                    <input type="text" id="SearchString" class="form-control search-input" placeholder="Enter industry name">
                 </div>
                 <p></p>
-
                 <!-- Filter by NAICS Code -->
                 <div class="col-md-4">
-                    <label for="NAICSCode"></label>
+                    <label for="NAICSCode" class="filter-label">Filter by NAICS Code:</label>
                     @Html.DropDownList("NAICSCode",
                              ViewBag.NAICSCodeList as SelectList,
                              "-- Select NAICS Code --",
                              new { @class = "form-control" })
                 </div>
-
                
             </div>
         </div>
@@ -85,11 +83,7 @@
                     var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
                     var naicsMatch = naicsFilter === "" || naicsText === naicsFilter;
 
-                    if (nameMatch && naicsMatch) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
+                    $(this).toggle(nameMatch && naicsMatch);
                 });
             }
 

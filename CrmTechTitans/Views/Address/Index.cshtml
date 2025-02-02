@@ -1,4 +1,4 @@
-@model IEnumerable<CrmTechTitans.Models.Address>
+﻿@model IEnumerable<CrmTechTitans.Models.Address>
 
 @{
     ViewData["Title"] = "All Addresses";
@@ -8,17 +8,25 @@
 <div class="crm-container">
     <!-- Main Content -->
     <div class="main-content">
-
         <header class="page-header">
             <h1>All Addresses</h1>
-                        <p>Browse the full list of addresses in the Niagara Industry Association. Use the "Fiter by Municipality or Province" to filter address to the directory.</p>
-
         </header>
 
-        <!-- Filter Inputs -->
+        <!-- Filter Section -->
         <div class="filter-container">
-            <input type="text" id="municipalityFilter" placeholder="Filter by Municipality..." class="form-control">
-            <input type="text" id="provinceFilter" placeholder="Filter by Province..." class="form-control">
+            <div class="row">
+                <!-- Filter by Municipality -->
+                <div class="col-md-4">
+                    <label for="municipalityFilter" class="filter-label">Search by Municipality:</label>
+                    <input type="text" id="municipalityFilter" class="form-control search-input" placeholder="Enter municipality name">
+                </div>
+
+                <!-- Filter by Province -->
+                <div class="col-md-4">
+                    <label for="provinceFilter" class="filter-label">Search by Province:</label>
+                    <input type="text" id="provinceFilter" class="form-control search-input" placeholder="Enter province name">
+                </div>
+            </div>
         </div>
 
         <section class="members-table-container">
@@ -28,7 +36,7 @@
                         <th>Members</th>
                         <th>Municipality</th>
                         <th>Province</th>
-                        <th class="text-center"></th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,12 +53,8 @@
                             <td>@item.City</td>
                             <td>@item.Province</td>
                             <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
-                                    Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
-                                    Details
-                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
                             </td>
                         </tr>
                     }
@@ -72,19 +76,22 @@
                     var municipalityText = $(this).find('td:nth-child(2)').text().toLowerCase();
                     var provinceText = $(this).find('td:nth-child(3)').text().toLowerCase();
 
-                    var municipalityMatch = municipalityText.includes(municipalityFilter);
-                    var provinceMatch = provinceText.includes(provinceFilter);
+                    var municipalityMatch = municipalityFilter === "" || municipalityText.includes(municipalityFilter);
+                    var provinceMatch = provinceFilter === "" || provinceText.includes(provinceFilter);
 
-                    if (municipalityMatch && provinceMatch) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
+                    $(this).toggle(municipalityMatch && provinceMatch);
                 });
             }
 
             // Attach filter function to input events
             $('#municipalityFilter, #provinceFilter').on('input', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function () {
+                $('#municipalityFilter').val('');
+                $('#provinceFilter').val('');
+                filterTable();
+            });
         });
     </script>
 }

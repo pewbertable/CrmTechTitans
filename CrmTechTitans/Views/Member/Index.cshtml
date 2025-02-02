@@ -5,73 +5,63 @@
 }
 
 <div class="main-content">
-    <div class="center-container">
-        <h1>All Members</h1>
-        <p>
-            Browse the list of industries associated with the Niagara Industry Association.
-            Use the "Create New Industry" button to add a new industry to the directory.
-        </p>
-
-        <header class="page-header">
-            <div class="view-actions">
-                <a asp-action="Create" class="btn btn-danger">
-                    <i class="fas fa-user-plus"></i> Create New Member
-                </a>
-                <div class="view-toggle">
-                    <button class="btn btn-secondary active" data-view="cards">
-                        <i class="fas fa-th-large"></i> Cards
-                    </button>
-                    <button class="btn btn-secondary" data-view="table">
-                        <i class="fas fa-table"></i> Table
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Filter and Search Form -->
-        <div class="filter-container bg-light p-3 rounded mb-4">
-            <div class="row">
-                <!-- Search by Member Name -->
-                <div class="col-md-6 mb-3">
-                    <div class="form-group">
-                        <label for="searchString" class="form-label">Search by Member Name</label>
-                        <input type="text" id="searchString" class="form-control" placeholder="Enter member name" />
-                    </div>
-                </div>
-                <!-- Filter by Member Status -->
-                <div class="col-md-6 mb-3">
-                    <div class="form-group">
-                        <label for="statusFilter" class="form-label">Filter by Member Status</label>
-                        <select id="statusFilter" class="form-control">
-                            <option value="">All Statuses</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <!-- Page Title -->
+    <header class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h1>All Members</h1>
         </div>
 
-        <!-- Sorting -->
-        <div class="btn-group mb-4" role="group">
-            <button id="sortByName" class="btn btn-secondary">
-                Sort by Member Name
-            </button>
-            <button id="sortByStatus" class="btn btn-secondary">
-                Sort by Status
-            </button>
+        <div class="d-flex align-items-center gap-3">
+            <a asp-action="Create" class="btn btn-danger">
+                <i class="fas fa-user-plus"></i> Create New Member
+            </a>
+
+            <!-- View Toggle -->
+            <div class="view-toggle d-flex align-items-center">
+                <button class="btn btn-secondary active me-2" data-view="cards">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="btn btn-secondary" data-view="table">
+                    <i class="fas fa-table"></i>
+                </button>
+            </div>
         </div>
+    </header>
+
+
+    <section class="filter-container bg-light p-3 rounded mb-4">
+        <div class="row">
+            <!-- Search by Member Name -->
+            <div class="col-md-6 mb-3">
+                <label for="searchString" class="form-label">Search by Member Name</label>
+                <input type="text" id="searchString" class="form-control" placeholder="Enter member name">
+            </div>
+
+            <!-- Filter by Member Status -->
+            <div class="col-md-6 mb-3">
+                <label for="statusFilter" class="form-label">Filter by Member Status</label>
+                <select id="statusFilter" class="form-control">
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sorting Buttons -->
+    <div class="btn-group mb-4">
+        <button id="sortByName" class="btn btn-secondary">Sort by Name</button>
+        <button id="sortByStatus" class="btn btn-secondary">Sort by Status</button>
     </div>
-
-    <p></p>
 
     <!-- Card View -->
     <section class="members-grid" id="cards-view">
         @foreach (var item in Model)
         {
-            <div class="member-card" data-name="@item.MemberName" data-status="@item.MembershipStatus">
+            <div class="member-card" data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
                 <div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
-                    @item.MembershipStatus.ToString()
+                    @item.MembershipStatus
                 </div>
                 <div class="card-header">
                     <div class="company-logo">
@@ -88,15 +78,15 @@
                         <div class="data-item">
                             <i class="fas fa-users"></i>
                             <div>
-                                <div class="data-label">Company Size</div>
-                                <div class="data-value">@item.CompanySize employees</div>
+                                <span class="data-label">Company Size</span>
+                                <span class="data-value">@item.CompanySize employees</span>
                             </div>
                         </div>
                         <div class="data-item">
                             <i class="fas fa-calendar-alt"></i>
                             <div>
-                                <div class="data-label">Member Since</div>
-                                <div class="data-value">@item.MemberSince.ToString("MMM yyyy")</div>
+                                <span class="data-label">Member Since</span>
+                                <span class="data-value">@item.MemberSince.ToString("MMM yyyy")</span>
                             </div>
                         </div>
                     </div>
@@ -105,12 +95,10 @@
                 <div class="card-footer">
                     <div class="card-actions">
                         <a href="#" class="btn btn-link text-danger">
-                            <i class="fas fa-archive"></i>
-                            <span class="action-label">Archive</span>
+                            <i class="fas fa-archive"></i> Archive
                         </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn-secondary btn-link text-primary">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="action-label">Details</span>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-link text-primary">
+                            <i class="fas fa-info-circle"></i> Details
                         </a>
                     </div>
                 </div>
@@ -134,13 +122,13 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr data-name="@item.MemberName" data-status="@item.MembershipStatus">
-                        <td data-label="Name">@item.MemberName</td>
-                        <td data-label="Type">@item.MembershipType</td>
-                        <td data-label="Company Size">@item.CompanySize</td>
-                        <td data-label="Member Since">@item.MemberSince.ToShortDateString()</td>
-                        <td data-label="Status"><span class="status-tag">@item.MembershipStatus</span></td>
-                        <td data-label="Actions" class="text-center action-buttons">
+                    <tr data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
+                        <td>@item.MemberName</td>
+                        <td>@item.MembershipType</td>
+                        <td>@item.CompanySize</td>
+                        <td>@item.MemberSince.ToShortDateString()</td>
+                        <td><span class="status-tag">@item.MembershipStatus</span></td>
+                        <td class="text-center action-buttons">
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
                         </td>
@@ -153,105 +141,36 @@
 
 @section Scripts {
     <script>
-        // Initialize view immediately after DOM loads
         document.addEventListener('DOMContentLoaded', () => {
             const preferredView = localStorage.getItem('preferredView') || 'cards';
-            const cardsView = document.getElementById('cards-view');
-            const tableView = document.getElementById('table-view');
+            document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
+            document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';
 
-            // Set initial display states
-            cardsView.style.display = preferredView === 'cards' ? 'grid' : 'none';
-            tableView.style.display = preferredView === 'table' ? 'block' : 'none';
-
-            // Update button states
             document.querySelectorAll('.view-toggle button').forEach(button => {
                 button.classList.toggle('active', button.dataset.view === preferredView);
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+                    button.classList.add('active');
+                    localStorage.setItem('preferredView', button.dataset.view);
+                    document.getElementById('cards-view').style.display = button.dataset.view === 'cards' ? 'grid' : 'none';
+                    document.getElementById('table-view').style.display = button.dataset.view === 'table' ? 'block' : 'none';
+                });
             });
 
-            // Attach event listeners for filtering and sorting
-            attachFilterAndSortListeners();
+            function filterAndSort() {
+                const searchValue = document.getElementById('searchString').value.toLowerCase();
+                const statusValue = document.getElementById('statusFilter').value;
+
+                document.querySelectorAll('.member-card, tbody tr').forEach(item => {
+                    const name = item.getAttribute('data-name').toLowerCase();
+                    const status = item.getAttribute('data-status');
+
+                    item.style.display = (name.includes(searchValue) && (statusValue === '' || status === statusValue)) ? '' : 'none';
+                });
+            }
+
+            document.getElementById('searchString').addEventListener('input', filterAndSort);
+            document.getElementById('statusFilter').addEventListener('change', filterAndSort);
         });
-
-        // Toggle between card and table views
-        document.querySelectorAll('.view-toggle button').forEach(button => {
-            button.addEventListener('click', () => {
-                // Toggle active class
-                document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
-                button.classList.add('active');
-
-                // Toggle views
-                const view = button.dataset.view;
-                const cardsView = document.getElementById('cards-view');
-                const tableView = document.getElementById('table-view');
-
-                cardsView.style.display = view === 'cards' ? 'grid' : 'none';
-                tableView.style.display = view === 'table' ? 'block' : 'none';
-
-                // Save preference
-                localStorage.setItem('preferredView', view);
-            });
-        });
-
-        // Function to attach filtering and sorting event listeners
-        function attachFilterAndSortListeners() {
-            const searchString = document.getElementById('searchString');
-            const statusFilter = document.getElementById('statusFilter');
-            const sortByName = document.getElementById('sortByName');
-            const sortByStatus = document.getElementById('sortByStatus');
-
-            // Filter and sort when inputs change
-            searchString.addEventListener('input', filterAndSort);
-            statusFilter.addEventListener('change', filterAndSort);
-            sortByName.addEventListener('click', () => sortBy('name'));
-            sortByStatus.addEventListener('click', () => sortBy('status'));
-        }
-
-        // Function to filter and sort members
-        function filterAndSort() {
-            const searchValue = document.getElementById('searchString').value.toLowerCase();
-            const statusValue = document.getElementById('statusFilter').value;
-
-            // Filter members
-            document.querySelectorAll('.member-card, tbody tr').forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                const status = item.getAttribute('data-status');
-
-                const nameMatch = name.includes(searchValue);
-                const statusMatch = statusValue === '' || status === statusValue;
-
-                if (nameMatch && statusMatch) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        // Function to sort members
-        function sortBy(field) {
-            const cardsView = document.getElementById('cards-view');
-            const tableView = document.getElementById('table-view');
-
-            const items = Array.from(cardsView.querySelectorAll('.member-card'))
-                .concat(Array.from(tableView.querySelectorAll('tbody tr')));
-
-            items.sort((a, b) => {
-                const aValue = a.getAttribute(`data-${field}`).toLowerCase();
-                const bValue = b.getAttribute(`data-${field}`).toLowerCase();
-
-                if (aValue < bValue) return -1;
-                if (aValue > bValue) return 1;
-                return 0;
-            });
-
-            // Re-append sorted items
-            items.forEach(item => {
-                if (item.classList.contains('member-card')) {
-                    cardsView.appendChild(item);
-                } else {
-                    tableView.querySelector('tbody').appendChild(item);
-                }
-            });
-        }
     </script>
 }

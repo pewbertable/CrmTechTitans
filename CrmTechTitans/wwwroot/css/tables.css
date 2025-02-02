@@ -172,10 +172,7 @@
     }
 
 /* === Details Button === */
-.btn-details {
-    background-color: #4dabf7 !important;
-    color: white !important;
-}
+
 
     .btn-details:hover {
         background-color: #339af0 !important;
@@ -220,7 +217,7 @@
     gap: 15px;
     margin-bottom: 20px;
 }
-
+F
     .filter-container .form-control {
         width: 250px;
         padding: 10px;
@@ -256,73 +253,96 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 8px; /* Balanced spacing */
 }
-
-    .action-buttons .btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 14px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: all 0.3s ease-in-out;
-        min-width: 90px;
-    }
 
 /* General Button Styling */
 .btn {
-    font-size: 14px; /* Smaller size */
-    padding: 6px 12px; /* Adjusted padding */
-    border-radius: 4px; /* Softer edges */
-    border: 1px solid #424242; /* Grey border */
-    background-color: #424242; /* Grey background */
-    color: #fff; /* White text */
-    transition: all 0.3s ease-in-out;
-}
-
-    .btn:hover {
-        background-color: #5a6268; /* Darker grey on hover */
-        border-color: #545b62;
-    }
-
-/*/* === Minimal, Professional Edit & Details Buttons === */
-.btn-edit, .btn-details {
-    background-color: #2e2e2e; /* Deep dark grey for subtlety */
-    color: #d6d6d6; /* Soft neutral text */
-    border: 1px solid #3c3c3c; /* Minimal contrast */
-    font-size: 0.75rem; /* Smaller, more refined size */
-    padding: 4px 8px; /* Compact for a sleek look */
-    border-radius: 3px; /* Slight rounding for clean edges */
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 70px;
-    transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+    gap: 6px; /* Space between icon and text */
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px; /* Softer edges */
+    border: 1px solid #4a4a4a; /* Medium grey for subtle border */
+    background-color: #2e2e2e; /* Darker grey */
+    color: #f0f0f0; /* Soft light grey for readability */
     font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    min-width: 100px;
+}
+
+    .btn:hover {
+        background-color: #3c3c3c; /* Slightly lighter grey */
+        border-color: #555;
+    }
+
+/* Minimalist Edit & Details Buttons */
+.btn-edit, .btn-details {
+    background-color: #3a3a3a; /* Neutral medium grey */
+    color: #e0e0e0; /* Soft white */
+    border: 1px solid #505050;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
 }
 
     .btn-edit:hover, .btn-details:hover {
-        background-color: #3a3a3a; /* Slightly lighter hover effect */
-        border-color: #4a4a4a;
+        background-color: #4a4a4a;
+        border-color: #666;
     }
 
-    /* Remove Icons for Clean Look */
-    .btn-edit::before, .btn-details::before {
-        content: none;
+    /* Adding Icons for Better UX */
+    .btn-edit::before {
+        content: "\270E"; /* Pencil emoji or use FontAwesome: "\f044" */
+        font-family: "FontAwesome";
+        font-size: 14px;
+    }
+
+    .btn-details::before {
+        content: "\f05a"; /* Info-circle icon */
+        font-family: "FontAwesome";
+        font-size: 14px;
+    }
+
+/* Save, Delete & Other Buttons */
+.btn-save {
+    background-color: #3f723f; /* Muted green */
+    border-color: #366136;
+    color: #ffffff;
+}
+
+    .btn-save:hover {
+        background-color: #4e8b4e;
+    }
+
+.btn-delete {
+    background-color: #823636; /* Softer red */
+    border-color: #6a2929;
+    color: #ffffff;
+}
+
+    .btn-delete:hover {
+        background-color: #9b4040;
     }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .btn-edit, .btn-details {
-        font-size: 0.7rem;
-        padding: 3px 6px;
-        min-width: 65px;
+    .btn, .btn-edit, .btn-details {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+        min-width: 75px;
     }
 }
+
+
 
 input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio" i]) {
     overflow-clip-margin: 0px !important;
@@ -423,3 +443,648 @@ input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio"
 .btn-group {
     margin-top: 10px; /* Reduced margin */
 }
+
+/* === Table Styling: Compact & Clean === */
+.clean-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+    .clean-table thead {
+        background-color: #2e2e2e; /* Darker for a more premium look */
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .clean-table th {
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.8rem; /* Reduced for a more compact look */
+        letter-spacing: 0.5px;
+    }
+
+    .clean-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        color: #333;
+    }
+
+    .clean-table tbody tr:hover {
+        background-color: #f4f4f4; /* Subtle gray hover */
+    }
+
+/* === Buttons: Removed Blue, More Professional Gray === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    min-width: 80px;
+    transition: all 0.3s ease-in-out;
+    background-color: #3a3a3a; /* Neutral dark gray */
+    color: white;
+    border: none;
+}
+
+    .btn:hover {
+        background-color: #2b2b2b;
+    }
+
+/* === Edit & Details Buttons: Darker & More Neutral === */
+.btn-edit, .btn-details {
+    background-color: #424242; /* Neutral dark gray */
+    color: #e0e0e0;
+}
+
+    .btn-edit:hover, .btn-details:hover {
+        background-color: #525252;
+    }
+
+/* === Header Styling: Smaller & More Professional === */
+.page-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+    .page-header h1 {
+        font-size: 1.5rem; /* Reduced size */
+        font-weight: 700;
+        color: #2e2e2e;
+        margin-bottom: 5px;
+    }
+
+    .page-header p {
+        font-size: 0.9rem; /* Smaller text */
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+/* === Filter Box: Compact & Aligned === */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: auto;
+    max-width: 500px;
+}
+
+    .filter-container .form-control {
+        width: 220px;
+        padding: 8px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        border: 1px solid #ccc;
+    }
+
+        .filter-container .form-control:focus {
+            border-color: #3a3a3a;
+            box-shadow: 0 0 5px rgba(44, 62, 80, 0.2);
+            outline: none;
+        }
+
+/* === Sidebar: More Professional & Compact === */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 13rem;
+    height: 100%;
+    background-color: #2e2e2e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar a {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+/* === Mobile Optimization === */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+        .filter-container .form-control {
+            width: 100%;
+            max-width: 320px;
+        }
+
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+/* === Page Header Styling === */
+.page-header {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f7f7f7; /* Light grey background for subtle contrast */
+    border-radius: 8px; /* Soft rounded corners */
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+}
+
+    /* Heading Styling */
+    .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    /* Description Styling */
+    .page-header p {
+        font-size: 16px;
+        color: #555;
+        max-width: 750px;
+        margin: 0 auto 10px auto;
+        line-height: 1.6;
+    }
+
+/* Search and Filter Section */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.search-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 350px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    transition: border-color 0.3s ease-in-out;
+}
+
+    .search-input:focus {
+        border-color: #666;
+        outline: none;
+    }
+
+/* Table Styling */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+    .custom-table thead {
+        background-color: #444;
+        color: #fff;
+        text-align: left;
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f3f3f3;
+    }
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+    .btn-edit:hover {
+        background-color: #555;
+    }
+
+.btn-details {
+    background-color: #606060;
+    color: #fff;
+}
+
+    .btn-details:hover {
+        background-color: #787878;
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 20px;
+    }
+
+    .page-header p {
+        font-size: 14px;
+    }
+
+    .search-input {
+        width: 90%;
+    }
+}
+/* === Page Header Styling === */
+.page-header {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f7f7f7; /* Light grey background */
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+    /* Heading Styling */
+    .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    /* Description Styling */
+    .page-header p {
+        font-size: 16px;
+        color: #555;
+        max-width: 750px;
+        margin: 0 auto 10px auto;
+        line-height: 1.6;
+    }
+
+/* === Filter Section Styling === */
+.filter-container {
+    background: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.search-input, .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+    .search-input:focus, .form-control:focus {
+        border-color: #666;
+        outline: none;
+    }
+
+/* Reset Button */
+.btn-reset {
+    background-color: #666;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+    .btn-reset:hover {
+        background-color: #444;
+    }
+
+/* === Table Styling === */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+    .custom-table thead {
+        background-color: #444;
+        color: #fff;
+        text-align: left;
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f3f3f3;
+    }
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+    .btn-edit:hover {
+        background-color: #555;
+    }
+
+.btn-details {
+    background-color: #606060;
+    color: #fff;
+}
+
+    .btn-details:hover {
+        background-color: #787878;
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 20px;
+    }
+
+    .page-header p {
+        font-size: 14px;
+    }
+
+    .search-input {
+        width: 90%;
+    }
+
+    .btn-reset {
+        width: 100%;
+    }
+}
+
+/* === Page Header Styling === */
+.page-header {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f7f7f7; /* Light grey background */
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+    /* Heading Styling */
+    .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    /* Description Styling */
+    .page-header p {
+        font-size: 16px;
+        color: #555;
+        max-width: 750px;
+        margin: 0 auto 10px auto;
+        line-height: 1.6;
+    }
+
+/* === Filter Section Styling === */
+.filter-container {
+    background: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+    .search-input:focus {
+        border-color: #666;
+        outline: none;
+    }
+
+/* Reset Button */
+.btn-reset {
+    background-color: #666;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+    .btn-reset:hover {
+        background-color: #444;
+    }
+
+/* === Table Styling === */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+    .custom-table thead {
+        background-color: #444;
+        color: #fff;
+        text-align: left;
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f3f3f3;
+    }
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+    .btn-edit:hover {
+        background-color: #555;
+    }
+
+.btn-details {
+    background-color: #606060;
+    color: #fff;
+}
+
+    .btn-details:hover {
+        background-color: #787878;
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 20px;
+    }
+
+    .page-header p {
+        font-size: 14px;
+    }
+
+    .search-input {
+        width: 90%;
+    }
+
+    .btn-reset {
+        width: 100%;
+    }
+}
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+    .page-header .btn-danger {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .page-header .view-toggle {
+        display: flex;
+        gap: 8px;
+    }
+
+        .page-header .view-toggle .btn {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .page-header .d-flex {
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header .view-toggle {
+            justify-content: center;
+        }
+}
+
