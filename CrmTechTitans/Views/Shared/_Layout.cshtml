@@ -7,62 +7,51 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/tables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cards.css" asp-append-version="true" />
-    <link rel="stylesheet" href ="~/css/details.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    <p></p>
     <div class="main-container">
+        <!-- Sidebar -->
+        <p></p>
         <div class="sidebar">
-           
+            <p></p>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
-               asp-area=""
-               asp-controller="Home"
-               asp-action="Index">
+               asp-area="" asp-controller="Home" asp-action="Index">
                 Dashboard
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Member" ? "active" : "")"
-               asp-area=""
-               asp-controller="Member"
-               asp-action="Index">
+               asp-area="" asp-controller="Member" asp-action="Index">
                 Members
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
-               asp-area=""
-               asp-controller="Contact"
-               asp-action="Index">
+               asp-area="" asp-controller="Contact" asp-action="Index">
                 Contacts
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
-               asp-area=""
-               asp-controller="Address"
-               asp-action="Index">
+               asp-area="" asp-controller="Address" asp-action="Index">
                 Municipalities
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
-               asp-area=""
-               asp-controller="Opportunity"
-               asp-action="Index">
+               asp-area="" asp-controller="Opportunity" asp-action="Index">
                 Opportunities
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
-               asp-area=""
-               asp-controller="Interaction"
-               asp-action="Index">
+               asp-area="" asp-controller="Interaction" asp-action="Index">
                 Interactions
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
-               asp-area=""
-               asp-controller="Industry"
-               asp-action="Index">
+               asp-area="" asp-controller="Industry" asp-action="Index">
                 Industries
             </a>
-            <!--<partial name="_LoginPartial" />-->
-            
         </div>
 
+        <!-- Main Content -->
         <div class="content-container">
             <main role="main" class="pb-3">
                 @RenderBody()
@@ -70,16 +59,19 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - CrmTechTitans | <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <footer class="border-top footer text-muted"></footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        function toggleSidebar() {
+            let sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
-
