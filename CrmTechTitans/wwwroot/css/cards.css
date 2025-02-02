@@ -55,7 +55,7 @@
 .company-name {
     margin: 0;
     font-size: 1.2rem;
-    color: #2c3e50;
+    color: #424242;
     font-weight: 600;
 }
 
@@ -91,7 +91,7 @@
 
 .data-value {
     font-weight: 500;
-    color: #2c3e50;
+    color: #424242;
     margin-top: 2px;
 }
 
@@ -150,11 +150,10 @@
 }
 
     .btn-link.text-danger {
-        color: #dc3545 !important;
     }
 
     .btn-link.text-primary {
-        color: #2c3e50 !important;
+        color: #424242 !important;
     }
 
     .btn-link:hover {

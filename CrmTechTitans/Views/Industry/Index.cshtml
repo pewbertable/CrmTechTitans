@@ -5,100 +5,104 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="main-content">
-    <header class="page-header">
-        <h1>All Industries</h1>
-        <p>Browse the list of industries associated with the Niagara Industry Association. Use the "Create New Industry" button to add a new industry to the directory.</p>
-        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Industry</a>
-    </header>
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Industries</h1>
+            <p>Browse the list of industries associated with the Niagara Industry Association. Use the filters to narrow down results.</p>
+        </header>
 
-    <!-- Filter and Search Form -->
-    <form asp-action="Index" method="get">
-        <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-        <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-
-        <div class="form-horizontal">
-            <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-                Filter/Search @ViewData["numberFilters"]
-            </button>
-            <br />
-
-            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-                <div class="card card-body bg-light">
-                    <div class="row">
-                        <!-- Search by Industry Name -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Search by Industry Name:</label>
-                                @Html.TextBox("SearchString",
-                                         null,
-                                         new { @class = "form-control", placeholder = "Enter industry name" })
-                            </div>
-                        </div>
-
-                        <!-- Filter by NAICS Code -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Filter by NAICS Code:</label>
-                                @Html.DropDownList("NAICSCode",
-                                         ViewBag.NAICSCodeList as SelectList,
-                                         "-- Select NAICS Code --",
-                                         new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-md-2 align-self-end">
-                            <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-                            <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-                        </div>
-                    </div>
+        <div class="filter-container">
+            <div class="row">
+                <!-- Search by Industry Name -->
+                <div class="col-md-4">
+                    <label for="SearchString"></label>
+                    <input type="text" id="SearchString" class="form-control" placeholder="Enter industry name">
                 </div>
+                <p></p>
+
+                <!-- Filter by NAICS Code -->
+                <div class="col-md-4">
+                    <label for="NAICSCode"></label>
+                    @Html.DropDownList("NAICSCode",
+                             ViewBag.NAICSCodeList as SelectList,
+                             "-- Select NAICS Code --",
+                             new { @class = "form-control" })
+                </div>
+
+               
             </div>
         </div>
 
-        <!-- Sorting -->
-        <div class="btn-group mt-2" role="group">
-            <a href="@Url.Action("Index", new { sortField = "Name", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
-                Sort by Industry Name
-            </a>
-            <a href="@Url.Action("Index", new { sortField = "NAICS", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
-                Sort by NAICS Code
-            </a>
-        </div>
-    </form>
-
-
-    <section class="members-grid">
-        @foreach (var item in Model)
-        {
-            <div class="member-card">
-                <div class="member-card-header">
-                    <div class="member-info">
-                        <h2 class="member-name">@item.Name</h2>
-                       
-                    </div>
-                </div>
-                <div class="member-card-content">
-                    <div class="member-detail">
-                        <i class="fas fa-industry"></i>
-                        <span>NAICS Code: @item.NAICS</span>
-                    </div>
-                </div>
-                <div class="member-card-footer">
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-info-circle"></i> Details
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </a>
-                </div>
-            </div>
-        }
-    </section>
+        <!-- Table View for Industries -->
+        <section class="members-table-container">
+            <table class="table custom-table" id="industriesTable">
+                <thead>
+                    <tr>
+                        <th>Industry Name</th>
+                        <th>Associated Members</th>
+                        <th>NAICS Code</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+                                @(item.IndustryMembers.Any()
+                                    ? string.Join(", ", item.IndustryMembers
+                                    .Where(im => im.Member != null)
+                                    .Select(im => im.Member.MemberName))
+                                    : "No Member Associated")
+                            </td>
+                            <td>@item.NAICS</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function filterTable() {
+                var nameFilter = $('#SearchString').val().toLowerCase();
+                var naicsFilter = $('#NAICSCode').val();
+
+                $('#industriesTable tbody tr').each(function () {
+                    var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
+                    var naicsText = $(this).find('td:nth-child(3)').text();
+
+                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                    var naicsMatch = naicsFilter === "" || naicsText === naicsFilter;
+
+                    if (nameMatch && naicsMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Attach filter function to input events
+            $('#SearchString, #NAICSCode').on('input change', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function (e) {
+                e.preventDefault();
+                $('#SearchString').val('');
+                $('#NAICSCode').val('');
+                filterTable();
+            });
+        });
+    </script>
+}

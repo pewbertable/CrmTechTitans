@@ -5,78 +5,77 @@
 }
 
 <div class="main-content">
-    <header class="page-header">
-        <div class="view-actions">
-            <a asp-action="Create" class="btn btn-danger">
-                <i class="fas fa-user-plus"></i> Create New
-            </a>
-            <div class="view-toggle">
-                <button class="btn btn-secondary active" data-view="cards">
-                    <i class="fas fa-th-large"></i> Cards
-                </button>
-                <button class="btn btn-secondary" data-view="table">
-                    <i class="fas fa-table"></i> Table
-                </button>
+    <div class="center-container">
+        <h1>All Members</h1>
+        <p>
+            Browse the list of industries associated with the Niagara Industry Association.
+            Use the "Create New Industry" button to add a new industry to the directory.
+        </p>
+
+        <header class="page-header">
+            <div class="view-actions">
+                <a asp-action="Create" class="btn btn-danger">
+                    <i class="fas fa-user-plus"></i> Create New Member
+                </a>
+                <div class="view-toggle">
+                    <button class="btn btn-secondary active" data-view="cards">
+                        <i class="fas fa-th-large"></i> Cards
+                    </button>
+                    <button class="btn btn-secondary" data-view="table">
+                        <i class="fas fa-table"></i> Table
+                    </button>
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Filter and Search Form -->
-    <form asp-action="Index" method="get">
-        <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-        <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+        <!-- Filter and Search Form -->
+        <form asp-action="Index" method="get">
+            <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+            <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 
-        <div class="form-horizontal">
-            <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
-                    data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-                Filter/Search @ViewData["numberFilters"]
-            </button><br />
-
-            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-                <div class="card card-body bg-light">
-                    <div class="row">
-                        <!-- Search by Member Name -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Search by Member Name:</label>
-                                @Html.TextBox("SearchString",
-                                         null,
-                                         new { @class = "form-control", placeholder = "Search by Member Name" })
+            <div class="form-horizontal">
+                <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                    <div class="card card-body bg-light">
+                        <div class="row justify-content-center">
+                            <!-- Search by Member Name -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label"></label>
+                                    @Html.TextBox("SearchString",
+                                             null,
+                                             new { @class = "form-control", placeholder = "Search by Member Name" })
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Filter by Member Status -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Filter by Status:</label>
-                                <select name="statusFilter" class="form-control">
-                                    <option value="">All Statuses</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
+                            <p></p>
+                            <!-- Filter by Member Status -->
+                            <div class="col-md-4">
+                                <div class="naics-filter-container">
+                                    <label class="control-label"></label>
+                                    <select name="statusFilter" class="form-control">
+                                        <option value="">All Statuses</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2 align-self-end">
-                            <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-                            <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sorting -->
-        <div class="btn-group mt-2" role="group">
-            <a href="@Url.Action("Index", new { sortField = "MemberName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
-                Sort by Member Name
-            </a>
-            <a href="@Url.Action("Index", new { sortField = "MembershipStatus", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
-                Sort by Status
-            </a>
-        </div>
-    </form>
+            <!-- Sorting -->
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("Index", new { sortField = "MemberName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                    Sort by Member Name
+                </a>
+                <a href="@Url.Action("Index", new { sortField = "MembershipStatus", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                    Sort by Status
+                </a>
+            </div>
+        </form>
+    </div>
+
+<p></p>
 
     <!-- Card View -->
     <section class="members-grid" id="cards-view">
