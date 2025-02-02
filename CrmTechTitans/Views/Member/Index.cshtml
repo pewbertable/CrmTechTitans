@@ -29,36 +29,31 @@
         </header>
 
         <!-- Filter and Search Form -->
-        <div class="form-horizontal">
-            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-                <div class="card card-body bg-light">
-                    <div class="row justify-content-center">
-                        <!-- Search by Member Name -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label"></label>
-                                <input type="text" id="searchString" class="form-control" placeholder="Search by Member Name" />
-                            </div>
-                        </div>
-                        <p></p>
-                        <!-- Filter by Member Status -->
-                        <div class="col-md-4">
-                            <div class="naics-filter-container">
-                                <label class="control-label"></label>
-                                <select id="statusFilter" class="form-control">
-                                    <option value="">All Statuses</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
+        <div class="filter-container bg-light p-3 rounded mb-4">
+            <div class="row">
+                <!-- Search by Member Name -->
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="searchString" class="form-label">Search by Member Name</label>
+                        <input type="text" id="searchString" class="form-control" placeholder="Enter member name" />
+                    </div>
+                </div>
+                <!-- Filter by Member Status -->
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="statusFilter" class="form-label">Filter by Member Status</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Sorting -->
-        <div class="btn-group" role="group">
+        <div class="btn-group mb-4" role="group">
             <button id="sortByName" class="btn btn-secondary">
                 Sort by Member Name
             </button>
@@ -125,15 +120,15 @@
 
     <!-- Table View -->
     <section class="table-responsive" id="table-view" style="display: none;">
-        <table class="classic-table">
+        <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th class="hide-on-mobile">Type</th>
-                    <th class="hide-on-mobile">Company Size</th>
+                    <th>Type</th>
+                    <th>Company Size</th>
                     <th>Member Since</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -141,17 +136,13 @@
                 {
                     <tr data-name="@item.MemberName" data-status="@item.MembershipStatus">
                         <td data-label="Name">@item.MemberName</td>
-                        <td class="hide-on-mobile" data-label="Type">@item.MembershipType</td>
-                        <td class="hide-on-mobile" data-label="Company Size">@item.CompanySize</td>
+                        <td data-label="Type">@item.MembershipType</td>
+                        <td data-label="Company Size">@item.CompanySize</td>
                         <td data-label="Member Since">@item.MemberSince.ToShortDateString()</td>
                         <td data-label="Status"><span class="status-tag">@item.MembershipStatus</span></td>
-                        <td data-label="Actions" class="action-buttons">
-                            <a href="#" class="btn-sm btn-archive">
-                                <i class="fas fa-archive"></i>
-                            </a>
-                            <a asp-action="Details" asp-route-id="@item.ID" class="btn-sm btn-details">
-                                <i class="fas fa-info-circle"></i>
-                            </a>
+                        <td data-label="Actions" class="text-center action-buttons">
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
                         </td>
                     </tr>
                 }

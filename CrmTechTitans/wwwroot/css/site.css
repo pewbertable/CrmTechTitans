@@ -127,7 +127,6 @@ body {
     }
 }
 
-
 /* === Content Area: Takes More Space Now === */
 .content-container {
     flex-grow: 1;
@@ -155,7 +154,7 @@ body {
 }
 
     .custom-table th {
-        background: #424242; 
+        background: #424242;
         color: white;
         font-weight: 600;
         text-transform: uppercase;
@@ -167,7 +166,6 @@ body {
         padding: 10px;
         border-bottom: 1px solid #e0e0e0;
         font-size: 14px;
-
     }
 
     .custom-table tbody tr:hover {
@@ -175,7 +173,6 @@ body {
     }
 
 /* === General CRM Button Styling === */
-/* === General CRM Button Styling - Compact & Light Red === */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -260,7 +257,6 @@ body {
     }
 }
 
-
 /* === Footer: Fixed at Bottom === */
 footer {
     color: white;
@@ -301,3 +297,58 @@ footer {
         align-items: center;
     }
 }
+
+/* === Custom styles for the filter container === */
+.filter-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .filter-container .form-group {
+        margin-bottom: 15px;
+    }
+
+    .filter-container .form-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .filter-container .form-control {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+/* === Custom styles for the table === */
+.table.custom-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+    .table.custom-table th,
+    .table.custom-table td {
+        padding: 12px;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table.custom-table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        background-color: #424242;
+    }
+
+    .table.custom-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .table.custom-table .action-buttons a {
+        margin-right: 5px;
+    }
