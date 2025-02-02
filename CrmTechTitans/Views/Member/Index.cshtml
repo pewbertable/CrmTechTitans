@@ -29,59 +29,52 @@
         </header>
 
         <!-- Filter and Search Form -->
-        <form asp-action="Index" method="get">
-            <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-            <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-
-            <div class="form-horizontal">
-                <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-                    <div class="card card-body bg-light">
-                        <div class="row justify-content-center">
-                            <!-- Search by Member Name -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label"></label>
-                                    @Html.TextBox("SearchString",
-                                             null,
-                                             new { @class = "form-control", placeholder = "Search by Member Name" })
-                                </div>
+        <div class="form-horizontal">
+            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                <div class="card card-body bg-light">
+                    <div class="row justify-content-center">
+                        <!-- Search by Member Name -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label"></label>
+                                <input type="text" id="searchString" class="form-control" placeholder="Search by Member Name" />
                             </div>
-                            <p></p>
-                            <!-- Filter by Member Status -->
-                            <div class="col-md-4">
-                                <div class="naics-filter-container">
-                                    <label class="control-label"></label>
-                                    <select name="statusFilter" class="form-control">
-                                        <option value="">All Statuses</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <p></p>
+                        <!-- Filter by Member Status -->
+                        <div class="col-md-4">
+                            <div class="naics-filter-container">
+                                <label class="control-label"></label>
+                                <select id="statusFilter" class="form-control">
+                                    <option value="">All Statuses</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Sorting -->
-            <div class="btn-group" role="group">
-                <a href="@Url.Action("Index", new { sortField = "MemberName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
-                    Sort by Member Name
-                </a>
-                <a href="@Url.Action("Index", new { sortField = "MembershipStatus", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
-                    Sort by Status
-                </a>
-            </div>
-        </form>
+        <!-- Sorting -->
+        <div class="btn-group" role="group">
+            <button id="sortByName" class="btn btn-secondary">
+                Sort by Member Name
+            </button>
+            <button id="sortByStatus" class="btn btn-secondary">
+                Sort by Status
+            </button>
+        </div>
     </div>
 
-<p></p>
+    <p></p>
 
     <!-- Card View -->
     <section class="members-grid" id="cards-view">
         @foreach (var item in Model)
         {
-            <div class="member-card">
+            <div class="member-card" data-name="@item.MemberName" data-status="@item.MembershipStatus">
                 <div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
                     @item.MembershipStatus.ToString()
                 </div>
@@ -146,7 +139,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr data-name="@item.MemberName" data-status="@item.MembershipStatus">
                         <td data-label="Name">@item.MemberName</td>
                         <td class="hide-on-mobile" data-label="Type">@item.MembershipType</td>
                         <td class="hide-on-mobile" data-label="Company Size">@item.CompanySize</td>
@@ -167,39 +160,107 @@
     </section>
 </div>
 
-<script>
-    // Initialize view immediately after DOM loads
-    document.addEventListener('DOMContentLoaded', () => {
-        const preferredView = localStorage.getItem('preferredView') || 'cards';
-        const cardsView = document.getElementById('cards-view');
-        const tableView = document.getElementById('table-view');
-
-        // Set initial display states
-        cardsView.style.display = preferredView === 'cards' ? 'grid' : 'none';
-        tableView.style.display = preferredView === 'table' ? 'block' : 'none';
-
-        // Update button states
-        document.querySelectorAll('.view-toggle button').forEach(button => {
-            button.classList.toggle('active', button.dataset.view === preferredView);
-        });
-    });
-
-    document.querySelectorAll('.view-toggle button').forEach(button => {
-        button.addEventListener('click', () => {
-            // Toggle active class
-            document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
-            button.classList.add('active');
-
-            // Toggle views
-            const view = button.dataset.view;
+@section Scripts {
+    <script>
+        // Initialize view immediately after DOM loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const preferredView = localStorage.getItem('preferredView') || 'cards';
             const cardsView = document.getElementById('cards-view');
             const tableView = document.getElementById('table-view');
 
-            cardsView.style.display = view === 'cards' ? 'grid' : 'none';
-            tableView.style.display = view === 'table' ? 'block' : 'none';
+            // Set initial display states
+            cardsView.style.display = preferredView === 'cards' ? 'grid' : 'none';
+            tableView.style.display = preferredView === 'table' ? 'block' : 'none';
 
-            // Save preference
-            localStorage.setItem('preferredView', view);
+            // Update button states
+            document.querySelectorAll('.view-toggle button').forEach(button => {
+                button.classList.toggle('active', button.dataset.view === preferredView);
+            });
+
+            // Attach event listeners for filtering and sorting
+            attachFilterAndSortListeners();
         });
-    });
-</script>
+
+        // Toggle between card and table views
+        document.querySelectorAll('.view-toggle button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Toggle active class
+                document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+
+                // Toggle views
+                const view = button.dataset.view;
+                const cardsView = document.getElementById('cards-view');
+                const tableView = document.getElementById('table-view');
+
+                cardsView.style.display = view === 'cards' ? 'grid' : 'none';
+                tableView.style.display = view === 'table' ? 'block' : 'none';
+
+                // Save preference
+                localStorage.setItem('preferredView', view);
+            });
+        });
+
+        // Function to attach filtering and sorting event listeners
+        function attachFilterAndSortListeners() {
+            const searchString = document.getElementById('searchString');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortByName = document.getElementById('sortByName');
+            const sortByStatus = document.getElementById('sortByStatus');
+
+            // Filter and sort when inputs change
+            searchString.addEventListener('input', filterAndSort);
+            statusFilter.addEventListener('change', filterAndSort);
+            sortByName.addEventListener('click', () => sortBy('name'));
+            sortByStatus.addEventListener('click', () => sortBy('status'));
+        }
+
+        // Function to filter and sort members
+        function filterAndSort() {
+            const searchValue = document.getElementById('searchString').value.toLowerCase();
+            const statusValue = document.getElementById('statusFilter').value;
+
+            // Filter members
+            document.querySelectorAll('.member-card, tbody tr').forEach(item => {
+                const name = item.getAttribute('data-name').toLowerCase();
+                const status = item.getAttribute('data-status');
+
+                const nameMatch = name.includes(searchValue);
+                const statusMatch = statusValue === '' || status === statusValue;
+
+                if (nameMatch && statusMatch) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Function to sort members
+        function sortBy(field) {
+            const cardsView = document.getElementById('cards-view');
+            const tableView = document.getElementById('table-view');
+
+            const items = Array.from(cardsView.querySelectorAll('.member-card'))
+                .concat(Array.from(tableView.querySelectorAll('tbody tr')));
+
+            items.sort((a, b) => {
+                const aValue = a.getAttribute(`data-${field}`).toLowerCase();
+                const bValue = b.getAttribute(`data-${field}`).toLowerCase();
+
+                if (aValue < bValue) return -1;
+                if (aValue > bValue) return 1;
+                return 0;
+            });
+
+            // Re-append sorted items
+            items.forEach(item => {
+                if (item.classList.contains('member-card')) {
+                    cardsView.appendChild(item);
+                } else {
+                    tableView.querySelector('tbody').appendChild(item);
+                }
+            });
+        }
+    </script>
+}
