@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/tables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cards.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", required: false)
@@ -19,37 +20,39 @@
     <div class="main-container">
         <!-- Sidebar -->
         <p></p>
+        <!-- Sidebar -->
         <div class="sidebar">
             <p></p>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
                asp-area="" asp-controller="Home" asp-action="Index">
-                Dashboard
+                <i class="fas fa-home"></i> Dashboard
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Member" ? "active" : "")"
                asp-area="" asp-controller="Member" asp-action="Index">
-                Members
+                <i class="fas fa-users"></i> Members
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
                asp-area="" asp-controller="Contact" asp-action="Index">
-                Contacts
+                <i class="fas fa-address-book"></i> Contacts
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
                asp-area="" asp-controller="Address" asp-action="Index">
-                Municipalities
+                <i class="fas fa-map-marker-alt"></i> Municipalities
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
                asp-area="" asp-controller="Opportunity" asp-action="Index">
-                Opportunities
+                <i class="fas fa-briefcase"></i> Opportunities
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
                asp-area="" asp-controller="Interaction" asp-action="Index">
-                Interactions
+                <i class="fas fa-comments"></i> Interactions
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
                asp-area="" asp-controller="Industry" asp-action="Index">
-                Industries
+                <i class="fas fa-industry"></i> Industries
             </a>
         </div>
+
 
         <!-- Main Content -->
         <div class="content-container">
