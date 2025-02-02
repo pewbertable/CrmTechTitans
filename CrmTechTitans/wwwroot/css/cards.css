@@ -140,6 +140,8 @@
 }
 
 .btn-link {
+    background: #444;
+    color: white;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -153,7 +155,6 @@
     }
 
     .btn-link.text-primary {
-        color: #424242 !important;
     }
 
     .btn-link:hover {

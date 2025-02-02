@@ -21,17 +21,17 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-    width: 11rem; /* Reduced width for a sleeker look */
+    width: 11rem;
     max-width: 210px;
     height: 100%;
-    background-color: #424242; /* Dark grey for professional look */
+    background-color: #424242;
     color: white;
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
     padding: 18px;
     transition: transform 0.3s ease-in-out;
-    transform: translateX(-100%); /* Initially hidden */
+    transform: translateX(-100%);
     z-index: 1000;
     font-family: 'Inter', sans-serif;
 }
@@ -72,20 +72,30 @@ body {
     font-weight: 500;
     text-decoration: none;
     border-radius: 5px;
-    transition: background 0.3s, padding 0.2s;
+    transition: background 0.3s, padding 0.2s, color 0.3s ease-in-out;
 }
 
+    /* Sidebar Icons */
     .sidebar a i {
-        margin-right: 8px; /* Space between icon and text */
-        font-size: 1.2rem; /* Reduced icon size */
+        margin-right: 8px;
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.8); /* Slightly dimmed white */
+        transition: color 0.3s ease-in-out;
     }
 
+    /* Hover & Active State - Add Red Accent */
     .sidebar a:hover,
     .sidebar a.active {
         background: rgba(255, 255, 255, 0.15);
         padding-left: 16px;
         font-weight: 600;
     }
+
+        /* Make Icons Red on Hover */
+        .sidebar a:hover i,
+        .sidebar a.active i {
+            color: #e44444; /* Subtle red accent for a professional look */
+        }
 
 /* === Content Adjustments to Prevent Overlap === */
 .content-container {
@@ -96,7 +106,7 @@ body {
 
 /* Move content when sidebar is open */
 .sidebar.active ~ .content-container {
-    margin-left: 210px; /* Adjusted content shift */
+    margin-left: 210px;
 }
 
 /* === Responsive Adjustments === */
@@ -119,13 +129,14 @@ body {
     }
 
     .content-container {
-        margin-left: 0; /* Keep full width when sidebar is hidden */
+        margin-left: 0;
     }
 
     .sidebar.active ~ .content-container {
-        margin-left: 0; /* Prevent content shift on smaller screens */
+        margin-left: 0;
     }
 }
+
 
 /* === Content Area: Takes More Space Now === */
 .content-container {

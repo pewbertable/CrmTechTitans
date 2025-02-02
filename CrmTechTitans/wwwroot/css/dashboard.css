@@ -3,11 +3,33 @@
     --primary: #2c3e50; /* Dark theme primary color */
     --secondary: #444; /* Neutral grey for buttons */
     --accent: #e74c3c; /* Red for accents */
-    --highlight: #e74c3c; /* Red for hover effects */
     --light-bg: #f9f9f9;
-    --border-radius: 10px;
-    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --dark-bg: #1e1e1e;
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --border-radius: 12px;
+    --box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
+
+body {
+    background: var(--light-bg);
+    transition: background 0.3s ease-in-out;
+}
+
+/* Dark Mode Support */
+.dark-mode {
+    background: var(--dark-bg);
+    color: #fff;
+}
+
+    .dark-mode .page-header,
+    .dark-mode .dashboard-tabs,
+    .dark-mode .metric-card,
+    .dark-mode .chart-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        color: #fff;
+        box-shadow: var(--box-shadow);
+    }
 
 .main-content {
     max-width: 1200px;
@@ -25,6 +47,7 @@
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     margin-bottom: 2rem;
+    transition: all 0.3s ease-in-out;
 }
 
     .page-header h1 {
@@ -32,6 +55,21 @@
         font-weight: 600;
         margin: 0;
         font-size: 1.8rem;
+    }
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+    .dark-mode-toggle:hover {
+        background: var(--highlight);
     }
 
 /* Dashboard Tabs */
@@ -62,15 +100,16 @@
     }
 
     .tab-btn.active {
-        background: #e44444;
+        background: var(--accent);
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0px 4px 10px rgba(231, 76, 60, 0.5);
     }
 
 /* Tab Content */
 .tab-content {
     display: none;
-    animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.4s ease-in-out;
 }
 
     .tab-content.active {
@@ -90,25 +129,52 @@
     padding: 1.5rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     display: flex;
     align-items: center;
     gap: 1rem;
     border-left: 5px solid var(--secondary);
+    position: relative;
+    overflow: hidden;
 }
 
     .metric-card:hover {
         transform: translateY(-5px);
-        border-left-color: var(--highlight); /* Red on hover */
+        border-left-color: var(--highlight);
+        box-shadow: 0px 6px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    /* Floating Glow Effect */
+    .metric-card::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: var(--highlight);
+        opacity: 0.15;
+        border-radius: 50%;
+        top: -10px;
+        right: -10px;
+        transition: all 0.4s ease-in-out;
+    }
+
+    .metric-card:hover::after {
+        width: 120px;
+        height: 120px;
+        opacity: 0.3;
     }
 
 /* Different Accent Colors */
 .accent-blue {
-    border-left: 5px solid #3498db;
+    border-left: 5px solid var(--accent);
 }
 
 .accent-red {
-    border-left: 5px solid #e44444;
+    border-left: 5px solid var(--accent);
+}
+
+.accent-green {
+    border-left: 5px solid var(--accent);
 }
 
 /* Metric Icon */
@@ -151,6 +217,30 @@
     padding: 15px;
     box-shadow: var(--box-shadow);
 }
+
+/* Floating Action Button (FAB) */
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+    .fab:hover {
+        transform: scale(1.1);
+        box-shadow: 0px 6px 20px rgba(231, 76, 60, 0.5);
+    }
 
 /* Fade-in animation */
 @keyframes fadeIn {
