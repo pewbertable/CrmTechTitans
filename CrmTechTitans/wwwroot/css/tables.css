@@ -1095,12 +1095,12 @@ input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio"
     cursor: pointer;
 }
 
-    /* Tooltip Text */
+    /* Light Tooltip Text */
     .tooltip .tooltiptext {
         visibility: hidden;
         width: 160px;
-        background-color: rgba(0, 0, 0, 0.85);
-        color: #fff;
+        background-color: rgba(255, 255, 255, 0.95); /* Light Background */
+        color: #333; /* Dark Text */
         text-align: center;
         border-radius: 5px;
         padding: 6px;
@@ -1113,9 +1113,11 @@ input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio"
         transition: opacity 0.3s ease-in-out;
         font-size: 14px;
         white-space: nowrap;
+        border: 1px solid #ddd;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15); /* Light Shadow */
     }
 
-        /* Tooltip Arrow */
+        /* Light Tooltip Arrow */
         .tooltip .tooltiptext::after {
             content: "";
             position: absolute;
@@ -1124,10 +1126,10 @@ input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio"
             margin-left: -5px;
             border-width: 5px;
             border-style: solid;
-            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+            border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent;
         }
 
-    /* Show Tooltip on Hover */
+    /* Show Light Tooltip on Hover */
     .tooltip:hover .tooltiptext {
         visibility: visible;
         opacity: 1;
@@ -1143,21 +1145,26 @@ input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio"
         outline: 2px dashed #007bff;
     }
 
-/* Adjust Bootstrap Tooltip Text */
+/* Adjust Bootstrap Tooltip Text for Light Theme */
 .tooltip-inner {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(255, 255, 255, 0.95); /* Light Theme */
+    color: #333;
     font-size: 14px;
     padding: 6px 10px;
     border-radius: 5px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Light Tooltip Arrow Fix */
 .tooltip.bs-tooltip-top .tooltip-arrow::before {
-    border-top-color: rgba(0, 0, 0, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.95);
 }
 
 .tooltip.bs-tooltip-bottom .tooltip-arrow::before {
-    border-bottom-color: rgba(0, 0, 0, 0.9);
+    border-bottom-color: rgba(255, 255, 255, 0.95);
 }
+
 /* Required Field Label */
 label .text-danger {
     color: #dc3545;
