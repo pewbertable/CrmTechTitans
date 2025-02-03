@@ -97,7 +97,13 @@ namespace CrmTechTitans.Controllers
             {
                 Contacts = new List<ContactViewModel> { new ContactViewModel() }, // Add one empty contact
                 Addresses = new List<AddressViewModel> { new AddressViewModel() }, // Add one empty address
-                AvailableIndustries = _context.Industries.ToList() // Populate available industries
+                AvailableIndustries = _context.Industries
+            .Select(industry => new IndustryViewModel
+            {
+                ID = industry.ID,
+                Name = industry.Name,
+                NAICS = industry.NAICS
+            }).ToList() // Convert Industry entities to IndustryViewModels
             };
 
             return View(model);
@@ -161,7 +167,13 @@ namespace CrmTechTitans.Controllers
             }
 
             // If the model is invalid, repopulate available industries
-            model.AvailableIndustries = _context.Industries.ToList();
+            model.AvailableIndustries = _context.Industries
+            .Select(industry => new IndustryViewModel
+            {
+                ID = industry.ID,
+                Name = industry.Name,
+                NAICS = industry.NAICS
+            }).ToList(); // Convert Industry entities to IndustryViewModels
             return View(model);
         }
 
@@ -210,7 +222,13 @@ namespace CrmTechTitans.Controllers
                     ContactType = mc.ContactType
                 }).ToList(),
                 SelectedIndustryIds = member.IndustryMembers.Select(im => im.IndustryID).ToList(), // Selected industry IDs
-                AvailableIndustries = _context.Industries.ToList() // Populate available industries
+                AvailableIndustries = _context.Industries
+            .Select(industry => new IndustryViewModel
+            {
+                ID = industry.ID,
+                Name = industry.Name,
+                NAICS = industry.NAICS
+            }).ToList() // Convert Industry entities to IndustryViewModels // Populate available industries
             };
 
             return View(model);
@@ -307,7 +325,13 @@ namespace CrmTechTitans.Controllers
             }
 
             // If the model is invalid, repopulate available industries
-            model.AvailableIndustries = _context.Industries.ToList();
+            model.AvailableIndustries = _context.Industries
+            .Select(industry => new IndustryViewModel
+            {
+                ID = industry.ID,
+                Name = industry.Name,
+                NAICS = industry.NAICS
+            }).ToList(); // Convert Industry entities to IndustryViewModels
             return View(model);
         }
 

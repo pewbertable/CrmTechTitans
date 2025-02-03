@@ -1,4 +1,5 @@
 ﻿using CrmTechTitans.Models.Enumerations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,8 +8,7 @@ namespace CrmTechTitans.Models.ViewModels
     public class MemberCreateViewModel
     {
         // Member Properties
-        public int ID { get; set; } // Add this line
-
+        public int ID { get; set; }
 
         [Display(Name = "Member Name")]
         [Required(ErrorMessage = "Member Name is required")]
@@ -49,20 +49,22 @@ namespace CrmTechTitans.Models.ViewModels
         public MembershipStatus MembershipStatus { get; set; }
 
         // Address Properties
-        public List<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>(); // List of addresses
+        public List<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>();
 
         // Contacts Properties
         public List<ContactViewModel> Contacts { get; set; } = new List<ContactViewModel>();
 
         // Industries Properties
         [Display(Name = "Industries")]
-        public List<int> SelectedIndustryIds { get; set; } = new List<int>(); // List of selected industry IDs
+        public List<int> SelectedIndustryIds { get; set; } = new List<int>();
 
-        public List<Industry> AvailableIndustries { get; set; } // List of all available industries
+        public List<IndustryViewModel> AvailableIndustries { get; set; } = new List<IndustryViewModel>(); // ✅ FIXED
     }
 
     public class AddressViewModel
     {
+        public int ID { get; set; } // ✅ Added for tracking edits
+
         [Display(Name = "Street")]
         [Required(ErrorMessage = "Street is required")]
         [StringLength(200, ErrorMessage = "Street cannot exceed 200 characters")]
@@ -79,15 +81,18 @@ namespace CrmTechTitans.Models.ViewModels
 
         [Display(Name = "Postal Code")]
         [StringLength(20, ErrorMessage = "Postal Code cannot exceed 20 characters")]
-        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code format (should be in the format 'A#A #A#')")]
+        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code format (A#A #A#)")]
         public string PostalCode { get; set; }
 
         [Display(Name = "Address Type")]
         [Required(ErrorMessage = "Address Type is required")]
-        public AddressType AddressType { get; set; } // Address type enum
+        public AddressType AddressType { get; set; }
     }
+
     public class ContactViewModel
     {
+        public int ID { get; set; } // ✅ Added for tracking edits
+
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "First Name is required")]
         [StringLength(100, ErrorMessage = "First Name cannot exceed 100 characters")]
@@ -113,6 +118,8 @@ namespace CrmTechTitans.Models.ViewModels
 
     public class IndustryViewModel
     {
+        public int ID { get; set; } // ✅ Added for binding in views
+
         [Display(Name = "Industry")]
         [Required(ErrorMessage = "Industry is required")]
         [StringLength(100, ErrorMessage = "Industry cannot exceed 100 characters")]
