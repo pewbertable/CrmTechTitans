@@ -5,86 +5,104 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="main-content">
-    <header class="page-header">
-        <h1>All Contacts</h1>
-        <p>Browse the full list of contacts in the Niagara Industry Association. Use the "Create New" button to add a new contact to the directory.</p>
-        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Contact</a>
-    </header>
+<partial name="_Notification" />
 
-    <section class="members-grid">
-        @foreach (var item in Model)
-        {
-            <div class="member-card">
-                <div class="member-card-header">
-                    <div class="member-avatar">
-                        <div class="avatar-placeholder">
-                            @(item.FirstName?.Length > 0 ? item.FirstName[0].ToString() : "")
-                        </div>
-                    </div>
-                    <div class="member-info">
-                        <h2 class="member-name">@item.FullFormalName</h2>
-                        <p class="member-type">
-                            @if (item.MemberContacts.Any())
-                            {
-                                @string.Join(", ", item.MemberContacts.Select(mc => mc.ContactType))
-                            }
-                            else
-                            {
-                                <span>No Contact Type</span>
-                            }
-                        </p>
-                    </div>
+<div class="crm-container">
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Contacts</h1>
+        </header>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="row">
+                <!-- Filter by Name -->
+                <div class="col-md-4">
+                    <label for="nameFilter" class="filter-label">Search by Name:</label>
+                    <input type="text" id="nameFilter" class="form-control search-input" placeholder="Enter contact name" data-bs-toggle="tooltip" title="Enter a contact's full or partial name">
                 </div>
-                <div class="member-card-content">
-                    <div class="member-detail">
-                        <i class="fas fa-building"></i>
-                        <span>
-                            @if (item.MemberContacts.Any())
-                            {
-                                @string.Join(", ", item.MemberContacts
-                                         .Where(mc => mc.Member != null)
-                                         .Select(mc => mc.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span>No Member associated</span>
-                            }
-                        </span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-envelope"></i>
-                        <span>@item.Email</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-phone"></i>
-                        <span>@item.Phone</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fab fa-linkedin"></i>
-                        @if (!string.IsNullOrEmpty(item.Linkedin))
-                        {
-                            <a href="@item.Linkedin" target="_blank" class="web-link">@item.Linkedin</a>
-                        }
-                        else
-                        {
-                            <span class="text-muted">No LinkedIn profile available</span>
-                        }
-                    </div>
-                </div>
-                <div class="member-card-footer">
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-info-circle"></i> Details
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </a>
+
+                <!-- Filter by Email -->
+                <div class="col-md-4">
+                    <label for="emailFilter" class="filter-label">Search by Email:</label>
+                    <input type="text" id="emailFilter" class="form-control search-input" placeholder="Enter email" data-bs-toggle="tooltip" title="Enter a contact’s email address to filter">
                 </div>
             </div>
-        }
-    </section>
+        </div>
+
+        <!--Sorting-->
+        <div class="btn-group mt-2" role="group">
+            <a href="@Url.Action("Index", new { sortField = "FirstName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by First Name
+            </a>
+            <a href="@Url.Action("Index", new { sortField = "LastName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by Last Name
+            </a>
+
+        </div>
+
+        <section class="members-table-container">
+            <table class="table custom-table" id="contactsTable">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Company</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.FullFormalName</td>
+                            <td>
+                                @(item.MemberContacts.Any()
+                                    ? string.Join(", ", item.MemberContacts
+                                    .Where(mc => mc.Member != null)
+                                    .Select(mc => mc.Member.MemberName))
+                                    : "No Company Associated")
+                            </td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit contact details">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View full contact details">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function filterTable() {
+                var nameFilter = $('#nameFilter').val().toLowerCase();
+                var emailFilter = $('#emailFilter').val().toLowerCase();
+
+                $('#contactsTable tbody tr').each(function () {
+                    var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
+                    var emailText = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                    var emailMatch = emailFilter === "" || emailText.includes(emailFilter);
+
+                    $(this).toggle(nameMatch && emailMatch);
+                });
+            }
+
+            $('#nameFilter, #emailFilter').on('input', filterTable);
+
+            // Initialize Bootstrap Tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}

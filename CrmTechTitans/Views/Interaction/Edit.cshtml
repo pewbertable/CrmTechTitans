@@ -33,10 +33,26 @@
                         <span asp-validation-for="interaction" class="text-danger"></span>
                     </div>
                 </div>
+                <div class="member-detail">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="form-group">
+                        <label asp-for="Date" class="control-label">Interaction Date</label>
+                        <input asp-for="Date" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="member-detail">
+                    <i class="fas fa-user-tie"></i>
+                    <div class="form-group">
+                        <label asp-for="Person" class="control-label">Contacted Person</label>
+                        <input asp-for="Person" class="form-control" placeholder="Enter Contacted Person" />
+                        <span asp-validation-for="Person" class="text-danger"></span>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="member-card-footer">
-            <button type="submit" class="button-1">
+            <button type="submit" class="btn btn-success">
                 <i class="fas fa-save"></i> Save Changes
             </button>
             <a asp-action="Index" class="button-2">
@@ -51,4 +67,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

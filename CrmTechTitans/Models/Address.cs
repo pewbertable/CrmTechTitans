@@ -24,6 +24,24 @@ namespace CrmTechTitans.Models
         [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code format (should be in the format 'A#A #A#' )")]
         public string? PostalCode { get; set; }
 
+        // Computed property to display the full address
+        public string Summary
+        {
+            get
+            {
+                // Format the full address
+                string fullAddress = $"{Street}, {City}, {Province}";
+
+                // Add postal code if it exists
+                if (!string.IsNullOrEmpty(PostalCode))
+                {
+                    fullAddress += $", {PostalCode}";
+                }
+
+                return fullAddress;
+            }
+        }
+
         // New ICollection properties - added 3pm 2025-01-23 b.p.
         public ICollection<MemberAddress> MemberAddresses { get; set; } = new HashSet<MemberAddress>();
     }

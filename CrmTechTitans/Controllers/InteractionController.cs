@@ -23,7 +23,9 @@ namespace CrmTechTitans.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Interactions.Include(c => c.InteractionMembers)
-            .ThenInclude(mc => mc.Member).ToListAsync());
+            .ThenInclude(mc => mc.Member)
+
+            .ToListAsync());
         
         }
 
@@ -36,6 +38,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var interaction = await _context.Interactions
+                .Include(c => c.InteractionMembers)
+            .ThenInclude(mc => mc.Member)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (interaction == null)
             {
@@ -56,7 +60,7 @@ namespace CrmTechTitans.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,interaction")] Interaction interaction)
+        public async Task<IActionResult> Create([Bind("Id,interaction,Date,Person")] Interaction interaction)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +92,7 @@ namespace CrmTechTitans.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,interaction")] Interaction interaction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,interaction,Date,Person")] Interaction interaction)
         {
             if (id != interaction.Id)
             {
@@ -101,9 +105,12 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(interaction);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Interaction edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the interaction.";
                     if (!InteractionExists(interaction.Id))
                     {
                         return NotFound();

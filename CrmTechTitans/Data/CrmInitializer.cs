@@ -521,80 +521,93 @@ namespace CrmTechTitans.Data
                         context.SaveChanges();
                     }
 
-                    //Seed data for Interaction table(Ankirta Kaur)
+                    //Seed data for Interaction table (Ankirat Kaur)
                     if (!context.Interactions.Any())
                     {
                         context.Interactions.AddRange(
                             new Interaction
                             {
-                                interaction = "Initial Consultation Call"
+                                interaction = "Initial Consultation Call",
+                                Date = DateTime.Now.AddDays(-30),
+                                Person = "John Doe"
                             },
                             new Interaction
                             {
-                                interaction = "Technical Support Discussion"
+                                interaction = "Technical Support Discussion",
+                                Date = DateTime.Now.AddDays(-25),
+                                Person = "Jane Smith"
                             },
                             new Interaction
                             {
-                                interaction = "Annual Membership Review"
+                                interaction = "Annual Membership Review",
+                                Date = DateTime.Now.AddDays(-20),
+                                Person = "Michael Brown"
                             },
                             new Interaction
                             {
-                                interaction = "New Product Launch Briefing"
+                                interaction = "New Product Launch Briefing",
+                                Date = DateTime.Now.AddDays(-15),
+                                Person = "Sarah Johnson"
                             },
                             new Interaction
                             {
-                                interaction = "Marketing Strategy Meeting"
+                                interaction = "Marketing Strategy Meeting",
+                                Date = DateTime.Now.AddDays(-10),
+                                Person = "David White"
                             },
                             new Interaction
                             {
-                                interaction = "Partnership Opportunity Discussion"
+                                interaction = "Partnership Opportunity Discussion",
+                                Date = DateTime.Now.AddDays(-5),
+                                Person = "Emma Wilson"
                             },
                             new Interaction
                             {
-                                interaction = "Subscription Feedback Session"
+                                interaction = "Subscription Feedback Session",
+                                Date = DateTime.Now.AddDays(-3),
+                                Person = "Chris Martinez"
                             },
                             new Interaction
                             {
-                                interaction = "Technical Integration Workshop"
+                                interaction = "Technical Integration Workshop",
+                                Date = DateTime.Now.AddDays(-2),
+                                Person = "Olivia Davis"
                             },
                             new Interaction
                             {
-                                interaction = "Customer Success Call"
+                                interaction = "Customer Success Call",
+                                Date = DateTime.Now.AddDays(-1),
+                                Person = "Daniel Thomas"
                             },
                             new Interaction
                             {
-                                interaction = "Renewal Discussion"
+                                interaction = "Renewal Discussion",
+                                Date = DateTime.Now,
+                                Person = "Sophia Lopez"
                             }
                         );
                         context.SaveChanges();
                     }
 
+                    // Seed Data for InteractionMembers Table
                     if (!context.InteractionMembers.Any())
                     {
                         context.InteractionMembers.AddRange(
                             new InteractionMember { MemberID = 1, InteractionID = 1 },
-                            new InteractionMember { MemberID = 2, InteractionID = 1 },
-                            new InteractionMember { MemberID = 3, InteractionID = 2 },
-                            new InteractionMember { MemberID = 4, InteractionID = 2 },
-                            new InteractionMember { MemberID = 5, InteractionID = 3 },
-                            new InteractionMember { MemberID = 6, InteractionID = 3 },
-                            new InteractionMember { MemberID = 7, InteractionID = 4 },
-                            new InteractionMember { MemberID = 8, InteractionID = 4 },
-                            new InteractionMember { MemberID = 9, InteractionID = 5 },
-                            new InteractionMember { MemberID = 10, InteractionID = 5 },
-                            new InteractionMember { MemberID = 2, InteractionID = 6 },
-                            new InteractionMember { MemberID = 4, InteractionID = 6 },
-                            new InteractionMember { MemberID = 1, InteractionID = 7 },
-                            new InteractionMember { MemberID = 5, InteractionID = 7 },
-                            new InteractionMember { MemberID = 3, InteractionID = 8 },
-                            new InteractionMember { MemberID = 6, InteractionID = 8 },
-                            new InteractionMember { MemberID = 7, InteractionID = 9 },
-                            new InteractionMember { MemberID = 8, InteractionID = 9 },
-                            new InteractionMember { MemberID = 9, InteractionID = 10 },
+                            new InteractionMember { MemberID = 2, InteractionID = 2 },
+                            new InteractionMember { MemberID = 3, InteractionID = 3 },
+                            new InteractionMember { MemberID = 4, InteractionID = 4 },
+                            new InteractionMember { MemberID = 5, InteractionID = 5 },
+                            new InteractionMember { MemberID = 6, InteractionID = 6 },
+                            new InteractionMember { MemberID = 7, InteractionID = 7 },
+                            new InteractionMember { MemberID = 8, InteractionID = 8 },
+                            new InteractionMember { MemberID = 9, InteractionID = 9 },
                             new InteractionMember { MemberID = 10, InteractionID = 10 }
+                            
                         );
                         context.SaveChanges();
                     }
+
 
 
 

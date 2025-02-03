@@ -102,6 +102,12 @@ namespace CrmTechTitans.Data.CrmMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("interaction")
                         .HasColumnType("TEXT");
 
@@ -128,7 +134,7 @@ namespace CrmTechTitans.Data.CrmMigrations
 
                     b.HasIndex("MemberID");
 
-                    b.ToTable("interactionMembers");
+                    b.ToTable("InteractionMembers");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.JoinTables.MemberAddress", b =>

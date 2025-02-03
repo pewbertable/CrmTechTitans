@@ -1,3 +1,4 @@
+@using CrmTechTitans.Models.Enumerations
 @model IEnumerable<CrmTechTitans.Models.Opportunity>
 
 @{
@@ -5,60 +6,117 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="main-content">
-    <header class="page-header">
-        <h1>All Opportunities</h1>
-        <p>Browse the list of opportunities in the Niagara Industry Association. Use the "Create New Opportunity" button to add a new opportunity to the directory.</p>
-        <a asp-action="Create" class="btn btn-primary custom-btn-spacing">Create New Opportunity</a>
-    </header>
+<partial name="_Notification" />
 
-    <section class="members-grid">
-        @foreach (var item in Model)
-        {
-            <div class="member-card">
-                <div class="member-card-header">
-                    <div class="member-info">
-                        <h2 class="member-name">@item.Title</h2>
-                        <p class="member-type">
-                            @if (item.MemberOpportunities.Any())
+
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Opportunities</h1>
+            <!-- <div class="d-flex align-items-center gap-3">
+                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
+                    <i class="fas fa-user-plus"></i> Create New Opportunity
+                </a>
+            </div>-->
+
+        </header>
+
+        <div class="filter-container">
+            <!-- Filter Inputs -->
+                <div class="row">
+                    <!-- Status Filter -->
+                    <div class="col-md-4">
+                        <label for="statusFilter">Filter by Status:</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">All</option>
+                            @foreach (var status in Enum.GetValues(typeof(Status)))
                             {
-                                @string.Join(", ", item.MemberOpportunities
-                                         .Where(mo => mo.Member != null)
-                                         .Select(mo => mo.Member.MemberName))
+                                <option value="@status">@status</option>
                             }
-                            else
+                        </select>
+                    </div>
+                    <p></p>
+                    <!-- Priority Filter -->
+                    <div class="col-md-4">
+                        <label for="priorityFilter">Filter by Priority:</label>
+                        <select id="priorityFilter" class="form-control">
+                            <option value="">All</option>
+                            @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
                             {
-                                <span>No Member associated</span>
+                                <option value="@priority">@priority</option>
                             }
-                        </p>
+                        </select>
                     </div>
-                </div>
-                <div class="member-card-content">
-                    <div class="member-detail">
-                        <i class="fas fa-flag"></i>
-                        <span>@item.Status</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-align-left"></i>
-                        <span>@item.Description</span>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span>@item.Priority</span>
-                    </div>
-                </div>
-                <div class="member-card-footer">
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-secondary">
-                        <i class="fas fa-info-circle"></i> Details
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </a>
+
                 </div>
             </div>
-        }
-    </section>
+
+            <!-- Opportunities Table -->
+            <table class="table custom-table" id="opportunitiesTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Status</td>
+                            <td>@item.Priority</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
+                                    Edit
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Filter function
+            function filterTable() {
+                var statusFilter = $('#statusFilter').val().toLowerCase();
+                var priorityFilter = $('#priorityFilter').val().toLowerCase();
+
+                $('#opportunitiesTable tbody tr').each(function () {
+                    var rowStatus = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var rowPriority = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var statusMatch = statusFilter === "" || rowStatus === statusFilter;
+                    var priorityMatch = priorityFilter === "" || rowPriority === priorityFilter;
+
+                    if (statusMatch && priorityMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Attach filter function to input events
+            $('#statusFilter, #priorityFilter').on('change', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function (e) {
+                e.preventDefault(); // Prevent form submission
+                $('#statusFilter, #priorityFilter').val(''); // Clear filter values
+                filterTable(); // Reapply filtering to show all rows
+            });
+        });
+    </script>
+}

@@ -1,0 +1,188 @@
+﻿/* details.css - Only for details page */
+.details-page-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .details-page-header h1 {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .details-page-header .text-muted {
+        color: #e0e0e0 !important;
+        font-size: 1rem;
+    }
+
+.details-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.details-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.details-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.details-name {
+    font-size: 1.8rem;
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.details-type {
+    color: #6c757d;
+    font-size: 1rem;
+    margin: 0.5rem 0 0;
+}
+
+.details-content {
+    display: grid;
+    gap: 1.2rem;
+    padding: 1rem 0;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+    .detail-item:hover {
+        transform: translateX(3px);
+        background: #f1f3f5;
+    }
+
+    .detail-item i {
+        font-size: 1.2rem;
+        color: #3498db;
+        min-width: 30px;
+        text-align: center;
+    }
+
+    .detail-item strong {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-right: 0.5rem;
+    }
+
+.details-footer {
+    display: flex;
+    gap: 1rem;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.detail-btn-primary,
+.detail-btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.detail-btn-primary {
+    background: #3498db;
+    color: white !important;
+}
+
+    .detail-btn-primary:hover {
+        background: #2c3e50;
+        transform: translateY(-1px);
+    }
+
+.detail-btn-secondary {
+    background: #e9ecef;
+    color: #2c3e50 !important;
+    border: 1px solid #dee2e6;
+}
+
+    .detail-btn-secondary:hover {
+        background: #dee2e6;
+        transform: translateY(-1px);
+    }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .details-page-header {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+        .details-page-header h1 {
+            font-size: 1.8rem;
+        }
+
+    .details-card {
+        padding: 1.5rem;
+    }
+
+    .details-card-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .details-name {
+        font-size: 1.5rem;
+    }
+
+    .details-footer {
+        flex-direction: column;
+    }
+
+    .detail-btn-primary,
+    .detail-btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+
+        .detail-item i {
+            font-size: 1.5rem;
+        }
+}
