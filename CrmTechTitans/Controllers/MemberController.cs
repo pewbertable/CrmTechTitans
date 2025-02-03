@@ -120,7 +120,13 @@ namespace CrmTechTitans.Controllers
                 var member = new Member
                 {
                     MemberName = model.MemberName,
-                    // Set other member properties...
+                    MembershipType = model.MembershipType,
+                    ContactedBy = model.ContactedBy,
+                    CompanySize = model.CompanySize,
+                    CompanyWebsite = model.CompanyWebsite,
+                    MemberSince = model.MemberSince,
+                    LastContactDate = model.LastContactDate,
+                    Notes = model.Notes
                 };
 
                 // Add Addresses
