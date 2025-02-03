@@ -7,7 +7,6 @@
 
 <partial name="_Notification" />
 
-
 <div class="crm-container">
     <div class="main-content">
         <header class="page-header">
@@ -20,15 +19,14 @@
                 <!-- Filter by Name -->
                 <div class="col-md-4">
                     <label for="nameFilter" class="filter-label">Search by Name:</label>
-                    <input type="text" id="nameFilter" class="form-control search-input" placeholder="Enter contact name">
+                    <input type="text" id="nameFilter" class="form-control search-input" placeholder="Enter contact name" data-bs-toggle="tooltip" title="Enter a contact's full or partial name">
                 </div>
 
                 <!-- Filter by Email -->
                 <div class="col-md-4">
                     <label for="emailFilter" class="filter-label">Search by Email:</label>
-                    <input type="text" id="emailFilter" class="form-control search-input" placeholder="Enter email">
+                    <input type="text" id="emailFilter" class="form-control search-input" placeholder="Enter email" data-bs-toggle="tooltip" title="Enter a contact’s email address to filter">
                 </div>
-
             </div>
         </div>
 
@@ -58,8 +56,8 @@
                             <td>@item.Email</td>
                             <td>@item.Phone</td>
                             <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit contact details">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View full contact details">Details</a>
                             </td>
                         </tr>
                     }
@@ -89,10 +87,10 @@
 
             $('#nameFilter, #emailFilter').on('input', filterTable);
 
-            $('#resetFilters').on('click', function () {
-                $('#nameFilter').val('');
-                $('#emailFilter').val('');
-                filterTable();
+            // Initialize Bootstrap Tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
     </script>
