@@ -164,9 +164,12 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Contact edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the contact.";
                     if (!ContactExists(contact.ID))
                     {
                         return NotFound();

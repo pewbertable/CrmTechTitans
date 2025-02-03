@@ -97,9 +97,13 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(address);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Municipality edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the Municipality.";
+
                     if (!AddressExists(address.ID))
                     {
                         return NotFound();

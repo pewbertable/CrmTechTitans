@@ -288,9 +288,12 @@ namespace CrmTechTitans.Controllers
                     // Save changes
                     _context.Update(member);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Member edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the member.";
                     if (!MemberExists(id))
                     {
                         return NotFound();

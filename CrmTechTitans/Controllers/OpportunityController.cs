@@ -116,11 +116,15 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(opportunity);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Opportunity edited successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "Opportunity edited failed";
+
                     if (!OpportunityExists(opportunity.ID))
                     {
+                        
                         return NotFound();
                     }
                     else

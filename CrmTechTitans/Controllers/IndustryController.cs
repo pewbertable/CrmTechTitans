@@ -176,9 +176,12 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(industry);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Industry edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the industry.";
                     if (!IndustryExists(industry.ID))
                     {
                         return NotFound();
