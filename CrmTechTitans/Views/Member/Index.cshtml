@@ -141,7 +141,7 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+                       document.addEventListener('DOMContentLoaded', () => {
             const preferredView = localStorage.getItem('preferredView') || 'cards';
             document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
             document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';
@@ -169,6 +169,58 @@
                 });
             }
 
+            // Sorting by Name
+            document.getElementById('sortByName').addEventListener('click', () => {
+                const isCardView = document.getElementById('cards-view').style.display === 'grid';
+                if (isCardView) {
+                    const cards = Array.from(document.querySelectorAll('.member-card'));
+                    cards.sort((a, b) => {
+                        const nameA = a.getAttribute('data-name').toLowerCase();
+                        const nameB = b.getAttribute('data-name').toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+                    // Re-append sorted cards
+                    const parent = document.querySelector('#cards-view');
+                    cards.forEach(card => parent.appendChild(card));
+                } else {
+                    const rows = Array.from(document.querySelectorAll('tbody tr'));
+                    rows.sort((a, b) => {
+                        const nameA = a.cells[0].textContent.toLowerCase(); // Assuming name is in the first column
+                        const nameB = b.cells[0].textContent.toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+                    // Re-append sorted rows
+                    const parent = document.querySelector('tbody');
+                    rows.forEach(row => parent.appendChild(row));
+                }
+            });
+
+            // Sorting by Status
+            document.getElementById('sortByStatus').addEventListener('click', () => {
+                const isCardView = document.getElementById('cards-view').style.display === 'grid';
+                if (isCardView) {
+                    const cards = Array.from(document.querySelectorAll('.member-card'));
+                    cards.sort((a, b) => {
+                        const statusA = a.getAttribute('data-status').toLowerCase();
+                        const statusB = b.getAttribute('data-status').toLowerCase();
+                        return statusA.localeCompare(statusB);
+                    });
+                    // Re-append sorted cards
+                    const parent = document.querySelector('#cards-view');
+                    cards.forEach(card => parent.appendChild(card));
+                } else {
+                    const rows = Array.from(document.querySelectorAll('tbody tr'));
+                    rows.sort((a, b) => {
+                        const statusA = a.cells[4].textContent.toLowerCase(); // Assuming status is in the fifth column
+                        const statusB = b.cells[4].textContent.toLowerCase();
+                        return statusA.localeCompare(statusB);
+                    });
+                    // Re-append sorted rows
+                    const parent = document.querySelector('tbody');
+                    rows.forEach(row => parent.appendChild(row));
+                }
+            });
+
             document.getElementById('searchString').addEventListener('input', filterAndSort);
             document.getElementById('statusFilter').addEventListener('change', filterAndSort);
 
@@ -178,5 +230,7 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
+
+
     </script>
 }
