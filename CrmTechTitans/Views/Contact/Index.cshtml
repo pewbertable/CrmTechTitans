@@ -30,6 +30,17 @@
             </div>
         </div>
 
+        <!--Sorting-->
+        <div class="btn-group mt-2" role="group">
+            <a href="@Url.Action("Index", new { sortField = "FirstName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by First Name
+            </a>
+            <a href="@Url.Action("Index", new { sortField = "LastName", sortDirection = ViewData["sortDirection"] == "asc" ? "desc" : "asc" })" class="btn btn-secondary">
+                Sort by Last Name
+            </a>
+
+        </div>
+
         <section class="members-table-container">
             <table class="table custom-table" id="contactsTable">
                 <thead>
