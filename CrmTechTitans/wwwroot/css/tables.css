@@ -1088,3 +1088,104 @@ input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio"
         }
 }
 
+/* Tooltip Container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+    /* Tooltip Text */
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 160px;
+        background-color: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 6px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; /* Position tooltip above the element */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+        /* Tooltip Arrow */
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+
+    /* Show Tooltip on Hover */
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+/* Bootstrap Tooltip Enhancement */
+[data-bs-toggle="tooltip"] {
+    cursor: pointer;
+}
+
+    /* Tooltip on Focus (For accessibility) */
+    [data-bs-toggle="tooltip"]:focus {
+        outline: 2px dashed #007bff;
+    }
+
+/* Adjust Bootstrap Tooltip Text */
+.tooltip-inner {
+    background-color: rgba(0, 0, 0, 0.9);
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 5px;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: rgba(0, 0, 0, 0.9);
+}
+/* Required Field Label */
+label .text-danger {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Required Asterisk Styling */
+label span.text-danger {
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+/* Highlighting Required Input Fields */
+input:required, select:required, textarea:required {
+    border: 2px solid #dc3545;
+    outline: none;
+}
+
+    /* Required Field Focus Effect */
+    input:required:focus, select:required:focus, textarea:required:focus {
+        border-color: #b02a37;
+        box-shadow: 0 0 5px rgba(220, 53, 69, 0.5);
+    }
+
+/* Error Message Styling */
+.text-danger {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 5px;
+    display: block;
+}
