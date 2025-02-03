@@ -169,8 +169,35 @@
                 });
             }
 
+            function sortBy(field) {
+                const cardsView = document.getElementById('cards-view');
+                const tableView = document.getElementById('table-view');
+
+                const items = Array.from(cardsView.querySelectorAll('.member-card'))
+                    .concat(Array.from(tableView.querySelectorAll('tbody tr')));
+
+                items.sort((a, b) => {
+                    const aValue = a.getAttribute(`data-${field}`).toLowerCase();
+                    const bValue = b.getAttribute(`data-${field}`).toLowerCase();
+
+                    if (aValue < bValue) return -1;
+                    if (aValue > bValue) return 1;
+                    return 0;
+                });
+
+                items.forEach(item => {
+                    if (item.classList.contains('member-card')) {
+                        cardsView.appendChild(item);
+                    } else {
+                        tableView.querySelector('tbody').appendChild(item);
+                    }
+                });
+            }
+
             document.getElementById('searchString').addEventListener('input', filterAndSort);
             document.getElementById('statusFilter').addEventListener('change', filterAndSort);
+            document.getElementById('sortByName').addEventListener('click', () => sortBy('name'));
+            document.getElementById('sortByStatus').addEventListener('click', () => sortBy('status'));
 
             // Initialize Bootstrap Tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
