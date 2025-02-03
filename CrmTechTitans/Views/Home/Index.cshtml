@@ -13,153 +13,52 @@
 <div class="main-content">
     <header class="page-header">
         <h1>Member Management Dashboard</h1>
-        <div class="dashboard-tabs" id="dashboardTabs">
-            <button class="tab-btn active" data-tab="overview">Overview</button>
-            <button class="tab-btn" data-tab="membership">Membership Types</button>
-            <button class="tab-btn" data-tab="opportunities">Opportunities</button>
-        </div>
     </header>
 
-    <section class="tab-content active" id="overview">
-        <div class="metrics-grid">
-            <!-- Total Members Card -->
-            <div class="metric-card accent-blue">
-                <div class="metric-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Total Members</h3>
-                    <span>@Model.MemberCountSummary.TotalMembers</span>
-                </div>
+    <div class="links-grid">
+        <!-- Link to Members -->
+        <a href="/Member/Index" class="link-card">
+            <div class="link-icon">
+                <i class="fas fa-users"></i>
             </div>
+            <div class="link-info">
+                <h3>Members</h3>
+                <p>View and manage all members</p>
+            </div>
+        </a>
 
-            <!-- Active Members Card -->
-            <div class="metric-card accent-green">
-                <div class="metric-icon">
-                    <i class="fas fa-user-check"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Active Members</h3>
-                    <span>@Model.MemberCountSummary.ActiveMembers</span>
-                </div>
+        <!-- Link to Membership Types -->
+        <a href="/MembershipType/Index" class="link-card">
+            <div class="link-icon">
+                <i class="fas fa-id-card"></i>
             </div>
+            <div class="link-info">
+                <h3>Membership Types</h3>
+                <p>View and manage membership types</p>
+            </div>
+        </a>
 
-            <!-- Inactive Members Card -->
-            <div class="metric-card accent-red">
-                <div class="metric-icon">
-                    <i class="fas fa-user-times"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Inactive Members</h3>
-                    <span>@Model.MemberCountSummary.InactiveMembers</span>
-                </div>
+        <!-- Link to Opportunities -->
+        <a href="/Opportunity/Index" class="link-card">
+            <div class="link-icon">
+                <i class="fas fa-handshake"></i>
             </div>
-        </div>
+            <div class="link-info">
+                <h3>Opportunities</h3>
+                <p>View and manage opportunities</p>
+            </div>
+        </a>
 
-        <div class="chart-container">
-            <canvas id="membersPerMonthChart"></canvas>
-        </div>
-    </section>
-
-    <section class="tab-content" id="membership">
-        <div class="metrics-grid">
-            <!-- Membership Type Cards -->
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-user-tie"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Associate</h3>
-                    <span>@Model.MembershipTypeSummary.AssociateCount</span>
-                </div>
+        <!-- Link to Reports -->
+        <a href="/Reports/Index" class="link-card">
+            <div class="link-icon">
+                <i class="fas fa-chart-line"></i>
             </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-building"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Chamber Associate</h3>
-                    <span>@Model.MembershipTypeSummary.ChamberAssociateCount</span>
-                </div>
+            <div class="link-info">
+                <h3>Reports</h3>
+                <p>View and generate reports</p>
             </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-industry"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Non-Local Industrial</h3>
-                    <span>@Model.MembershipTypeSummary.NonLocalIndustrialCount</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-landmark"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Government Association</h3>
-                    <span>@Model.MembershipTypeSummary.GovernmentAssociationCount</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Local</h3>
-                    <span>@Model.MembershipTypeSummary.LocalCount</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-ellipsis-h"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Others</h3>
-                    <span>@Model.MembershipTypeSummary.OtherCount</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="tab-content" id="opportunities">
-        <div class="metrics-grid">
-            <!-- Opportunity Status Cards -->
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-clipboard-check"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Qualification</h3>
-                    <span>@Model.OpportunityCountSummary.QualificationCount</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-handshake"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Negotiating</h3>
-                    <span>@Model.OpportunityCountSummary.NegotiationCount</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Closed - New Members</h3>
-                    <span>@Model.OpportunityCountSummary.ClosedNewMembersCount</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon">
-                    <i class="fas fa-user-slash"></i>
-                </div>
-                <div class="metric-info">
-                    <h3>Closed - Not Interested</h3>
-                    <span>@Model.OpportunityCountSummary.ClosedNotInterestedCount</span>
-                </div>
-            </div>
-        </div>
-    </section>
+        </a>
+    </div>
 </div>
+
