@@ -30,8 +30,8 @@ namespace CrmTechTitans.Controllers
                 {
                     Membership = grp.Key.ToString(),
                     TotalMembers = grp.Count(),
-                    ActiveMembers = grp.Count(m => m.MembershipStatus == MembershipStatus.Active),
-                    InactiveMembers = grp.Count(m => m.MembershipStatus == MembershipStatus.Inactive)
+                    ActiveMembers = grp.Count(m => m.MembershipStatus == MembershipStatus.GoodStanding),
+                    InactiveMembers = grp.Count(m => m.MembershipStatus == MembershipStatus.Cancelled)
                 }).FirstOrDefaultAsync();
 
             var membershipSummary = await _context.Members

@@ -42,8 +42,9 @@
                 <label for="statusFilter" class="form-label">Filter by Member Status</label>
                 <select id="statusFilter" class="form-control" data-bs-toggle="tooltip" title="Filter members based on status">
                     <option value="">All Statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="GoodStanding">Good Standing</option>
+                    <option value="OutStanding">Out Standing</option>
+                    <option value="Cancelled">Cancelled</option>
                 </select>
             </div>
         </div>
@@ -141,7 +142,7 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+               document.addEventListener('DOMContentLoaded', () => {
             const preferredView = localStorage.getItem('preferredView') || 'cards';
             document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
             document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';
@@ -165,7 +166,10 @@
                     const name = item.getAttribute('data-name').toLowerCase();
                     const status = item.getAttribute('data-status');
 
-                    item.style.display = (name.includes(searchValue) && (statusValue === '' || status === statusValue)) ? '' : 'none';
+                    // Convert statusValue to PascalCase for comparison
+                    const statusFilter = statusValue.toLowerCase().replace(/(?:^|\s)\w/g, match => match.toUpperCase());
+
+                    item.style.display = (name.includes(searchValue) && (statusValue === '' || status === statusFilter.toLowerCase())) ? '' : 'none';
                 });
             }
 

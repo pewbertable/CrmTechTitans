@@ -36,7 +36,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     Linkedin = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
@@ -100,7 +100,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: true),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
                     Priority = table.Column<int>(type: "INTEGER", nullable: false)
