@@ -5,6 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .required-asterisk {
+        color: red;
+    }
+</style>
+
 <div class="main-content">
     <header class="page-header">
         <h1>Create Contact</h1>
@@ -23,11 +29,13 @@
         <form asp-action="Create">
             <div class="member-card-content">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+                <p class="text-muted"><span class="required-asterisk">*</span> Indicates a required field.</p>
                 <div class="member-detail">
                     <i class="fas fa-user"></i>
                     <div class="form-group">
-                        <label asp-for="FirstName" class="control-label">First Name</label>
+                        <label asp-for="FirstName" class="control-label">
+                            First Name <span class="required-asterisk">*</span>
+                        </label>
                         <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
@@ -54,7 +62,9 @@
                 <div class="member-detail">
                     <i class="fas fa-phone"></i>
                     <div class="form-group">
-                        <label asp-for="Phone" class="control-label">Phone</label>
+                        <label asp-for="Phone" class="control-label">
+                            Phone <span class="required-asterisk">*</span>
+                        </label>
                         <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
                         <span asp-validation-for="Phone" class="text-danger"></span>
                     </div>
@@ -74,7 +84,7 @@
                     <i class="fas fa-save"></i> Create
                 </button>
                 <a asp-action="Index" class="button-2">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Back to Contacts
                 </a>
             </div>
         </form>

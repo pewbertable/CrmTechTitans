@@ -13,7 +13,7 @@
         <header class="page-header">
             <h1>All Industries</h1>
             <div class="d-flex align-items-center gap-3">
-                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
+                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new Industry to the system">
                     <i class="fas fa-user-plus"></i> Create New Industry
                 </a>
             </div>
@@ -45,8 +45,7 @@
                 <thead>
                     <tr>
                         <th onclick="sortTable(0)">Industry Name</th>
-                        <th onclick="sortTable(1)">Associated Members</th>
-                        <th onclick="sortTable(2)">NAICS Code</th>
+                        <th onclick="sortTable(1)">NAICS Code</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -55,13 +54,6 @@
                     {
                         <tr>
                             <td>@item.Name</td>
-                            <td>
-                                @(item.IndustryMembers.Any()
-                                    ? string.Join(", ", item.IndustryMembers
-                                    .Where(im => im.Member != null)
-                                    .Select(im => im.Member.MemberName))
-                                    : "No Member Associated")
-                            </td>
                             <td>@item.NAICS</td>
                             <td class="text-center action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
@@ -88,7 +80,7 @@
 
                 $('#industriesTable tbody tr').each(function () {
                     var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
-                    var naicsText = $(this).find('td:nth-child(3)').text();
+                    var naicsText = $(this).find('td:nth-child(2)').text(); // Updated to reflect the new column structure
 
                     var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
                     var naicsMatch = naicsFilter === "" || naicsText === naicsFilter;
