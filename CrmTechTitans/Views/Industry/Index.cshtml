@@ -15,7 +15,8 @@
             <div class="d-flex align-items-center gap-3">
                 <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
                     <i class="fas fa-user-plus"></i> Create New Industry
-                </a></div>
+                </a>
+            </div>
         </header>
 
         <!-- Filter Section -->
@@ -35,7 +36,6 @@
                              "-- Select NAICS Code --",
                              new { @class = "form-control" })
                 </div>
-               
             </div>
         </div>
 
@@ -44,9 +44,9 @@
             <table class="table custom-table" id="industriesTable">
                 <thead>
                     <tr>
-                        <th>Industry Name</th>
-                        <th>Associated Members</th>
-                        <th>NAICS Code</th>
+                        <th onclick="sortTable(0)">Industry Name</th>
+                        <th onclick="sortTable(1)">Associated Members</th>
+                        <th onclick="sortTable(2)">NAICS Code</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -78,6 +78,10 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Sort the table by Industry Name (first column) in ascending order by default
+            sortTable(0, "asc");
+
+            // Filter function
             function filterTable() {
                 var nameFilter = $('#SearchString').val().toLowerCase();
                 var naicsFilter = $('#NAICSCode').val();
@@ -104,5 +108,77 @@
                 filterTable();
             });
         });
+
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("industriesTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
     </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+    </style>
 }
