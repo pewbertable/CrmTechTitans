@@ -4,28 +4,98 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CrmTechTitans</title>
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/tables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cards.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
 
     @await RenderSectionAsync("Styles", required: false)
+
+    <style>
+        /* === Sidebar Styling === */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 14rem;
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 18px;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+            .sidebar a {
+                display: flex;
+                align-items: center;
+                padding: 12px;
+                font-size: 14px;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background 0.3s ease-in-out;
+            }
+
+                .sidebar a i {
+                    margin-right: 10px;
+                    font-size: 1.2rem;
+                }
+
+                .sidebar a:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                }
+
+        .sidebar-toggle {
+            position: fixed;
+            top: 15px;
+            left: 240px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: left 0.3s ease-in-out;
+            z-index: 1100;
+        }
+
+        /* === Main Content Adjustments === */
+        .content-container {
+            margin-left: 14rem;
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        /* When Sidebar is Hidden */
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+            .sidebar.hidden + .content-container {
+                margin-left: 0;
+            }
+
+            .sidebar.hidden ~ .sidebar-toggle {
+                left: 15px;
+            }
+    </style>
+
 </head>
 <body>
     <!-- Sidebar Toggle Button -->
     <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-    <p></p>
+
     <div class="main-container">
         <!-- Sidebar -->
-        <p></p>
-        <!-- Sidebar -->
         <div class="sidebar">
-            <p></p>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
                asp-area="" asp-controller="Home" asp-action="Index">
                 <i class="fas fa-home"></i> Dashboard
@@ -56,7 +126,6 @@
             </a>
         </div>
 
-
         <!-- Main Content -->
         <div class="content-container">
             <main role="main" class="pb-3">
@@ -67,6 +136,7 @@
 
     <footer class="border-top footer text-muted"></footer>
 
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -74,10 +144,45 @@
 
     <!-- Sidebar Toggle Script -->
     <script>
-        function toggleSidebar() {
+        document.addEventListener("DOMContentLoaded", function () {
             let sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('active');
-        }
+            let toggleButton = document.querySelector('.sidebar-toggle');
+
+            // Check localStorage for previous state
+            if (localStorage.getItem("sidebarState") === "closed") {
+                sidebar.classList.add("hidden");
+                toggleButton.style.left = "15px"; // Keep button in place when sidebar is closed
+            }
+
+            // Toggle sidebar visibility when clicking the button
+            toggleButton.addEventListener("click", function (event) {
+                event.stopPropagation(); // Prevent event bubbling
+                sidebar.classList.toggle("hidden");
+
+                // Move toggle button when sidebar is open/closed
+                if (sidebar.classList.contains("hidden")) {
+                    localStorage.setItem("sidebarState", "closed");
+                    toggleButton.style.left = "15px";
+                } else {
+                    localStorage.setItem("sidebarState", "open");
+                    toggleButton.style.left = "230px"; // Adjust this value based on sidebar width
+                }
+            });
+
+            // Automatically close sidebar when clicking outside of it
+            document.addEventListener("click", function (event) {
+                let isClickInsideSidebar = sidebar.contains(event.target);
+                let isClickOnToggleButton = toggleButton.contains(event.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggleButton) {
+                    sidebar.classList.add("hidden");
+                    localStorage.setItem("sidebarState", "closed");
+                    toggleButton.style.left = "15px"; // Reset toggle button position
+                }
+            });
+        });
+
     </script>
+
 </body>
 </html>
