@@ -48,10 +48,6 @@ namespace CrmTechTitans.Models.ViewModels
         [Required(ErrorMessage = "Membership Status is required")]
         public MembershipStatus MembershipStatus { get; set; }
 
-        public MemberPhoto? MemberPhoto { get; set; }
-
-        public MemberThumbnail? MemberThumbnail { get; set; }
-
         // Address Properties
         public List<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>();
 
@@ -118,10 +114,6 @@ namespace CrmTechTitans.Models.ViewModels
         [Display(Name = "Contact Type")]
         [Required(ErrorMessage = "Contact Type is required")]
         public ContactType ContactType { get; set; }
-
-        public ContactPhoto? ContactPhoto { get; set; }
-
-        public ContactThumbnail? ContactThumbnail { get; set; }
     }
 
     public class IndustryViewModel

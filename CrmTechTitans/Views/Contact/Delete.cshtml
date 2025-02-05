@@ -14,20 +14,7 @@
     <div class="member-card">
         <div class="member-card-header">
             <div class="member-avatar">
-                       @{
-        if (Model.ContactPhoto?.Content != null)
-        {
-            @:<div class="member-photo">
-                string imageBase64 = Convert.ToBase64String(Model.ContactPhoto.Content);
-                string imageSrc = string.Format("data:" + Model.ContactPhoto.MimeType + ";base64,{0}", imageBase64);
-                <img src="@imageSrc" alt="Profile Picture of @Model.FullFormalName" title="Profile Picture of @Model.FullFormalName" class="img-fluid rounded" />
-            @:</div><hr />
-					}
-					else
-					{
-						<i class="fas fa-user"></i>
-					}
-				}
+                <i class="fas fa-user-times"></i>
             </div>
             <div class="member-info">
                 <h2 class="member-name">@Model.FirstName @Model.LastName</h2>

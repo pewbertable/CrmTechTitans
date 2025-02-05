@@ -35,9 +35,9 @@
             <table class="table custom-table" id="addressTable">
                 <thead>
                     <tr>
-                        <th>Members</th>
-                        <th>Municipality</th>
-                        <th>Province</th>
+                        <th onclick="sortTable(0)">Members</th>
+                        <th onclick="sortTable(1)">Municipality</th>
+                        <th onclick="sortTable(2)">Province</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -68,11 +68,69 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            // Filter function
+        // Sort table function
+         function sortTable(columnIndex, initialDirection = "asc") {
+             var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+             table = document.getElementById("addressTable");
+             switching = true;
+             dir = initialDirection; ;
+
+             // Determine the current sorting direction
+             if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                 dir = "desc";
+             } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                 dir = "asc";
+             }
+
+             // Remove sorting classes from all headers
+             for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                 table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+             }
+
+             // Add sorting class to the clicked header
+             table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+             // Perform sorting
+             while (switching) {
+                 switching = false;
+                 rows = table.rows;
+                 for (i = 1; i < (rows.length - 1); i++) {
+                     shouldSwitch = false;
+                     x = rows[i].getElementsByTagName("td")[columnIndex];
+                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                     if (dir === "asc") {
+                         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                             shouldSwitch = true;
+                             break;
+                         }
+                     } else if (dir === "desc") {
+                         if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                             shouldSwitch = true;
+                             break;
+                         }
+                     }
+                 }
+
+                 if (shouldSwitch) {
+                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                     switching = true;
+                     switchcount++;
+                 } else if (switchcount === 0 && dir === "asc") {
+                     dir = "desc";
+                     switching = true;
+                 }
+             }
+         }
+
+         $(document).ready(function () {
+            // Filter table based on input values
             function filterTable() {
                 var municipalityFilter = $('#municipalityFilter').val().toLowerCase();
                 var provinceFilter = $('#provinceFilter').val().toLowerCase();
+
+                console.log("Municipality Filter:", municipalityFilter);
+                console.log("Province Filter:", provinceFilter);
 
                 $('#addressTable tbody tr').each(function () {
                     var municipalityText = $(this).find('td:nth-child(2)').text().toLowerCase();
@@ -88,12 +146,36 @@
             // Attach filter function to input events
             $('#municipalityFilter, #provinceFilter').on('input', filterTable);
 
-            // Reset filters
-            $('#resetFilters').on('click', function () {
-                $('#municipalityFilter').val('');
-                $('#provinceFilter').val('');
-                filterTable();
+            // Initialize Bootstrap Tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+
+
+            // Attach filter function to input events
+            $('#municipalityFilter, #provinceFilter').on('input', filterTable);
+
+           // Initialize Bootstrap Tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        
+
         });
     </script>
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+    </style>
 }

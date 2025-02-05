@@ -14,28 +14,13 @@
     <div class="member-card">
         <div class="member-card-header">
             <div class="member-avatar">
-                @{
-    var hasPicture = (Model.MemberPhoto?.Content != null);
-    if (hasPicture)
-    {
-        @:<div>
-            string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
-            string imageSrc = string.Format("data:" + Model.MemberPhoto.MimeType + ";base64,{0}", imageBase64);
-            <img src="@imageSrc" alt="Profile Picture of @Model.MemberName" 
-                title="Profile Picture of @Model.MemberName" class="img-fluid rounded" />
-        @:</div><hr />
-    }else
-    {
-        <i class="fas fa-user-edit"></i>
-    }
-                 }
-               
+                <i class="fas fa-user-edit"></i>
             </div>
             <div class="member-info">
                 <h2 class="member-name">Edit Member Information</h2>
             </div>
         </div>
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <form asp-action="Edit" method="post">
             <div class="member-card-content">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ID" />
@@ -49,30 +34,6 @@
                         <span asp-validation-for="MemberName" class="text-danger"></span>
                     </div>
                 </div>
-                 <div class="member-detail">
-        @{
-            if (hasPicture)
-            {
-                <div class="form-group">
-                    <div class="form-check m-3">
-                        <input asp-for="MemberPhoto" class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
-                        <label asp-for="MemberPhoto" class="form-check-label" for="chkRemoveMemberImage">
-                        <strong>Check to remove Image</strong>
-                        </label>
-                    </div>
-                </div>
-            }
-        }
-                  </div>
-
-                  <div class="member-detail">
-                  <div class="form-group">
-                <label asp-for="MemberPhoto" class="control-label">Member Picture:</label>
-                <div class="input-group mb-3">
-                    <input asp-for="MemberPhoto" type="file" class="form-control" name="memberPicture" id="memberPicture">
-                </div>
-                </div>
-                  </div>
 
                 <div class="member-detail">
                     <i class="fas fa-id-card"></i>
