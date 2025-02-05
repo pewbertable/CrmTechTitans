@@ -1,5 +1,6 @@
 ﻿using CrmTechTitans.Data;
 using CrmTechTitans.Models;
+using CrmTechTitans.Models.Enumerations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,31 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Opportunity
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Status? statusFilter, PriorityType? priorityFilter)
         {
-            return View(await _context.Opportunities.Include(c => c.MemberOpportunities)
-            .ThenInclude(mc => mc.Member).ToListAsync());
+            var query = _context.Opportunities.Include(c => c.MemberOpportunities)
+                .ThenInclude(mc => mc.Member)
+                .AsQueryable();
+
+            if (statusFilter.HasValue)
+            {
+                query = query.Where(o => o.Status == statusFilter.Value);
+            }
+
+            if (priorityFilter.HasValue)
+            {
+                query = query.Where(o => o.Priority == priorityFilter.Value);
+            }
+
+            var opportunities = await query.ToListAsync();
+
+            // Pass filters to ViewBag to retain selection in the UI
+            ViewBag.StatusFilter = statusFilter;
+            ViewBag.PriorityFilter = priorityFilter;
+
+            return View(opportunities);
         }
+
 
         // GET: Opportunity/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -95,11 +116,15 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(opportunity);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Opportunity edited successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "Opportunity edited failed";
+
                     if (!OpportunityExists(opportunity.ID))
                     {
+                        
                         return NotFound();
                     }
                     else

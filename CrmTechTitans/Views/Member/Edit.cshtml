@@ -1,101 +1,258 @@
-﻿@model CrmTechTitans.Models.Member
+﻿@using CrmTechTitans.Models.Enumerations
+@model CrmTechTitans.Models.ViewModels.MemberCreateViewModel
 
 @{
     ViewData["Title"] = "Edit Member";
 }
 
 <div class="main-content">
-    <!-- Page Header -->
-    <div class="page-header text-center">
+    <header class="page-header">
         <h1>Edit Member</h1>
         <p class="text-muted">Modify the details of the selected member. Ensure all details are correct before saving.</p>
-    </div>
+    </header>
 
-    <!-- Edit Form Section -->
-    <div class="details-section bg-white p-4 rounded shadow-sm mx-auto" style="max-width: 800px;">
-        <h4 class="text-danger mb-4 text-center">Edit Member Information</h4>
-        <form asp-action="Edit" class="form-horizontal">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-            <input type="hidden" asp-for="ID" />
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                @{
+    var hasPicture = (Model.MemberPhoto?.Content != null);
+    if (hasPicture)
+    {
+        @:<div>
+            string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
+            string imageSrc = string.Format("data:" + Model.MemberPhoto.MimeType + ";base64,{0}", imageBase64);
+            <img src="@imageSrc" alt="Profile Picture of @Model.MemberName" 
+                title="Profile Picture of @Model.MemberName" class="img-fluid rounded" />
+        @:</div><hr />
+    }else
+    {
+        <i class="fas fa-user-edit"></i>
+    }
+                 }
+               
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">Edit Member Information</h2>
+            </div>
+        </div>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="member-card-content">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ID" />
 
-            <table class="table table-borderless table-sm">
-                <tbody>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Name:</th>
-                        <td class="col-sm-9">
-                            <input asp-for="MemberName" class="form-control" placeholder="Enter Member Name" />
-                            <span asp-validation-for="MemberName" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Membership Type:</th>
-                        <td class="col-sm-9">
-                            <select asp-for="MembershipType" class="form-control">
-                            </select>
-                            <span asp-validation-for="MembershipType" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Contacted By:</th>
-                        <td class="col-sm-9">
-                            <input asp-for="ContactedBy" class="form-control" placeholder="Enter Contact Person" />
-                            <span asp-validation-for="ContactedBy" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Company Size:</th>
-                        <td class="col-sm-9">
-                            <select asp-for="CompanySize" class="form-control">
-                                <!-- Populate dynamically -->
-                            </select>
-                            <span asp-validation-for="CompanySize" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="text-end text-danger fw-bold pe-3">Website:</th>
-                        <td>
-                            <a href="@Model.CompanyWebsite" target="_blank" rel="noopener noreferrer" class="web-link">
-                                <i class="fas fa-external-link-alt me-1"></i>@Html.DisplayFor(model => model.CompanyWebsite)
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Member Since:</th>
-                        <td class="col-sm-9">
-                            <input asp-for="MemberSince" class="form-control" type="date" />
-                            <span asp-validation-for="MemberSince" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Last Contact Date:</th>
-                        <td class="col-sm-9">
-                            <input asp-for="LastContactDate" class="form-control" type="date" />
-                            <span asp-validation-for="LastContactDate" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Notes:</th>
-                        <td class="col-sm-9">
-                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Enter any additional notes"></textarea>
-                            <span asp-validation-for="Notes" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="col-sm-3 text-end text-danger fw-bold">Membership Status:</th>
-                        <td class="col-sm-9">
-                            <select asp-for="MembershipStatus" class="form-control">
-                                <!-- Populate dynamically -->
-                            </select>
-                            <span asp-validation-for="MembershipStatus" class="text-danger"></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                <!-- Member Details -->
+                <div class="member-detail">
+                    <i class="fas fa-user"></i>
+                    <div class="form-group">
+                        <label asp-for="MemberName" class="control-label">Name</label>
+                        <input asp-for="MemberName" class="form-control" placeholder="Enter Member Name" />
+                        <span asp-validation-for="MemberName" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="member-detail">
+        @{
+            if (hasPicture)
+            {
+                <div class="form-group">
+                    <div class="form-check m-3">
+                        <input asp-for="MemberPhoto" class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
+                        <label asp-for="MemberPhoto" class="form-check-label" for="chkRemoveMemberImage">
+                        <strong>Check to remove Image</strong>
+                        </label>
+                    </div>
+                </div>
+            }
+        }
+                  </div>
 
-            <!-- Button Section -->
-            <div class="button-container mt-4 text-end">
-                <input type="submit" value="Save" class="btn btn-danger btn-edit me-2" />
-                <a asp-action="Index" class="btn btn-secondary">
+                  <div class="member-detail">
+                  <div class="form-group">
+                <label asp-for="MemberPhoto" class="control-label">Member Picture:</label>
+                <div class="input-group mb-3">
+                    <input asp-for="MemberPhoto" type="file" class="form-control" name="memberPicture" id="memberPicture">
+                </div>
+                </div>
+                  </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-id-card"></i>
+                    <div class="form-group">
+                        <label asp-for="MembershipType" class="control-label">Membership Type</label>
+                        <select asp-for="MembershipType" class="form-control" asp-items="Html.GetEnumSelectList<MembershipType>()">
+                            <option value="">Select Membership Type</option>
+                        </select>
+                        <span asp-validation-for="MembershipType" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-user-tie"></i>
+                    <div class="form-group">
+                        <label asp-for="ContactedBy" class="control-label">Contacted By</label>
+                        <input asp-for="ContactedBy" class="form-control" placeholder="Enter Contact Person" />
+                        <span asp-validation-for="ContactedBy" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-building"></i>
+                    <div class="form-group">
+                        <label asp-for="CompanySize" class="control-label">Company Size</label>
+                        <select asp-for="CompanySize" class="form-control" asp-items="Html.GetEnumSelectList<CompanySize>()">
+                            <option value="">Select Company Size</option>
+                        </select>
+                        <span asp-validation-for="CompanySize" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-globe"></i>
+                    <div class="form-group">
+                        <label asp-for="CompanyWebsite" class="control-label">Website</label>
+                        <input asp-for="CompanyWebsite" class="form-control" placeholder="Enter Company Website" />
+                        <span asp-validation-for="CompanyWebsite" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="form-group">
+                        <label asp-for="MemberSince" class="control-label">Member Since</label>
+                        <input asp-for="MemberSince" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="MemberSince" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-phone"></i>
+                    <div class="form-group">
+                        <label asp-for="LastContactDate" class="control-label">Last Contact Date</label>
+                        <input asp-for="LastContactDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="LastContactDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-sticky-note"></i>
+                    <div class="form-group">
+                        <label asp-for="Notes" class="control-label">Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Enter any additional notes"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="form-group">
+                        <label asp-for="MembershipStatus" class="control-label">Membership Status</label>
+                        <select asp-for="MembershipStatus" class="form-control" asp-items="Html.GetEnumSelectList<MembershipStatus>()">
+                            <option value="">Select Membership Status</option>
+                        </select>
+                        <span asp-validation-for="MembershipStatus" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Addresses Section -->
+                <div class="member-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Addresses</h3>
+                    @for (int i = 0; i < Model.Addresses.Count; i++)
+                    {
+                        <div class="address-form">
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].Street" class="control-label">Street</label>
+                                <input asp-for="Addresses[i].Street" class="form-control" placeholder="Enter Street Address" />
+                                <span asp-validation-for="Addresses[i].Street" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].City" class="control-label">City</label>
+                                <input asp-for="Addresses[i].City" class="form-control" placeholder="Enter City" />
+                                <span asp-validation-for="Addresses[i].City" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].Province" class="control-label">Province</label>
+                                <select asp-for="Addresses[i].Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()">
+                                    <option value="">Select Province</option>
+                                </select>
+                                <span asp-validation-for="Addresses[i].Province" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].PostalCode" class="control-label">Postal Code</label>
+                                <input asp-for="Addresses[i].PostalCode" class="form-control" placeholder="Enter Postal Code" />
+                                <span asp-validation-for="Addresses[i].PostalCode" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Addresses[i].AddressType" class="control-label">Address Type</label>
+                                <select asp-for="Addresses[i].AddressType" class="form-control" asp-items="Html.GetEnumSelectList<AddressType>()">
+                                    <option value="">Select Address Type</option>
+                                </select>
+                                <span asp-validation-for="Addresses[i].AddressType" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    <button type="button" id="add-address" class="button-1">Add Address</button>
+                </div>
+
+                <!-- Contacts Section -->
+                <div class="member-detail">
+                    <i class="fas fa-address-book"></i>
+                    <h3>Contacts</h3>
+                    @for (int i = 0; i < Model.Contacts.Count; i++)
+                    {
+                        <div class="contact-form">
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].FirstName" class="control-label">First Name</label>
+                                <input asp-for="Contacts[i].FirstName" class="form-control" placeholder="Enter First Name" />
+                                <span asp-validation-for="Contacts[i].FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].LastName" class="control-label">Last Name</label>
+                                <input asp-for="Contacts[i].LastName" class="form-control" placeholder="Enter Last Name" />
+                                <span asp-validation-for="Contacts[i].LastName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].Email" class="control-label">Email</label>
+                                <input asp-for="Contacts[i].Email" class="form-control" placeholder="Enter Email" />
+                                <span asp-validation-for="Contacts[i].Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].Phone" class="control-label">Phone</label>
+                                <input asp-for="Contacts[i].Phone" class="form-control" placeholder="Enter Phone Number" />
+                                <span asp-validation-for="Contacts[i].Phone" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Contacts[i].ContactType" class="control-label">Contact Type</label>
+                                <select asp-for="Contacts[i].ContactType" class="form-control" asp-items="Html.GetEnumSelectList<ContactType>()">
+                                    <option value="">Select Contact Type</option>
+                                </select>
+                                <span asp-validation-for="Contacts[i].ContactType" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    <button type="button" id="add-contact" class="button-1">Add Contact</button>
+                </div>
+
+                <!-- Industries Section -->
+                <div class="member-detail">
+                    <i class="fas fa-industry"></i>
+                    <h3>Industries</h3>
+                    <div class="form-group">
+                        <label>Select Industries</label>
+                        <select asp-for="SelectedIndustryIds" class="form-control" multiple>
+                            @foreach (var industry in Model.AvailableIndustries)
+                            {
+                                <option value="@industry.ID">@industry.Name (NAICS: @industry.NAICS)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="SelectedIndustryIds" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="member-card-footer">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="button-2">
                     <i class="fas fa-arrow-left"></i> Back to List
                 </a>
             </div>
@@ -104,6 +261,101 @@
 </div>
 
 @section Scripts {
+    <script>
+        // Add Contact
+        document.getElementById('add-contact').addEventListener('click', function () {
+            const contactForm = document.createElement('div');
+            contactForm.classList.add('contact-form');
+            contactForm.innerHTML = `
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].FirstName" class="form-control" placeholder="Enter First Name" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].LastName" class="form-control" placeholder="Enter Last Name" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].Email" class="form-control" placeholder="Enter Email" />
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input name="Contacts[${document.querySelectorAll('.contact-form').length}].Phone" class="form-control" placeholder="Enter Phone Number" />
+                </div>
+                <div class="form-group">
+                    <label>Contact Type</label>
+                    <select name="Contacts[${document.querySelectorAll('.contact-form').length}].ContactType" class="form-control">
+                        <option value="">Select Contact Type</option>
+        @foreach (var value in Enum.GetValues(typeof(ContactType)))
+        {
+                                <option value="@value">@value</option>
+        }
+                    </select>
+                </div>
+            `;
+            document.querySelector('#add-contact').before(contactForm);
+        });
+
+         // Add Address
+        document.getElementById('add-address').addEventListener('click', function () {
+            const addressForm = document.createElement('div');
+            addressForm.classList.add('address-form');
+            addressForm.innerHTML = `
+                <div class="form-group">
+                    <label>Street</label>
+                    <input name="Addresses[${document.querySelectorAll('.address-form').length}].Street" class="form-control" placeholder="Enter Street Address" />
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input name="Addresses[${document.querySelectorAll('.address-form').length}].City" class="form-control" placeholder="Enter City" />
+                </div>
+                <div class="form-group">
+                    <label>Province</label>
+                    <select name="Addresses[${document.querySelectorAll('.address-form').length}].Province" class="form-control">
+                        <option value="">Select Province</option>
+        @foreach (var value in Enum.GetValues(typeof(Province)))
+        {
+                                <option value="@value">@value</option>
+        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Postal Code</label>
+                    <input name="Addresses[${document.querySelectorAll('.address-form').length}].PostalCode" class="form-control" placeholder="Enter Postal Code" />
+                </div>
+                <div class="form-group">
+                    <label>Address Type</label>
+                    <select name="Addresses[${document.querySelectorAll('.address-form').length}].AddressType" class="form-control">
+                        <option value="">Select Address Type</option>
+        @foreach (var value in Enum.GetValues(typeof(AddressType)))
+        {
+                                <option value="@value">@value</option>
+        }
+                    </select>
+                </div>
+            `;
+            document.querySelector('#add-address').before(addressForm);
+        });
+
+        // Add Industry
+        document.getElementById('add-industry').addEventListener('click', function () {
+            const industryForm = document.createElement('div');
+            industryForm.classList.add('industry-form');
+            industryForm.innerHTML = `
+                <div class="form-group">
+                    <label>Industry Name</label>
+                    <input name="Industries[${document.querySelectorAll('.industry-form').length}].Name" class="form-control" placeholder="Enter Industry Name" />
+                </div>
+                <div class="form-group">
+                    <label>NAICS Code</label>
+                    <input name="Industries[${document.querySelectorAll('.industry-form').length}].NAICS" class="form-control" placeholder="Enter NAICS Code" />
+                </div>
+            `;
+            document.querySelector('#add-industry').before(industryForm);
+        });
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

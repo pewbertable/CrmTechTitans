@@ -1,58 +1,99 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Address>
 
 @{
-    ViewData["Title"] = "Address Index";
+    ViewData["Title"] = "All Addresses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<partial name="_Notification" />
 
-<link rel="stylesheet" href="~/css/tables.css" />
 
-<div class="container">
-    <h1>Address Index</h1>
-    <div class="create-new">
-        <a asp-action="Create">Create New</a>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Member</th>
-                    <th>@Html.DisplayNameFor(model => model.Street)</th>
-                    <th>@Html.DisplayNameFor(model => model.City)</th>
-                    <th>@Html.DisplayNameFor(model => model.Province)</th>
-                    <th>@Html.DisplayNameFor(model => model.PostalCode)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Municipalities</h1>
+        </header>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="row">
+                <!-- Filter by Municipality -->
+                <div class="col-md-4">
+                    <label for="municipalityFilter" class="filter-label">Search by Municipality:</label>
+                    <input type="text" id="municipalityFilter" class="form-control search-input" placeholder="Enter municipality name">
+                </div>
+
+                <!-- Filter by Province -->
+                <div class="col-md-4">
+                    <label for="provinceFilter" class="filter-label">Search by Province:</label>
+                    <input type="text" id="provinceFilter" class="form-control search-input" placeholder="Enter province name">
+                </div>
+            </div>
+        </div>
+
+        <section class="members-table-container">
+            <table class="table custom-table" id="addressTable">
+                <thead>
                     <tr>
-                        <td>
-                            @if (item.MemberAddresses.Any())
-                            {
-                                @string.Join(", ", item.MemberAddresses
-                                         .Where(ma => ma.Member != null)
-                                         .Select(ma => ma.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span class="no-data">No Member associated</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Street)</td>
-                        <td>@Html.DisplayFor(modelItem => item.City)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Province)</td>
-                        <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
-                        <td>
-                            <div class="actions">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
-                            </div>
-                        </td>
+                        <th>Members</th>
+                        <th>Municipality</th>
+                        <th>Province</th>
+                        <th class="text-center">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @(item.MemberAddresses.Any()
+                                    ? string.Join(", ", item.MemberAddresses
+                                    .Where(ma => ma.Member != null)
+                                    .Select(ma => ma.Member.MemberName))
+                                    : "No Member Associated")
+                            </td>
+                            <td>@item.City</td>
+                            <td>@item.Province</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Filter function
+            function filterTable() {
+                var municipalityFilter = $('#municipalityFilter').val().toLowerCase();
+                var provinceFilter = $('#provinceFilter').val().toLowerCase();
+
+                $('#addressTable tbody tr').each(function () {
+                    var municipalityText = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var provinceText = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var municipalityMatch = municipalityFilter === "" || municipalityText.includes(municipalityFilter);
+                    var provinceMatch = provinceFilter === "" || provinceText.includes(provinceFilter);
+
+                    $(this).toggle(municipalityMatch && provinceMatch);
+                });
+            }
+
+            // Attach filter function to input events
+            $('#municipalityFilter, #provinceFilter').on('input', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function () {
+                $('#municipalityFilter').val('');
+                $('#provinceFilter').val('');
+                filterTable();
+            });
+        });
+    </script>
+}

@@ -39,11 +39,16 @@ namespace CrmTechTitans.Models
         [RegularExpression("^\\d{10}$", ErrorMessage = "Please enter a valid 10-digit phone number (no spaces).")]
         [DataType(DataType.PhoneNumber)]
         [MaxLength(10)]
+        [Required(ErrorMessage = "FirstName is required")]
         public string? Phone { get; set; }
 
         [Display(Name = "Linkedin")]
         [StringLength(100, ErrorMessage = "Linkedin can't be longer than 100 characters")]
         public string? Linkedin { get; set; }
+
+        public ContactPhoto? ContactPhoto { get; set; }
+
+        public ContactThumbnail? ContactThumbnail { get; set; }
 
         public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>();
 

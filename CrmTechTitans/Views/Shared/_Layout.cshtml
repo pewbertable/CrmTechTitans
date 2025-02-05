@@ -1,51 +1,63 @@
-﻿﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <title>@ViewData["Title"] - CrmTechTitans</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/cards.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+    <p></p>
     <div class="main-container">
+        <!-- Sidebar -->
+        <p></p>
+        <!-- Sidebar -->
         <div class="sidebar">
-            <div class="logo">
-                <img src="/images/logo.png" alt="Niagara Industry Association Logo" />
-            </div>
+            <p></p>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+               asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Member" ? "active" : "")"
-               asp-area=""
-               asp-controller="Member"
-               asp-action="Index">
-                Members
+               asp-area="" asp-controller="Member" asp-action="Index">
+                <i class="fas fa-users"></i> Members
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
-               asp-area=""
-               asp-controller="Contact"
-               asp-action="Index">
-                Contacts
+               asp-area="" asp-controller="Contact" asp-action="Index">
+                <i class="fas fa-address-book"></i> Contacts
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
-               asp-area=""
-               asp-controller="Address"
-               asp-action="Index">
-                Addresses
+               asp-area="" asp-controller="Address" asp-action="Index">
+                <i class="fas fa-map-marker-alt"></i> Municipalities
             </a>
             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
-               asp-area=""
-               asp-controller="Opportunity"
-               asp-action="Index">
-                Opportunities
+               asp-area="" asp-controller="Opportunity" asp-action="Index">
+                <i class="fas fa-briefcase"></i> Opportunities
             </a>
-
-            <a class="nav-link text-dark" asp-area="" asp-controller="Industry" asp-action="Index">All Industry</a>
-
-            <partial name="_LoginPartial" />
-
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
+               asp-area="" asp-controller="Interaction" asp-action="Index">
+                <i class="fas fa-comments"></i> Interactions
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
+               asp-area="" asp-controller="Industry" asp-action="Index">
+                <i class="fas fa-industry"></i> Industries
+            </a>
         </div>
 
+
+        <!-- Main Content -->
         <div class="content-container">
             <main role="main" class="pb-3">
                 @RenderBody()
@@ -53,15 +65,19 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - CrmTechTitans | <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <footer class="border-top footer text-muted"></footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        function toggleSidebar() {
+            let sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

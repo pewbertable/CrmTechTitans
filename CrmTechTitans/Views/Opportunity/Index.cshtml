@@ -1,54 +1,74 @@
-﻿@model IEnumerable<CrmTechTitans.Models.Opportunity>
+﻿@using CrmTechTitans.Models.Enumerations
+@model IEnumerable<CrmTechTitans.Models.Opportunity>
 
 @{
-    ViewData["Title"] = "Opportunity Index";
+    ViewData["Title"] = "All Opportunities";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/tables.css" />
+<partial name="_Notification" />
 
-<div class="container">
-    <h1>Opportunity Index</h1>
-    <div class="create-new">
-        <a asp-action="Create">Create New</a>
-    </div>
-    <div class="table-container">
-        <table>
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Opportunities</h1>
+            <div class="d-flex align-items-center gap-3">
+                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new Opportunity to the system">
+                    <i class="fas fa-user-plus"></i> Create New Opportunity
+                </a>
+            </div>
+        </header>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="row">
+                <!-- Status Filter -->
+                <div class="col-md-4">
+                    <label for="statusFilter">Filter by Status:</label>
+                    <select id="statusFilter" class="form-control">
+                        <option value="">All</option>
+                        @foreach (var status in Enum.GetValues(typeof(Status)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                </div>
+                <p></p>
+                <!-- Priority Filter -->
+                <div class="col-md-4">
+                    <label for="priorityFilter">Filter by Priority:</label>
+                    <select id="priorityFilter" class="form-control">
+                        <option value="">All</option>
+                        @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
+                        {
+                            <option value="@priority">@priority</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunities Table -->
+        <table class="table custom-table" id="opportunitiesTable">
             <thead>
                 <tr>
-                    <th>Member</th>
-                    <th>@Html.DisplayNameFor(model => model.Title)</th>
-                    <th>@Html.DisplayNameFor(model => model.Status)</th>
-                    <th>@Html.DisplayNameFor(model => model.Description)</th>
-                    <th>@Html.DisplayNameFor(model => model.Priority)</th>
-                    <th>Actions</th>
+                    <th onclick="sortTable(0)">Title</th>
+                    <th onclick="sortTable(1)">Status</th>
+                    <th onclick="sortTable(2)">Priority</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>
-                            @if (item.MemberOpportunities.Any())
-                            {
-                                @string.Join(", ", item.MemberOpportunities
-                                         .Where(mo => mo.Member != null)
-                                         .Select(mo => mo.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span class="no-data">No Member associated</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Priority)</td>
-                        <td>
-                            <div class="actions">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
-                            </div>
+                        <td>@item.Title</td>
+                        <td>@item.Status</td>
+                        <td>@item.Priority</td>
+                        <td class="text-center action-buttons">
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
                         </td>
                     </tr>
                 }
@@ -56,3 +76,114 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Sort the table by Title (first column) by default
+            sortTable(0, "asc");
+
+            // Filter function
+            function filterTable() {
+                var statusFilter = $('#statusFilter').val().toLowerCase();
+                var priorityFilter = $('#priorityFilter').val().toLowerCase();
+
+                $('#opportunitiesTable tbody tr').each(function () {
+                    var rowStatus = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var rowPriority = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var statusMatch = statusFilter === "" || rowStatus === statusFilter;
+                    var priorityMatch = priorityFilter === "" || rowPriority === priorityFilter;
+
+                    if (statusMatch && priorityMatch) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Attach filter function to input events
+            $('#statusFilter, #priorityFilter').on('change', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function (e) {
+                e.preventDefault(); // Prevent form submission
+                $('#statusFilter, #priorityFilter').val(''); // Clear filter values
+                filterTable(); // Reapply filtering to show all rows
+            });
+        });
+
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("opportunitiesTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+    </style>
+}

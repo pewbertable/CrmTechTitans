@@ -1,0 +1,88 @@
+﻿@model IEnumerable<CrmTechTitans.Models.Interaction>
+
+@{
+    ViewData["Title"] = "All Interactions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_Notification" />
+
+
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="page-header">
+
+            <h1>All Interactions</h1>
+            <div class="d-flex align-items-center gap-3">
+              <!--  <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
+                    <i class="fas fa-user-plus"></i> Create New Interaction
+                </a>
+            </div>-->
+        </header>
+
+            <!-- Search Input -->
+        <div class="filter-container">
+            <label for="searchInput" class="search-label">Filter interactions by member name:</label>
+                <input type="text" id="searchInput" class="form-control search-input" placeholder="Search by Member Name..." onkeyup="filterTable()">
+            </div>
+            <p></p>
+       
+        <section class="members-table-container">
+            <table class="table custom-table" id="interactionTable">
+                <thead>
+                    <tr>
+                        <th>Associated Members</th>
+                        <th>Interaction</th>
+                        <th>Date</th>
+                        <th>Person</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="member-name">
+                                @(item.InteractionMembers.Any()
+                                    ? string.Join(", ", item.InteractionMembers
+                                    .Where(im => im.Member != null)
+                                    .Select(im => im.Member.MemberName))
+                                    : "No Member Associated")
+                            </td>
+                            <td>@item.interaction</td>
+                            <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                            <td>@item.Person</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
+                                    Edit
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
+    </div>
+</div>
+
+<!-- JavaScript for Client-Side Filtering -->
+<script>
+    function filterTable() {
+        var input, filter, table, rows, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("interactionTable");
+        rows = table.getElementsByTagName("tr");
+
+        for (i = 1; i < rows.length; i++) {
+            td = rows[i].getElementsByClassName("member-name")[0]; // Get member name column
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                rows[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+</script>

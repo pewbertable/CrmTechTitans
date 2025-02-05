@@ -1,54 +1,176 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Industry>
 
 @{
-    ViewData["Title"] = "Industry Index";
+    ViewData["Title"] = "All Industries";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/tables.css" />
+<partial name="_Notification" />
 
-<div class="container">
-    <h1>Industry Index</h1>
-    <div class="create-new">
-        <a asp-action="Create">Create New</a>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.Name)</th>
-                    <th>Member</th>
-                    <th>@Html.DisplayNameFor(model => model.NAICS)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+<div class="crm-container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Industries</h1>
+            <div class="d-flex align-items-center gap-3">
+                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new Industry to the system">
+                    <i class="fas fa-user-plus"></i> Create New Industry
+                </a>
+            </div>
+        </header>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="row">
+                <!-- Search by Industry Name -->
+                <div class="col-md-4">
+                    <label for="SearchString" class="filter-label">Search Industry Name:</label>
+                    <input type="text" id="SearchString" class="form-control search-input" placeholder="Enter industry name">
+                </div>
+                <p></p>
+                <!-- Filter by NAICS Code -->
+                <div class="col-md-4">
+                    <label for="NAICSCode" class="filter-label">Filter by NAICS Code:</label>
+                    @Html.DropDownList("NAICSCode",
+                             ViewBag.NAICSCodeList as SelectList,
+                             "-- Select NAICS Code --",
+                             new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Table View for Industries -->
+        <section class="members-table-container">
+            <table class="table custom-table" id="industriesTable">
+                <thead>
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td>
-                            @if (item.IndustryMembers.Any())
-                            {
-                                @string.Join(", ", item.IndustryMembers
-                                         .Where(im => im.Member != null)
-                                         .Select(im => im.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span class="no-data">No Member associated</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.NAICS)</td>
-                        <td>
-                            <div class="actions">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
-                            </div>
-                        </td>
+                        <th onclick="sortTable(0)">Industry Name</th>
+                        <th onclick="sortTable(1)">NAICS Code</th>
+                        <th class="text-center">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.NAICS</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Sort the table by Industry Name (first column) in ascending order by default
+            sortTable(0, "asc");
+
+            // Filter function
+            function filterTable() {
+                var nameFilter = $('#SearchString').val().toLowerCase();
+                var naicsFilter = $('#NAICSCode').val();
+
+                $('#industriesTable tbody tr').each(function () {
+                    var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
+                    var naicsText = $(this).find('td:nth-child(2)').text(); // Updated to reflect the new column structure
+
+                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                    var naicsMatch = naicsFilter === "" || naicsText === naicsFilter;
+
+                    $(this).toggle(nameMatch && naicsMatch);
+                });
+            }
+
+            // Attach filter function to input events
+            $('#SearchString, #NAICSCode').on('input change', filterTable);
+
+            // Reset filters
+            $('#resetFilters').on('click', function (e) {
+                e.preventDefault();
+                $('#SearchString').val('');
+                $('#NAICSCode').val('');
+                filterTable();
+            });
+        });
+
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("industriesTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+    </style>
+}

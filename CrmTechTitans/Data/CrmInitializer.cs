@@ -100,7 +100,7 @@ namespace CrmTechTitans.Data
                                    MemberSince = new DateTime(2018, 5, 12),
                                    LastContactDate = new DateTime(2024, 1, 10),
                                    Notes = "Key partner for software development.",
-                                   MembershipStatus = MembershipStatus.Active
+                                   MembershipStatus = MembershipStatus.GoodStanding
                                },
                                 new Member
                                 {
@@ -114,7 +114,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2015, 8, 25),
                                     LastContactDate = new DateTime(2023, 11, 20),
                                     Notes = "Major supplier of renewable energy.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.OutStanding
                                 },
                                 new Member
                                 {
@@ -128,7 +128,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2017, 3, 10),
                                     LastContactDate = new DateTime(2024, 1, 5),
                                     Notes = "Innovators in green technology solutions.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.Cancelled
                                 },
                                 new Member
                                 {
@@ -142,7 +142,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2020, 7, 18),
                                     LastContactDate = new DateTime(2023, 12, 22),
                                     Notes = "Local courier and delivery services.",
-                                    MembershipStatus = MembershipStatus.Inactive
+                                    MembershipStatus = MembershipStatus.GoodStanding
                                 },
                                 new Member
                                 {
@@ -156,7 +156,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2012, 2, 6),
                                     LastContactDate = new DateTime(2023, 10, 30),
                                     Notes = "Leading healthcare services provider.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.GoodStanding
                                 },
                                 new Member
                                 {
@@ -170,7 +170,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2016, 9, 14),
                                     LastContactDate = new DateTime(2024, 1, 12),
                                     Notes = "Global leader in electronic components.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.OutStanding
                                 },
                                 new Member
                                 {
@@ -184,7 +184,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2019, 6, 22),
                                     LastContactDate = new DateTime(2024, 1, 8),
                                     Notes = "Supplier of auto parts to regional stores.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.OutStanding
                                 },
                                 new Member
                                 {
@@ -198,7 +198,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2021, 4, 4),
                                     LastContactDate = new DateTime(2023, 12, 15),
                                     Notes = "Specializing in local organic food products.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.Cancelled
                                 },
                                 new Member
                                 {
@@ -212,7 +212,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2014, 10, 19),
                                     LastContactDate = new DateTime(2023, 11, 30),
                                     Notes = "Leading provider of international shipping solutions.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.Cancelled
                                 },
                                 new Member
                                 {
@@ -226,7 +226,7 @@ namespace CrmTechTitans.Data
                                     MemberSince = new DateTime(2013, 1, 9),
                                     LastContactDate = new DateTime(2023, 12, 10),
                                     Notes = "Cloud services and data hosting provider.",
-                                    MembershipStatus = MembershipStatus.Active
+                                    MembershipStatus = MembershipStatus.GoodStanding
                                 }
 
                         );
@@ -520,6 +520,95 @@ namespace CrmTechTitans.Data
                         );
                         context.SaveChanges();
                     }
+
+                    //Seed data for Interaction table (Ankirat Kaur)
+                    if (!context.Interactions.Any())
+                    {
+                        context.Interactions.AddRange(
+                            new Interaction
+                            {
+                                interaction = "Initial Consultation Call",
+                                Date = DateTime.Now.AddDays(-30),
+                                Person = "John Doe"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Technical Support Discussion",
+                                Date = DateTime.Now.AddDays(-25),
+                                Person = "Jane Smith"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Annual Membership Review",
+                                Date = DateTime.Now.AddDays(-20),
+                                Person = "Michael Brown"
+                            },
+                            new Interaction
+                            {
+                                interaction = "New Product Launch Briefing",
+                                Date = DateTime.Now.AddDays(-15),
+                                Person = "Sarah Johnson"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Marketing Strategy Meeting",
+                                Date = DateTime.Now.AddDays(-10),
+                                Person = "David White"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Partnership Opportunity Discussion",
+                                Date = DateTime.Now.AddDays(-5),
+                                Person = "Emma Wilson"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Subscription Feedback Session",
+                                Date = DateTime.Now.AddDays(-3),
+                                Person = "Chris Martinez"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Technical Integration Workshop",
+                                Date = DateTime.Now.AddDays(-2),
+                                Person = "Olivia Davis"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Customer Success Call",
+                                Date = DateTime.Now.AddDays(-1),
+                                Person = "Daniel Thomas"
+                            },
+                            new Interaction
+                            {
+                                interaction = "Renewal Discussion",
+                                Date = DateTime.Now,
+                                Person = "Sophia Lopez"
+                            }
+                        );
+                        context.SaveChanges();
+                    }
+
+                    // Seed Data for InteractionMembers Table
+                    if (!context.InteractionMembers.Any())
+                    {
+                        context.InteractionMembers.AddRange(
+                            new InteractionMember { MemberID = 1, InteractionID = 1 },
+                            new InteractionMember { MemberID = 2, InteractionID = 2 },
+                            new InteractionMember { MemberID = 3, InteractionID = 3 },
+                            new InteractionMember { MemberID = 4, InteractionID = 4 },
+                            new InteractionMember { MemberID = 5, InteractionID = 5 },
+                            new InteractionMember { MemberID = 6, InteractionID = 6 },
+                            new InteractionMember { MemberID = 7, InteractionID = 7 },
+                            new InteractionMember { MemberID = 8, InteractionID = 8 },
+                            new InteractionMember { MemberID = 9, InteractionID = 9 },
+                            new InteractionMember { MemberID = 10, InteractionID = 10 }
+                            
+                        );
+                        context.SaveChanges();
+                    }
+
+
 
 
                 }

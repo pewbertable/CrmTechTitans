@@ -1,54 +1,129 @@
 ﻿@model CrmTechTitans.Models.Contact
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="main-content">
+    <header class="page-header">
+        <h1>Edit Contact</h1>
+        <p class="text-muted">Modify the details of the selected contact. Ensure all information is correct before saving.</p>
+    </header>
 
-<h4>Contact</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                             @{
+    var hasPicture = (Model.ContactPhoto?.Content != null);
+    if (hasPicture)
+    {
+        @:<div>
+            string imageBase64 = Convert.ToBase64String(Model.ContactPhoto.Content);
+            string imageSrc = string.Format("data:" + Model.ContactPhoto.MimeType + ";base64,{0}", imageBase64);
+            <img src="@imageSrc" alt="Profile Picture of @Model.FullFormalName" 
+                title="Profile Picture of @Model.FullFormalName" class="img-fluid rounded" />
+        @:</div><hr />
+    }else
+    {
+        <i class="fas fa-user-edit"></i>
+    }
+                 }
+               
             </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+            <div class="member-info">
+                <h2 class="member-name">Edit Contact Information</h2>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="member-card-content">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ID" />
+
+                <div class="member-detail">
+                    <i class="fas fa-user"></i>
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label">First Name</label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-user"></i>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label">Last Name</label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                 <div class="member-detail">
+        @{
+            if (hasPicture)
+            {
+                <div class="form-group">
+                    <div class="form-check m-3">
+                        <input asp-for="ContactPhoto" class="form-check-input" type="checkbox" id="chkRemoveContactImage" name="chkRemoveContactImage">
+                        <label asp-for="ContactPhoto" class="form-check-label" for="chkRemoveContactImage">
+                        <strong>Check to remove Image</strong>
+                        </label>
+                    </div>
+                </div>
+            }
+        }
+                  </div>
+
+                  <div class="member-detail">
+                  <div class="form-group">
+                <label asp-for="ContactPhoto" class="control-label">Contact Picture:</label>
+                <div class="input-group mb-3">
+                    <input asp-for="ContactPhoto" type="file" class="form-control" name="contactPicture" id="contactPicture">
+                </div>
+                </div>
+                  </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-envelope"></i>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-phone"></i>
+                    <div class="form-group">
+                        <label asp-for="Phone" class="control-label">Phone</label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fab fa-linkedin"></i>
+                    <div class="form-group">
+                        <label asp-for="Linkedin" class="control-label">LinkedIn</label>
+                        <input asp-for="Linkedin" class="form-control" />
+                        <span asp-validation-for="Linkedin" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Linkedin" class="control-label"></label>
-                <input asp-for="Linkedin" class="form-control" />
-                <span asp-validation-for="Linkedin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="member-card-footer">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="button-2">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

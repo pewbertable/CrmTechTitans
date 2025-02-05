@@ -1,48 +1,97 @@
 ﻿@model CrmTechTitans.Models.Contact
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Contact Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="main-content">
+    <header class="page-header">
+        <h1>Contact Details</h1>
+        <p class="text-muted">Detailed information about the selected contact.</p>
+    </header>
 
-<div>
-    <h4>Contact</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Linkedin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Linkedin)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                @{
+        if (Model.ContactPhoto?.Content != null)
+        {
+            @:<div class="member-photo">
+                string imageBase64 = Convert.ToBase64String(Model.ContactPhoto.Content);
+                string imageSrc = string.Format("data:" + Model.ContactPhoto.MimeType + ";base64,{0}", imageBase64);
+                <img src="@imageSrc" alt="Profile Picture of @Model.FullFormalName" title="Profile Picture of @Model.FullFormalName" class="img-fluid rounded" />
+            @:</div><hr />
+					}
+					else
+					{
+						<i class="fas fa-user"></i>
+					}
+				}
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">@Model.FirstName @Model.LastName</h2>
+            </div>
+        </div>
+        <div class="member-card-content">
+            <!-- Contact Details -->
+            <div class="member-detail">
+                <i class="fas fa-envelope"></i>
+                <span>
+                    <strong>Email:</strong>
+                    @Html.DisplayFor(model => model.Email)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-phone"></i>
+                <span>
+                    <strong>Phone:</strong>
+                    @Html.DisplayFor(model => model.Phone)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fab fa-linkedin"></i>
+                <span>
+                    <strong>LinkedIn:</strong>
+                    <a href="@Model.Linkedin" target="_blank" rel="noopener noreferrer" class="web-link">
+                        @Html.DisplayFor(model => model.Linkedin)
+                    </a>
+                </span>
+            </div>
+
+            <!-- Associated Members -->
+            <div class="member-detail">
+                <i class="fas fa-users"></i>
+                <span>
+                    <strong>Associated Members:</strong>
+                    @if (Model.MemberContacts != null && Model.MemberContacts.Any())
+                    {
+                        <ul>
+                            @foreach (var memberContact in Model.MemberContacts)
+                            {
+                                <li>
+                                    <a asp-controller="Member" asp-action="Details" asp-route-id="@memberContact.Member.ID">
+                                        @memberContact.Member.MemberName
+                                    </a>
+                                    <span class="text-muted">(Role: @memberContact.ContactType)</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No members associated</span>
+                    }
+                </span>
+            </div>
+        </div>
+        <div class="member-card-footer">
+            <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="button-2">
+                <i class="fas fa-arrow-left"></i> Back to Contacts
+            </a>
+        </div>
+    </div>
 </div>

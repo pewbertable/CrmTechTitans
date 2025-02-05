@@ -1,72 +1,194 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Contact>
 
 @{
-    ViewData["Title"] = "Contact Index";
+    ViewData["Title"] = "All Contacts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/tables.css" />
+<partial name="_Notification" />
 
-<div class="container">
-    <h1>Contact Index</h1>
-    <div class="create-new">
-        <a asp-action="Create">Create New</a>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.FullFormalName)</th>
-                    <th>Member</th>
-                    <th>Contact Type</th>
-                    <th>@Html.DisplayNameFor(model => model.Email)</th>
-                    <th>@Html.DisplayNameFor(model => model.Phone)</th>
-                    <th>@Html.DisplayNameFor(model => model.Linkedin)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+<div class="crm-container">
+    <div class="main-content">
+        <header class="page-header">
+            <h1>All Contacts</h1>
+            <div class="d-flex align-items-center gap-3">
+                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new Contact to the system">
+                    <i class="fas fa-user-plus"></i> Create New Contact
+                </a>
+            </div>
+        </header>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <div class="row">
+                <!-- Filter by Name -->
+                <div class="col-md-4">
+                    <label for="nameFilter" class="filter-label">Search by Name:</label>
+                    <input type="text" id="nameFilter" class="form-control search-input" placeholder="Enter contact name" data-bs-toggle="tooltip" title="Enter a contact's full or partial name">
+                </div>
+
+                <!-- Filter by Email -->
+                <div class="col-md-4">
+                    <label for="emailFilter" class="filter-label">Search by Email:</label>
+                    <input type="text" id="emailFilter" class="form-control search-input" placeholder="Enter email" data-bs-toggle="tooltip" title="Enter a contact’s email address to filter">
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacts Table -->
+        <section class="members-table-container">
+            <table class="table custom-table" id="contactsTable">
+                <thead>
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.FullFormalName)</td>
-                        <td>
-                            @if (item.MemberContacts.Any())
-                            {
-                                @string.Join(", ", item.MemberContacts
-                                         .Where(mc => mc.Member != null)
-                                         .Select(mc => mc.Member.MemberName))
-                            }
-                            else
-                            {
-                                <span class="no-data">No Member associated</span>
-                            }
-                        </td>
-                        <td>
-                            @if (item.MemberContacts.Any())
-                            {
-                                @foreach (var memberContact in item.MemberContacts)
-                                {
-                                    <div>@memberContact.ContactType</div>
-                                }
-                            }
-                            else
-                            {
-                                <span class="no-data">No Contact Type available</span>
-                            }
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Phone)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Linkedin)</td>
-                        <td>
-                            <div class="actions">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="edit">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="details">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="delete">Delete</a>
-                            </div>
-                        </td>
+                        <th></th>
+                        <th onclick="sortTable(0)">Full Name</th>
+                        <th onclick="sortTable(1)">Company</th>
+                        <th onclick="sortTable(2)">Email</th>
+                        <th onclick="sortTable(3)">Phone</th>
+                        <th class="text-center">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                        
+                            <td>
+                                    @{
+                                        if (item.ContactThumbnail?.Content != null)
+                                        {
+                                        string imageBase64 = Convert.ToBase64String(item.ContactThumbnail.Content);
+                                        string imageSrc = string.Format("data:" + item.ContactThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                        <img src="@imageSrc" alt="Profile Picture of @item?.FullFormalName"
+                                        title="Profile Picture of @item?.FullFormalName" class="img-fluid rounded" />
+                                    }
+
+                                }
+                            </td>
+                            <td>@item.FullFormalName</td>
+                            <td>
+                                @(item.MemberContacts.Any()
+                                    ? string.Join(", ", item.MemberContacts
+                                    .Where(mc => mc.Member != null)
+                                    .Select(mc => mc.Member.MemberName))
+                                    : "No Company Associated")
+                            </td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td class="text-center action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit contact details">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View full contact details">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Sort the table by Full Name (first column) by default
+            sortTable(0, "asc");
+
+            // Filter function
+            function filterTable() {
+                var nameFilter = $('#nameFilter').val().toLowerCase();
+                var emailFilter = $('#emailFilter').val().toLowerCase();
+
+                $('#contactsTable tbody tr').each(function () {
+                    var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
+                    var emailText = $(this).find('td:nth-child(3)').text().toLowerCase();
+
+                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                    var emailMatch = emailFilter === "" || emailText.includes(emailFilter);
+
+                    $(this).toggle(nameMatch && emailMatch);
+                });
+            }
+
+            // Attach filter function to input events
+            $('#nameFilter, #emailFilter').on('input', filterTable);
+
+            // Initialize Bootstrap Tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("contactsTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+    </style>
+}

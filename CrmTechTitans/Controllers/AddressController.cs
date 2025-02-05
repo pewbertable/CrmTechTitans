@@ -30,7 +30,9 @@ namespace CrmTechTitans.Controllers
             }
 
             var address = await _context.Addresses
-                .FirstOrDefaultAsync(m => m.ID == id);
+                  .Include(a => a.MemberAddresses)
+            .ThenInclude(ma => ma.Member) // Include the Member entity
+        .FirstOrDefaultAsync(a => a.ID == id);
             if (address == null)
             {
                 return NotFound();
@@ -95,9 +97,13 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(address);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Municipality edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the Municipality.";
+
                     if (!AddressExists(address.ID))
                     {
                         return NotFound();

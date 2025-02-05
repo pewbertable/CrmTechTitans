@@ -20,14 +20,22 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Contact
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString,
+     string? actionButton, string sortDirection = "asc", string sortField = "FirstName")
         {
-        var contacts = await _context.Contacts
-            .Include(c => c.MemberContacts) 
-            .ThenInclude(mc => mc.Member)   
-            .ToListAsync();
+           
 
-            return View(contacts);
+          var contacts = _context.Contacts
+            .Include(c => c.MemberContacts)
+            .ThenInclude(mc => mc.Member)
+             .AsNoTracking();
+
+           
+
+            // Execute the query and get the result
+            var contactsList = await contacts.ToListAsync();
+
+            return View(contactsList);
         }
 
         // GET: Contact/Details/5
@@ -39,6 +47,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var contact = await _context.Contacts
+                .Include(c => c.MemberContacts) // Include MemberContacts
+            .ThenInclude(mc => mc.Member) // Include Member entity
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (contact == null)
             {
@@ -104,9 +114,12 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Contact edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the contact.";
                     if (!ContactExists(contact.ID))
                     {
                         return NotFound();

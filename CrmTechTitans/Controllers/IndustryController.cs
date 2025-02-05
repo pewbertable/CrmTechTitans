@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CrmTechTitans.Data;
 using CrmTechTitans.Models;
+using Microsoft.AspNetCore.Components.QuickGrid;
 
 namespace CrmTechTitans.Controllers
 {
@@ -20,9 +21,48 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Industry
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString, string? NAICSCode)
         {
-            return View(await _context.Industries.Include(m => m.IndustryMembers).ThenInclude(im => im.Member).ToListAsync());
+            // Count the number of filters applied
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+
+            // Start querying Industries
+            var industries = _context.Industries.AsNoTracking();
+
+            // Filter by Industry Name
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                industries = industries.Where(i => i.Name.ToLower().Contains(SearchString.ToLower()));
+                numberFilters++;
+            }
+
+            // Fix: Convert NAICSCode string to int before filtering
+            if (!string.IsNullOrEmpty(NAICSCode) && int.TryParse(NAICSCode, out int naicsCodeInt))
+            {
+                industries = industries.Where(i => i.NAICS == naicsCodeInt);
+                numberFilters++;
+            }
+
+            // Provide feedback about applied filters
+            if (numberFilters != 0)
+            {
+                ViewData["Filtering"] = "btn-danger";
+                ViewData["numberFilters"] = "(" + numberFilters.ToString() + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                ViewData["ShowFilter"] = "show";
+            }
+
+            // Populate NAICS Code dropdown
+            ViewBag.NAICSCodeList = new SelectList(await _context.Industries
+                .Select(i => i.NAICS.ToString())
+                .Distinct()
+                .OrderBy(n => n)
+                .ToListAsync());
+
+            // Execute the query
+            var industryList = await industries.ToListAsync();
+
+            return View(industryList);
         }
 
         // GET: Industry/Details/5
@@ -34,6 +74,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var industry = await _context.Industries
+                 .Include(i => i.IndustryMembers) // Include IndustryMembers
+            .ThenInclude(im => im.Member) // Include Member entity
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (industry == null)
             {
@@ -99,9 +141,12 @@ namespace CrmTechTitans.Controllers
                 {
                     _context.Update(industry);
                     await _context.SaveChangesAsync();
+                    TempData["message"] = "Industry edited successfully";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    TempData["errMessage"] = "An error occured. Failed to edit the industry.";
                     if (!IndustryExists(industry.ID))
                     {
                         return NotFound();

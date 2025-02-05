@@ -1,48 +1,99 @@
-﻿@model CrmTechTitans.Models.Opportunity
+﻿@using CrmTechTitans.Models.Enumerations
+@model CrmTechTitans.Models.Opportunity
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Opportunity";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<style>
+    .required-asterisk {
+        color: red;
+    }
+</style>
 
-<h4>Opportunity</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="main-content">
+    <header class="page-header">
+        <h1>Create Opportunity</h1>
+        <p class="text-muted">Fill in the details below to add a new Opportunity to the database.</p>
+    </header>
+
+    <div class="member-card">
+        <div class="member-card-header">
+            <div class="member-avatar">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="member-info">
+                <h2 class="member-name">New Opportunity</h2>
+            </div>
+        </div>
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+            <div class="member-card-content">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <p class="text-muted"><span class="required-asterisk">*</span> Indicates a required field.</p>
+
+                <div class="member-detail">
+                    <i class="fas fa-heading"></i>
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label">
+                            Title <span class="required-asterisk">*</span>
+                        </label>
+                        <input asp-for="Title" class="form-control" placeholder="Enter opportunity title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-tasks"></i>
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label">
+                            Status <span class="required-asterisk">*</span>
+                        </label>
+                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()">
+                            <option value="">Select Status</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-align-left"></i>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">
+                            Description <span class="required-asterisk">*</span>
+                        </label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter opportunity description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-flag"></i>
+                    <div class="form-group">
+                        <label asp-for="Priority" class="control-label">
+                            Priority <span class="required-asterisk">*</span>
+                        </label>
+                        <select asp-for="Priority" class="form-control" asp-items="Html.GetEnumSelectList<PriorityType>()">
+                            <option value="">Select Priority</option>
+                        </select>
+                        <span asp-validation-for="Priority" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Priority" class="control-label"></label>
-                <select asp-for="Priority" class="form-control"></select>
-                <span asp-validation-for="Priority" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="member-card-footer">
+                <button type="submit" class="button-1">
+                    <i class="fas fa-save"></i> Create
+                </button>
+                <a asp-action="Index" class="button-2">
+                    <i class="fas fa-arrow-left"></i> Back to Opportunities
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
