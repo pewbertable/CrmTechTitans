@@ -1,88 +1,172 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Interaction>
 
 @{
-    ViewData["Title"] = "All Interactions";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "All Interactions";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_Notification" />
 
 
 <div class="crm-container">
-    <!-- Main Content -->
-    <div class="main-content">
-        <header class="page-header">
+	<!-- Main Content -->
+	<div class="main-content">
+		<header class="page-header">
 
-            <h1>All Interactions</h1>
-            <div class="d-flex align-items-center gap-3">
-              <!--  <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
-                    <i class="fas fa-user-plus"></i> Create New Interaction
-                </a>
-            </div>-->
-        </header>
+			<h1>All Interactions</h1>
+			<div class="d-flex align-items-center gap-3">
+				<!--  <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
+						<i class="fas fa-user-plus"></i> Create New Interaction
+					</a>
+				</div>-->
+		</header>
 
-            <!-- Search Input -->
-        <div class="filter-container">
-            <label for="searchInput" class="search-label">Filter interactions by member name:</label>
-                <input type="text" id="searchInput" class="form-control search-input" placeholder="Search by Member Name..." onkeyup="filterTable()">
-            </div>
-            <p></p>
-       
-        <section class="members-table-container">
-            <table class="table custom-table" id="interactionTable">
-                <thead>
-                    <tr>
-                        <th>Associated Members</th>
-                        <th>Interaction</th>
-                        <th>Date</th>
-                        <th>Person</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="member-name">
-                                @(item.InteractionMembers.Any()
-                                    ? string.Join(", ", item.InteractionMembers
-                                    .Where(im => im.Member != null)
-                                    .Select(im => im.Member.MemberName))
-                                    : "No Member Associated")
-                            </td>
-                            <td>@item.interaction</td>
-                            <td>@item.Date.ToString("yyyy-MM-dd")</td>
-                            <td>@item.Person</td>
-                            <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
-                                    Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </div>
+		<!-- Search Input -->
+		<div class="filter-container">
+			<label for="searchInput" class="search-label">Filter interactions by member name:</label>
+			<input type="text" id="searchFilter" class="form-control search-input" placeholder="Search by Member Name..." onkeyup="filterTable()">
+		</div>
+		<p></p>
+
+		<section class="members-table-container">
+			<table class="table custom-table" id="interactionTable">
+				<thead>
+					<tr>
+						<th onclick="sortTable(0)">Associated Members</th>
+						<th onclick="sortTable(1)">Interaction</th>
+						<th onclick="sortTable(2)">Date</th>
+						<th onclick="sortTable(3)">Person</th>
+						<th class="text-center">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model)
+					{
+						<tr>
+							<td class="member-name">
+								@(item.InteractionMembers.Any()
+															? string.Join(", ", item.InteractionMembers
+															.Where(im => im.Member != null)
+															.Select(im => im.Member.MemberName))
+															: "No Member Associated")
+							</td>
+							<td>@item.interaction</td>
+							<td>@item.Date.ToString("yyyy-MM-dd")</td>
+							<td>@item.Person</td>
+							<td class="text-center action-buttons">
+								<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
+									Edit
+								</a>
+								<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details">
+									Details
+								</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</section>
+	</div>
 </div>
 
 <!-- JavaScript for Client-Side Filtering -->
-<script>
-    function filterTable() {
-        var input, filter, table, rows, td, i, txtValue;
-        input = document.getElementById("searchInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("interactionTable");
-        rows = table.getElementsByTagName("tr");
+@section Scripts {
+	<script>
+		// Sort table function
+		  function sortTable(columnIndex, initialDirection = "asc") {
+			 var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+			 table = document.getElementById("interactionTable");
+			 switching = true;
+			 dir = initialDirection; ;
 
-        for (i = 1; i < rows.length; i++) {
-            td = rows[i].getElementsByClassName("member-name")[0]; // Get member name column
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                rows[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
-            }
-        }
-    }
-</script>
+			 // Determine the current sorting direction
+			 if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+				 dir = "desc";
+			 } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+				 dir = "asc";
+			 }
+
+			 // Remove sorting classes from all headers
+			 for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+				 table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+			 }
+
+			 // Add sorting class to the clicked header
+			 table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+			 // Perform sorting
+			 while (switching) {
+				 switching = false;
+				 rows = table.rows;
+				 for (i = 1; i < (rows.length - 1); i++) {
+					 shouldSwitch = false;
+					 x = rows[i].getElementsByTagName("td")[columnIndex];
+					 y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+					 if (dir === "asc") {
+						 if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+							 shouldSwitch = true;
+							 break;
+						 }
+					 } else if (dir === "desc") {
+						 if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+							 shouldSwitch = true;
+							 break;
+						 }
+					 }
+				 }
+
+				 if (shouldSwitch) {
+					 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+					 switching = true;
+					 switchcount++;
+				 } else if (switchcount === 0 && dir === "asc") {
+					 dir = "desc";
+					 switching = true;
+				 }
+			 }
+		 }
+
+		  $(document).ready(function () {
+			// Filter table based on input values
+			function filterTable() {
+				var searchFilter = $('#searchFilter').val().toLowerCase();
+
+				console.log("Search Filter:", searchFilter);
+
+				$('#interactionTable tbody tr').each(function () {
+					var searchText = $(this).find('td:nth-child(2)').text().toLowerCase();
+
+					var searchMatch = searchFilter === "" || searchText.includes(searchFilter);
+
+					$(this).toggle(searchMatch);
+				});
+			}
+
+			// Attach filter function to input events
+			$('#searchFilter).on('input', filterTable);
+
+			// Initialize Bootstrap Tooltips
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+				return new bootstrap.Tooltip(tooltipTriggerEl);
+			});
+
+
+		});
+	</script>
+	<style>
+		th {
+			cursor: pointer;
+		}
+
+			th.sorted-asc::after {
+				content: " ▲";
+			}
+
+			th.sorted-desc::after {
+				content: " ▼";
+			}
+	</style>
+}
+
+
