@@ -236,10 +236,7 @@ body {
         opacity: 1;
     }
 
-/* Adjust buttons to prevent overlap */
-.btn {
-    z-index: 1000; /* Ensures buttons don’t interfere */
-}
+
 
 
 .page-header {
