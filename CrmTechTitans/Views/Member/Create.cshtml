@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="member-card-content">
-            <form asp-action="Create" method="post" id="multiStepForm">
+            <form asp-action="Create" method="post" id="multiStepForm" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <!-- Step 1: Member Details -->
@@ -34,6 +34,13 @@
                             <label asp-for="MemberName" class="control-label">Member Name</label>
                             <input asp-for="MemberName" class="form-control" placeholder="Enter member name" />
                             <span asp-validation-for="MemberName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="member-detail">
+                        <i class="fas fa-user"></i>
+                        <div class="form-group">
+                            <label asp-for="MemberPhoto" class="control-label">Company Picture:</label>
+                            <input asp-for="MemberPhoto" type="file" class="form-control" name="MemberPicture" id="MemberPicture">
                         </div>
                     </div>
                     <div class="member-detail">
@@ -186,6 +193,11 @@
                                     <label asp-for="Contacts[i].Phone" class="control-label">Phone</label>
                                     <input asp-for="Contacts[i].Phone" class="form-control" placeholder="Enter phone number" />
                                     <span asp-validation-for="Contacts[i].Phone" class="text-danger"></span>
+                                </div>
+                                <!-- Contact Photo Upload -->
+                                <div class="form-group">
+                                    <label asp-for="Contacts[i].ContactPhoto">Upload Contact Photo</label>
+                                    <input asp-for="Contacts[i].ContactPhoto" type="file" name="ContactPicture" class="form-control" accept="image/*" />
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Contacts[i].ContactType" class="control-label">Contact Type</label>

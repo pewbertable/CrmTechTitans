@@ -28,7 +28,16 @@ namespace CrmTechTitans.Data
         public DbSet<MemberContact> MemberContacts { get; set; }
 
         public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
+
         public DbSet<InteractionMember> InteractionMembers { get; set; }
+
+        public DbSet<ContactPhoto> ContactPhotos { get; set; }
+
+        public DbSet<ContactThumbnail> ContactThumbnails { get; set; }
+
+        public DbSet<MemberPhoto> MemberPhotos { get; set; }
+
+        public DbSet<MemberThumbnail> MemberThumbnails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

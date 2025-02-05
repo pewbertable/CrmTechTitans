@@ -40,6 +40,7 @@
             <table class="table custom-table" id="contactsTable">
                 <thead>
                     <tr>
+                        <th></th>
                         <th onclick="sortTable(0)">Full Name</th>
                         <th onclick="sortTable(1)">Company</th>
                         <th onclick="sortTable(2)">Email</th>
@@ -51,6 +52,19 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                        
+                            <td>
+                                    @{
+                                        if (item.ContactThumbnail?.Content != null)
+                                        {
+                                        string imageBase64 = Convert.ToBase64String(item.ContactThumbnail.Content);
+                                        string imageSrc = string.Format("data:" + item.ContactThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                        <img src="@imageSrc" alt="Profile Picture of @item?.FullFormalName"
+                                        title="Profile Picture of @item?.FullFormalName" class="img-fluid rounded" />
+                                    }
+
+                                }
+                            </td>
                             <td>@item.FullFormalName</td>
                             <td>
                                 @(item.MemberContacts.Any()
