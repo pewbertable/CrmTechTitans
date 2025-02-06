@@ -46,6 +46,10 @@ namespace CrmTechTitans.Models
         [StringLength(100, ErrorMessage = "Linkedin can't be longer than 100 characters")]
         public string? Linkedin { get; set; }
 
+        public ContactPhoto? ContactPhoto { get; set; }
+
+        public ContactThumbnail? ContactThumbnail { get; set; }
+
         public ICollection<MemberContact> MemberContacts { get; set; } = new HashSet<MemberContact>();
 
     }
