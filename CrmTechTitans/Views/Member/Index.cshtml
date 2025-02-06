@@ -121,11 +121,12 @@
 		<table class="table custom-table" id="membersTable">
 			<thead>
 				<tr>
-					<th onclick="sortTable(0)">Name</th>
-					<th onclick="sortTable(1)">Type</th>
-					<th onclick="sortTable(2)">Company Size</th>
-					<th onclick="sortTable(3)">Member Since</th>
-					<th onclick="sortTable(4)">Status</th>
+					<th onclick="sortTable(0)">Logo</th>
+					<th onclick="sortTable(1)">Name</th>
+					<th onclick="sortTable(2)">Type</th>
+					<th onclick="sortTable(3)">Company Size</th>
+					<th onclick="sortTable(4)">Member Since</th>
+					<th onclick="sortTable(5)">Status</th>
 					<th class="text-center">Actions</th>
 				</tr>
 			</thead>
@@ -246,7 +247,7 @@
 					var memberText = $(this).find('td:nth-child(2)').text().toLowerCase();
 					var statusText = $(this).find('td:nth-child(6)').text().toLowerCase();
 
-					var nameMatch = memberFilter === "" || memberText.includes(memberFilter);
+					var memberMatch = memberFilter === "" || memberText.includes(memberFilter);
 					var statusMatch = statusFilter === "" || statusText.includes(statusFilter);
 					$(this).toggle(memberMatch && statusMatch);
 				});
