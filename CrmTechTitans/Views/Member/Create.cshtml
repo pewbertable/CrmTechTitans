@@ -6,6 +6,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .required-asterisk {
+        color: red;
+    }
+</style>
+
 <div class="main-content">
     <header class="page-header">
         <h1>Create Member</h1>
@@ -24,14 +30,14 @@
         <div class="member-card-content">
             <form asp-action="Create" method="post" id="multiStepForm" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+                <p class="text-muted"><span class="required-asterisk">*</span> Indicates a required field.</p>
                 <!-- Step 1: Member Details -->
                 <div class="form-step active" id="step1">
                     <h3>Step 1: Member Details</h3>
                     <div class="member-detail">
                         <i class="fas fa-user"></i>
                         <div class="form-group">
-                            <label asp-for="MemberName" class="control-label">Member Name</label>
+                            <label asp-for="MemberName" class="control-label">Member Name  <span class="required-asterisk">*</span></label>
                             <input asp-for="MemberName" class="form-control" placeholder="Enter member name" />
                             <span asp-validation-for="MemberName" class="text-danger"></span>
                         </div>
@@ -46,7 +52,7 @@
                     <div class="member-detail">
                         <i class="fas fa-id-card"></i>
                         <div class="form-group">
-                            <label asp-for="MembershipType" class="control-label">Membership Type</label>
+                            <label asp-for="MembershipType" class="control-label">Membership Type  <span class="required-asterisk">*</span></label>
                             <select asp-for="MembershipType" class="form-control" asp-items="Html.GetEnumSelectList<MembershipType>()">
                                 <option value="">Select Membership Type</option>
                             </select>
@@ -64,7 +70,7 @@
                     <div class="member-detail">
                         <i class="fas fa-building"></i>
                         <div class="form-group">
-                            <label asp-for="CompanySize" class="control-label">Company Size</label>
+                            <label asp-for="CompanySize" class="control-label">Company Size  <span class="required-asterisk">*</span></label>
                             <select asp-for="CompanySize" class="form-control" asp-items="Html.GetEnumSelectList<CompanySize>()">
                                 <option value="">Select Company Size</option>
                             </select>
@@ -127,17 +133,17 @@
                         {
                             <div class="address-form">
                                 <div class="form-group">
-                                    <label asp-for="Addresses[i].Street" class="control-label">Street</label>
+                                    <label asp-for="Addresses[i].Street" class="control-label">Street  <span class="required-asterisk">*</span></label>
                                     <input asp-for="Addresses[i].Street" class="form-control" placeholder="Enter Street Address" />
                                     <span asp-validation-for="Addresses[i].Street" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="Addresses[i].City" class="control-label">City</label>
+                                    <label asp-for="Addresses[i].City" class="control-label">City  <span class="required-asterisk">*</span></label>
                                     <input asp-for="Addresses[i].City" class="form-control" placeholder="Enter City" />
                                     <span asp-validation-for="Addresses[i].City" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="Addresses[i].Province" class="control-label">Province</label>
+                                    <label asp-for="Addresses[i].Province" class="control-label">Province  <span class="required-asterisk">*</span></label>
                                     <select asp-for="Addresses[i].Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()">
                                         <option value="">Select Province</option>
                                     </select>
@@ -175,7 +181,7 @@
                         {
                             <div class="contact-form">
                                 <div class="form-group">
-                                    <label asp-for="Contacts[i].FirstName" class="control-label">First Name</label>
+                                    <label asp-for="Contacts[i].FirstName" class="control-label">First Name  <span class="required-asterisk">*</span></label>
                                     <input asp-for="Contacts[i].FirstName" class="form-control" placeholder="Enter first name" />
                                     <span asp-validation-for="Contacts[i].FirstName" class="text-danger"></span>
                                 </div>
@@ -190,7 +196,7 @@
                                     <span asp-validation-for="Contacts[i].Email" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="Contacts[i].Phone" class="control-label">Phone</label>
+                                    <label asp-for="Contacts[i].Phone" class="control-label">Phone  <span class="required-asterisk">*</span></label>
                                     <input asp-for="Contacts[i].Phone" class="form-control" placeholder="Enter phone number" />
                                     <span asp-validation-for="Contacts[i].Phone" class="text-danger"></span>
                                 </div>
@@ -214,7 +220,7 @@
                         <i class="fas fa-industry"></i>
                         <h3>Industries</h3>
                         <div class="form-group">
-                            <label>Select Industries</label>
+                            <label>Select Industries  <span class="required-asterisk">*</span></label>
                             <select asp-for="SelectedIndustryIds" class="form-control" multiple>
                                 @foreach (var industry in Model.AvailableIndustries)
                                 {
