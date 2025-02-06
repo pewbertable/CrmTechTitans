@@ -116,50 +116,50 @@
 		}
 	</section>
 
-	<!-- Table View -->
-	<section class="table-responsive" id="table-view" style="display: none;">
-		<table class="table custom-table" id="membersTable">
-			<thead>
-				<tr>
-					<th onclick="sortTable(0)">Logo</th>
-					<th onclick="sortTable(1)">Name</th>
-					<th onclick="sortTable(2)">Type</th>
-					<th onclick="sortTable(3)">Company Size</th>
-					<th onclick="sortTable(4)">Member Since</th>
-					<th onclick="sortTable(5)">Status</th>
-					<th class="text-center">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model)
-				{
-					<tr data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
-						<td>
-							@{
-								if (item.MemberThumbnail?.Content != null)
-								{
-									string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
-									string imageSrc = string.Format("data:" + item.MemberThumbnail.MimeType + ";base64,{0}", imageBase64);
-									<img src="@imageSrc" alt="Profile Picture of @item?.MemberName"
-										 title="Profile Picture of @item?.MemberName" class="img-fluid rounded" />
-								}
+    <!-- Table View -->
+    <section class="table-responsive" id="table-view" style="display: none;">
+        <table class="table custom-table" id="membersTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Company Size</th>
+                    <th>Member Since</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
+                        <td>
+                            @{
+                                if(item.MemberThumbnail?.Content != null)
+                                {
+                                    string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
+                                    string imageSrc = string.Format("data:" + item.MemberThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                    <img src="@imageSrc" alt="Profile Picture of @item?.MemberName"
+                                         title="Profile Picture of @item?.MemberName" class="img-fluid rounded" />
+                                }
 
-							}
-						</td>
-						<td>@item.MemberName</td>
-						<td>@item.MembershipType</td>
-						<td>@item.CompanySize</td>
-						<td>@item.MemberSince.ToShortDateString()</td>
-						<td><span class="status-tag">@item.MembershipStatus</span></td>
-						<td class="text-center action-buttons">
-							@*  <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit member details">Edit</a>*@
-							<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View member details">Details</a>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</section>
+                             }
+                        </td>
+                        <td>@item.MemberName</td>
+                        <td>@item.MembershipType</td>
+                        <td>@item.CompanySize</td>
+                        <td>@item.MemberSince.ToShortDateString()</td>
+                        <td><span class="status-tag">@item.MembershipStatus</span></td>
+                        <td class="text-center action-buttons">
+                          @*  <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit member details">Edit</a>*@
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View member details">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 </div>
 
 @section Scripts {
