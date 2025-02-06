@@ -286,9 +286,7 @@ namespace CrmTechTitans.Controllers
                     // Update other member properties...
                     //For the image
                     if (chkRemoveMemberImage != null)
-                    {
-                        //If we are just deleting the two versions of the photo, we need to make sure the Change Tracker knows
-                        //about them both so go get the Thumbnail since we did not include it.
+                    {                     
                         member.MemberThumbnail = _context.MemberThumbnails.Where(p => p.MemberID == member.ID).FirstOrDefault();
                         //Then, setting them to null will cause them to be deleted from the database.
                         member.MemberPhoto = null;
@@ -434,7 +432,7 @@ namespace CrmTechTitans.Controllers
                             member.MemberThumbnail = _context.MemberThumbnails.Where(p => p.MemberID == member.ID).FirstOrDefault();
                             if (member.MemberThumbnail != null)
                             {
-                                member.MemberThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 75, 90);
+                                member.MemberThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
                             }
                         }
                         else //No pictures saved so start new
@@ -446,7 +444,7 @@ namespace CrmTechTitans.Controllers
                             };
                             member.MemberThumbnail = new MemberThumbnail
                             {
-                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 75, 90),
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
                                 MimeType = "image/webp"
                             };
                         }
@@ -479,7 +477,7 @@ namespace CrmTechTitans.Controllers
                             contact.ContactThumbnail = _context.ContactThumbnails.Where(p => p.ContactID == contact.ID).FirstOrDefault();
                             if (contact.ContactThumbnail != null)
                             {
-                                contact.ContactThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 75, 90);
+                                contact.ContactThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
                             }
                         }
                         else //No pictures saved so start new
@@ -491,7 +489,7 @@ namespace CrmTechTitans.Controllers
                             };
                             contact.ContactThumbnail = new ContactThumbnail
                             {
-                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 75, 90),
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
                                 MimeType = "image/webp"
                             };
                         }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CrmTechTitans.Data;
 using CrmTechTitans.Models;
+using CrmTechTitans.Models.ViewModels;
+using CrmTechTitans.Utilities;
 
 namespace CrmTechTitans.Controllers
 {
@@ -26,6 +28,7 @@ namespace CrmTechTitans.Controllers
            
 
           var contacts = _context.Contacts
+            .Include(c => c.ContactThumbnail)
             .Include(c => c.MemberContacts)
             .ThenInclude(mc => mc.Member)
              .AsNoTracking();
@@ -47,6 +50,7 @@ namespace CrmTechTitans.Controllers
             }
 
             var contact = await _context.Contacts
+                .Include(c => c.ContactPhoto)
                 .Include(c => c.MemberContacts) // Include MemberContacts
             .ThenInclude(mc => mc.Member) // Include Member entity
                 .FirstOrDefaultAsync(m => m.ID == id);
@@ -69,10 +73,11 @@ namespace CrmTechTitans.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email,Phone,Linkedin")] Contact contact)
+        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email,Phone,Linkedin")] Contact contact, IFormFile contactPicture)
         {
             if (ModelState.IsValid)
             {
+                await AddContactPicture(contact, contactPicture);
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -88,7 +93,9 @@ namespace CrmTechTitans.Controllers
                 return NotFound();
             }
 
-            var contact = await _context.Contacts.FindAsync(id);
+            var contact = await _context.Contacts
+                .Include (c => c.ContactPhoto)
+                .FirstOrDefaultAsync(c => c.ID == id);
             if (contact == null)
             {
                 return NotFound();
@@ -101,7 +108,7 @@ namespace CrmTechTitans.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email,Phone,Linkedin")] Contact contact)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email,Phone,Linkedin")] Contact contact, string? chkRemoveContactImage, IFormFile? contactPicture)
         {
             if (id != contact.ID)
             {
@@ -112,6 +119,19 @@ namespace CrmTechTitans.Controllers
             {
                 try
                 {
+                    //For the image
+                    if (chkRemoveContactImage != null)
+                    {
+                        
+                        contact.ContactThumbnail = _context.ContactThumbnails.Where(c => c.ContactID == contact.ID).FirstOrDefault();
+                        //Then, setting them to null will cause them to be deleted from the database.
+                        contact.ContactPhoto = null;
+                        contact.ContactThumbnail = null;
+                    }
+                    else
+                    {
+                        await AddContactPicture(contact, contactPicture);
+                    }
                     _context.Update(contact);
                     await _context.SaveChangesAsync();
                     TempData["message"] = "Contact edited successfully";
@@ -143,6 +163,7 @@ namespace CrmTechTitans.Controllers
             }
 
             var contact = await _context.Contacts
+                .Include(c => c.ContactPhoto)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (contact == null)
             {
@@ -157,7 +178,9 @@ namespace CrmTechTitans.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var contact = await _context.Contacts
+                .Include(c => c.ContactPhoto)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (contact != null)
             {
                 _context.Contacts.Remove(contact);
@@ -170,6 +193,52 @@ namespace CrmTechTitans.Controllers
         private bool ContactExists(int id)
         {
             return _context.Contacts.Any(e => e.ID == id);
+        }
+
+        private async Task AddContactPicture(Contact contact, IFormFile thePicture)
+        {
+            //Get the picture and save it with the Member (2 sizes)
+            if (thePicture != null)
+            {
+                string mimeType = thePicture.ContentType;
+                long fileLength = thePicture.Length;
+                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
+                {
+                    if (mimeType.Contains("image"))
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await thePicture.CopyToAsync(memoryStream);
+                        var pictureArray = memoryStream.ToArray();//Gives us the Byte[]
+
+                        //Check if we are replacing or creating new
+                        if (contact.ContactPhoto != null)
+                        {
+                            //We already have pictures so just replace the Byte[]
+                            contact.ContactPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
+
+                            //Get the Thumbnail so we can update it.  Remember we didn't include it
+                            contact.ContactThumbnail = _context.ContactThumbnails.Where(p => p.ContactID == contact.ID).FirstOrDefault();
+                            if (contact.ContactThumbnail != null)
+                            {
+                                contact.ContactThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
+                            }
+                        }
+                        else //No pictures saved so start new
+                        {
+                            contact.ContactPhoto = new ContactPhoto
+                            {
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600),
+                                MimeType = "image/webp"
+                            };
+                            contact.ContactThumbnail = new ContactThumbnail
+                            {
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
+                                MimeType = "image/webp"
+                            };
+                        }
+                    }
+                }
+            }
         }
     }
 }
