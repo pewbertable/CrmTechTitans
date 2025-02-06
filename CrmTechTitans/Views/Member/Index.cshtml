@@ -126,7 +126,7 @@
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Logo</th>
                     <th>Name</th>
                     <th>Type</th>
                     <th>Company Size</th>
@@ -157,7 +157,7 @@
                         <td>@item.MemberSince.ToShortDateString()</td>
                         <td><span class="status-tag">@item.MembershipStatus</span></td>
                         <td class="text-center action-buttons">
-                          @*  <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit member details">Edit</a>*@
+                           <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit member details">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View member details">Details</a>
                         </td>
                     </tr>

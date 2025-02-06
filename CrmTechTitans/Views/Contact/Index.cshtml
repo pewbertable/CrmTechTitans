@@ -40,11 +40,11 @@
             <table class="table custom-table" id="contactsTable">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th onclick="sortTable(0)">Full Name</th>
-                        <th onclick="sortTable(1)">Company</th>
-                        <th onclick="sortTable(2)">Email</th>
-                        <th onclick="sortTable(3)">Phone</th>
+                        <th>Photo</th>
+                        <th onclick="sortTable(1)">Full Name</th>
+                        <th onclick="sortTable(2)">Company</th>
+                        <th onclick="sortTable(3)">Email</th>
+                        <th onclick="sortTable(4)">Phone</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -91,7 +91,7 @@
     <script>
         $(document).ready(function () {
             // Sort the table by Full Name (first column) by default
-            sortTable(0, "asc");
+            sortTable(1, "asc");
 
             // Filter function
             function filterTable() {
@@ -99,8 +99,8 @@
                 var emailFilter = $('#emailFilter').val().toLowerCase();
 
                 $('#contactsTable tbody tr').each(function () {
-                    var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
-                    var emailText = $(this).find('td:nth-child(3)').text().toLowerCase();
+                    var nameText = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var emailText = $(this).find('td:nth-child(4)').text().toLowerCase();
 
                     var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
                     var emailMatch = emailFilter === "" || emailText.includes(emailFilter);
