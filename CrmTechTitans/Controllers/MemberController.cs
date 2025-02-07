@@ -192,6 +192,8 @@ namespace CrmTechTitans.Controllers
             {
                 ID = member.ID,
                 MemberName = member.MemberName,
+                MemberPhoto = member.MemberPhoto,
+                MemberThumbnail = member.MemberThumbnail,
                 // Map other member properties...
                 Addresses = member.MemberAddresses.Select(ma => new AddressViewModel
                 {
@@ -250,11 +252,12 @@ namespace CrmTechTitans.Controllers
                     {
                         return NotFound();
                     }
-
                     // Update Member properties
                     member.MemberName = model.MemberName;
+
                     // Update other member properties...
-                    //For the image
+
+                    //For image
                     if (chkRemoveMemberImage != null)
                     {
                         var existingPhoto = await _context.MemberPhotos
@@ -279,7 +282,12 @@ namespace CrmTechTitans.Controllers
                     else
                     {
                         await AddMemberPicture(model, memberPicture);
+                        member.MemberPhoto = model.MemberPhoto;
+                        member.MemberThumbnail = model.MemberThumbnail;
                     }
+
+                    
+                   
 
                     // Update Addresses
                     member.MemberAddresses.Clear();
