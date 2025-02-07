@@ -173,6 +173,7 @@ namespace CrmTechTitans.Controllers
 
             var member = await _context.Members
                 .Include(m => m.MemberPhoto)
+                .Include(m => m.MemberThumbnail)
                 .Include(m => m.MemberContacts)
                     .ThenInclude(mc => mc.Contact)
                 .Include(m => m.MemberAddresses)
@@ -255,8 +256,22 @@ namespace CrmTechTitans.Controllers
                     // Update other member properties...
                     //For the image
                     if (chkRemoveMemberImage != null)
-                    {                     
-                        member.MemberThumbnail = _context.MemberThumbnails.Where(p => p.MemberID == member.ID).FirstOrDefault();
+                    {
+                        var existingPhoto = await _context.MemberPhotos
+                                                           .Where(c => c.MemberID == member.ID)
+                                                           .FirstOrDefaultAsync();
+                        if (existingPhoto != null)
+                        {
+                            _context.MemberPhotos.Remove(existingPhoto);
+                        }
+
+                        var existingThumbnail = await _context.MemberThumbnails
+                                                              .Where(c => c.MemberID == member.ID)
+                                                              .FirstOrDefaultAsync();
+                        if (existingThumbnail != null)
+                        {
+                            _context.MemberThumbnails.Remove(existingThumbnail);
+                        }
                         //Then, setting them to null will cause them to be deleted from the database.
                         member.MemberPhoto = null;
                         member.MemberThumbnail = null;
@@ -290,7 +305,9 @@ namespace CrmTechTitans.Controllers
                             FirstName = contactModel.FirstName,
                             LastName = contactModel.LastName,
                             Email = contactModel.Email,
-                            Phone = contactModel.Phone
+                            Phone = contactModel.Phone,
+                            ContactPhoto = contactModel.ContactPhoto,
+                            ContactThumbnail = contactModel.ContactThumbnail
                         };
                         member.MemberContacts.Add(new MemberContact { Contact = contact, ContactType = contactModel.ContactType });
                     }
@@ -324,7 +341,7 @@ namespace CrmTechTitans.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new {model.ID});
             }
 
             // If the model is invalid, repopulate available industries
@@ -361,7 +378,8 @@ namespace CrmTechTitans.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var member = await _context.Members.FindAsync(id);
+            var member = await _context.Members
+                .FindAsync(id);
             if (member != null)
             {
                 _context.Members.Remove(member);
@@ -378,39 +396,47 @@ namespace CrmTechTitans.Controllers
 
         private async Task AddMemberPicture(MemberCreateViewModel member, IFormFile thePicture)
         {
-            //Get the picture and save it with the Member (2 sizes)
             if (thePicture != null)
             {
                 string mimeType = thePicture.ContentType;
                 long fileLength = thePicture.Length;
-                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
+                if (!(mimeType == "" || fileLength == 0)) // Check if file exists
                 {
                     if (mimeType.Contains("image"))
                     {
                         using var memoryStream = new MemoryStream();
                         await thePicture.CopyToAsync(memoryStream);
-                        var pictureArray = memoryStream.ToArray();//Gives us the Byte[]
+                        var pictureArray = memoryStream.ToArray(); // Convert to byte array
 
-                        //Check if we are replacing or creating new
-                        if (member.MemberPhoto != null)
+                        // Retrieve existing MemberPhoto and MemberThumbnail from the database
+                        var existingPhoto = await _context.MemberPhotos
+                                                          .Where(p => p.MemberID == member.ID)
+                                                          .FirstOrDefaultAsync();
+                        var existingThumbnail = await _context.MemberThumbnails
+                                                              .Where(t => t.MemberID == member.ID)
+                                                              .FirstOrDefaultAsync();
+
+                        if (existingPhoto != null)
                         {
-                            //We already have pictures so just replace the Byte[]
-                            member.MemberPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
-
-                            //Get the Thumbnail so we can update it.  Remember we didn't include it
-                            member.MemberThumbnail = _context.MemberThumbnails.Where(p => p.MemberID == member.ID).FirstOrDefault();
-                            if (member.MemberThumbnail != null)
-                            {
-                                member.MemberThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
-                            }
+                            // Update the existing photo instead of creating a new one
+                            existingPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
                         }
-                        else //No pictures saved so start new
+                        else
                         {
                             member.MemberPhoto = new MemberPhoto
                             {
                                 Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600),
                                 MimeType = "image/webp"
                             };
+                        }
+
+                        if (existingThumbnail != null)
+                        {
+                            // Update existing thumbnail
+                            existingThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
+                        }
+                        else
+                        {
                             member.MemberThumbnail = new MemberThumbnail
                             {
                                 Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
@@ -421,41 +447,48 @@ namespace CrmTechTitans.Controllers
                 }
             }
         }
+
         private async Task AddContactPicture(ContactViewModel contact, IFormFile thePicture)
         {
-            //Get the picture and save it with the Member (2 sizes)
             if (thePicture != null)
             {
                 string mimeType = thePicture.ContentType;
                 long fileLength = thePicture.Length;
-                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
+                if (!(mimeType == "" || fileLength == 0))
                 {
                     if (mimeType.Contains("image"))
                     {
                         using var memoryStream = new MemoryStream();
                         await thePicture.CopyToAsync(memoryStream);
-                        var pictureArray = memoryStream.ToArray();//Gives us the Byte[]
+                        var pictureArray = memoryStream.ToArray();
 
-                        //Check if we are replacing or creating new
-                        if (contact.ContactPhoto != null)
+                        var existingPhoto = await _context.ContactPhotos
+                                                          .Where(p => p.ContactID == contact.ID)
+                                                          .FirstOrDefaultAsync();
+                        var existingThumbnail = await _context.ContactThumbnails
+                                                              .Where(t => t.ContactID == contact.ID)
+                                                              .FirstOrDefaultAsync();
+
+                        if (existingPhoto != null)
                         {
-                            //We already have pictures so just replace the Byte[]
-                            contact.ContactPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
-
-                            //Get the Thumbnail so we can update it.  Remember we didn't include it
-                            contact.ContactThumbnail = _context.ContactThumbnails.Where(p => p.ContactID == contact.ID).FirstOrDefault();
-                            if (contact.ContactThumbnail != null)
-                            {
-                                contact.ContactThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
-                            }
+                            // Update existing photo instead of inserting a new one
+                            existingPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
                         }
-                        else //No pictures saved so start new
+                        else
                         {
                             contact.ContactPhoto = new ContactPhoto
                             {
                                 Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600),
                                 MimeType = "image/webp"
                             };
+                        }
+
+                        if (existingThumbnail != null)
+                        {
+                            existingThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
+                        }
+                        else
+                        {
                             contact.ContactThumbnail = new ContactThumbnail
                             {
                                 Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
