@@ -235,6 +235,15 @@
 		}
 
 		$(document).ready(function () {
+
+			// Default status filter to Good Standing 
+			if (!sessionStorage.getItem("statusFilter")) {
+				$('#statusFilter').val("GoodStanding");
+				sessionStorage.setItem("statusFilter", "GoodStanding");
+			} else {
+				$('#statusFilter').val(sessionStorage.getItem("statusFilter"));
+			}
+
 			// Filter table based on input values
 			function filterTable() {
 				var memberFilter = $('#memberFilter').val().toLowerCase();
@@ -252,9 +261,14 @@
 					$(this).toggle(memberMatch && statusMatch);
 				});
 			}
-			// Attach filter function to input events
-			$('#memberFilter, #statusFilter').on('input', filterTable);
+			// Apply filtering when the page loads
+			filterTable();
 
+			// Attach filter function to input events
+			$('#memberFilter, #statusFilter').on('input', function () {
+				sessionStorage.setItem("statusFilter", $('#statusFilter').val());
+				filterTable();
+			});
 			// Initialize Bootstrap Tooltips
 			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
