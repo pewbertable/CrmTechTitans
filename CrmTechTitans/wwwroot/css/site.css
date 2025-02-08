@@ -1,4 +1,4 @@
-/* === General Styling === */
+﻿/* === General Styling === */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: white;
@@ -22,60 +22,66 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    padding: 20px;
+    padding: 50px; /* Increased padding for more space */
     background-color: #f7f7f7;
-    border-radius: 8px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px; /* Slightly larger border-radius for a more rounded look */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Increased shadow for more depth */
 }
 
-    .page-header h1 {
-        font-size: 24px;
-        font-weight: 700;
-        color: #333;
-    }
+.page-header h1 {
+    font-size: 2.2rem; /* Larger font size for more prominence */
+    font-weight: 700;
+    color: #333;
+}
 
-    .page-header .btn-danger {
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-    }
+.page-header .btn-danger {
+    font-weight: 600;
+    font-size: 1.1rem; /* Larger button text */
+    padding: 12px 20px; /* Increased padding for the button */
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.page-header .btn-danger i {
+    margin-right: 10px; /* Increased space between icon and text */
+}
 
 /* === Filter Container Styling === */
 .filter-container {
     display: flex;
-    justify-content: space-between; /* Ensures space between search and filter */
-    gap: 20px; /* Gap between search and filter */
+    justify-content: space-between; /* Align search and filter side by side */
+    gap: 20px; /* Adds space between search and filter */
     margin-bottom: 20px;
-    flex-wrap: nowrap; /* Ensure they stay in one line */
-    width: 100%; /* Ensure the container spans the entire width */
+    flex-wrap: nowrap; /* Keep items in a single line */
+    width: 100%;
 }
 
-    .filter-container .form-control,
-    .filter-container .search-input,
-    .filter-container .filter-select {
-        max-width: 350px; /* Adjust max-width for better layout */
-        width: 100%; /* Allow for full width usage */
-        padding: 10px;
-        border-radius: 6px; /* Consistent border radius */
-        font-size: 0.95rem; /* Consistent font size */
-        border: 1px solid #ccc;
-        background-color: #f8f9fa; /* Consistent background color */
-    }
+.filter-container .form-control,
+.filter-container .search-input,
+.filter-container .filter-select {
+    max-width: 350px; /* Adjust max-width for better layout */
+    width: 100%; /* Allow full width usage */
+    padding: 10px;
+    border-radius: 6px; /* Consistent border radius */
+    font-size: 0.95rem; /* Consistent font size */
+    border: 1px solid #ccc;
+    background-color: #f8f9fa; /* Consistent background color */
+}
 
-        /* Focus Effect for inputs */
-        .filter-container .search-input:focus,
-        .filter-container .filter-select:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow */
-        }
+/* Focus Effect for inputs */
+.filter-container .search-input:focus,
+.filter-container .filter-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow */
+}
 
 /* === Sidebar Styling === */
 .sidebar {
     position: fixed;
     left: 0;
     top: 0;
-    width: 12rem;
+    width: 15rem;
     max-width: 220px;
     height: 100vh;
     background-color: #2e2e2e;
@@ -85,6 +91,18 @@ body {
     padding: 20px 15px;
     transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
     z-index: 1000;
+}
+
+.sidebar .nav-link {
+    font-size: 1rem;
+    color: white;
+    padding: 12px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #444;
 }
 
 /* === Buttons === */
@@ -106,12 +124,50 @@ body {
 
 /* === Table Container === */
 .table-container {
-    max-width: calc(100% - 11rem);
+    max-width: calc(100% - 15rem); /* Adjust table container width */
     overflow-x: auto;
     padding: 1rem;
 }
 
+/* === Action Buttons Styling === */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
 
+.btn-sm {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    transition: all 0.3s ease-in-out;
+    border: none;
+}
+
+.btn-sm:hover {
+    background-color: #5a6268;
+}
+
+/* === Sorting Indicators === */
+th.sorted-asc::after,
+th.sorted-desc::after {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+th.sorted-asc::after {
+    content: " ▲";
+}
+
+th.sorted-desc::after {
+    content: " ▼";
+}
 
 /* === Responsive Fixes for Smaller Screens === */
 @media (max-width: 768px) {
@@ -120,10 +176,18 @@ body {
         justify-content: center;
     }
 
-        .search-input,
-        .filter-container select,
-        .filter-container input {
-            max-width: 100%; /* Full width for inputs */
-            margin-bottom: 10px; /* Adds margin between stacked inputs */
-        }
+    .search-input,
+    .filter-container select,
+    .filter-container input {
+        max-width: 100%; /* Full width for inputs */
+        margin-bottom: 10px; /* Adds margin between stacked inputs */
+    }
+
+    .sidebar {
+        width: 12rem; /* Adjust width of sidebar */
+    }
+
+    .table-container {
+        max-width: 100%; /* Full width for table */
+    }
 }
