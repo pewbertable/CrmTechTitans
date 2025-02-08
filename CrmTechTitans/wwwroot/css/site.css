@@ -112,25 +112,7 @@ body {
     padding: 1rem;
 }
 
-/* === Inputs & Filters Styling === */
-.search-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    background-color: #f8f9fa;
-}
 
-.filter-container select,
-.filter-container input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    background-color: #f8f9fa;
-}
 
 /* === Responsive Fixes for Smaller Screens === */
 @media (max-width: 768px) {

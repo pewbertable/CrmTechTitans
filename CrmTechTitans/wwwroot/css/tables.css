@@ -1,4 +1,76 @@
-﻿/* === Modern, Clean Table Styling === */
+﻿/* === General Styling === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: white;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* === CRM Container Styling === */
+.crm-container {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* === Page Header Styling === */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .page-header .btn-danger {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+/* === Filter Container Styling === */
+.filter-container {
+    display: flex;
+    justify-content: center; /* Center align the filters horizontally */
+    gap: 20px; /* Add space between search and filter */
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    width: 100%; /* Ensure the container spans the entire width */
+}
+
+    /* === Form Input Styling === */
+    .filter-container .form-control,
+    .filter-container .search-input,
+    .filter-container .filter-select {
+        max-width: 350px; /* Adjust max-width for better layout */
+        width: 100%; /* Allow full width usage */
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        border: 1px solid #ccc;
+        background-color: #f8f9fa;
+    }
+
+        .filter-container .search-input:focus,
+        .filter-container .filter-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+/* === Table Styling === */
 .table.custom-table {
     width: 100%;
     border-collapse: separate;
@@ -9,9 +81,8 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-    /* === Table Header Styling === */
     .table.custom-table thead {
-        background-color: #f7f7f7; /* Softer header background */
+        background-color: #f7f7f7;
     }
 
     .table.custom-table th {
@@ -21,38 +92,34 @@
         font-size: 0.9rem;
         color: #333;
         letter-spacing: 0.5px;
-        border-bottom: 2px solid #ddd; /* Soft, modern border */
+        border-bottom: 2px solid #ddd;
     }
 
-    /* === Table Body Styling === */
     .table.custom-table td {
         padding: 12px;
         font-size: 0.9rem;
         color: #6c757d;
-        border-bottom: 1px solid #eee; /* Lighter row dividers */
+        border-bottom: 1px solid #eee;
     }
 
-    /* === Hover Effect: Subtle & Soft === */
     .table.custom-table tbody tr:hover {
         background: rgba(0, 0, 0, 0.03);
         transition: background 0.2s ease-in-out;
     }
 
-    /* === First & Last Row Adjustments === */
     .table.custom-table tr:last-child td {
-        border-bottom: none; /* Remove last row border */
+        border-bottom: none;
     }
 
-/ /* === Action Buttons: Modern Look === */
+/* === Action Buttons Styling === */
 .action-buttons {
     display: flex;
     justify-content: center;
     gap: 8px;
 }
 
-/* Universal Button Size */
 .btn-sm {
-    padding: 8px 14px;
+    padding: 6px 10px;
     font-size: 0.85rem;
     border-radius: 6px;
     font-weight: 500;
@@ -60,62 +127,54 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 90px; /* Ensures uniform width */
+    min-width: 90px;
     transition: all 0.3s ease-in-out;
     border: none;
 }
 
-/* Unified Button Color: Modern Gray */
+    .btn-sm:hover {
+        background-color: #5a6268;
+    }
+
+/* === Edit & Details Button Styling === */
 .btn-edit, .btn-details {
-{
     background: #6c757d;
     color: white;
-    align-items: center;
-    gap: 6px;
     padding: 6px 10px;
     border-radius: 6px;
-    transition: all 0.2sease;
-    text-decoration: none !important;
-}
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
 }
 
     .btn-edit:hover, .btn-details:hover {
-        background-color: #5a6268; /* Slightly darker on hover */
+        background-color: #5a6268;
     }
-
-/* === Responsive Fix: Ensure Buttons Stay Uniform === */
-@media (max-width: 768px) {
-    .btn-sm {
-        padding: 6px 10px;
-        font-size: 0.8rem;
-        min-width: 80px;
-    }
-}
 
 .btn-details {
     background-color: #686868;
-    color: white;
-    border: none;
 }
 
     .btn-details:hover {
         background-color: #505050;
     }
 
-/* === Sorting Indicators: Sleeker Look === */
-th.sorted-asc::after {
-    content: " ▲";
+/* === Sorting Indicators === */
+th.sorted-asc::after,
+th.sorted-desc::after {
     font-size: 0.75rem;
     color: #666;
+}
+
+th.sorted-asc::after {
+    content: " ▲";
 }
 
 th.sorted-desc::after {
     content: " ▼";
-    font-size: 0.75rem;
-    color: #666;
 }
 
-/* === Responsive Table === */
+/* === Responsive Styling === */
 @media (max-width: 768px) {
     .table.custom-table {
         display: block;
@@ -123,21 +182,32 @@ th.sorted-desc::after {
         -webkit-overflow-scrolling: touch;
     }
 
-    .action-buttons {
-        display: flex;
-        gap: 5px;
+    .filter-container {
+        flex-direction: column;
+        justify-content: center;
     }
+
+        .filter-container .form-control,
+        .filter-container .search-input,
+        .filter-container .filter-select {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
 
     .btn-sm {
         padding: 5px 8px;
         font-size: 0.8rem;
     }
+
+        .btn-sm:hover {
+            background-color: #5a6268;
+        }
 }
 
-/* === Fix Input Width for Consistency === */
+/* === Input Field Styling === */
 .search-input {
-    width: 100%; /* Makes all input fields take full available space */
-    max-width: 300px; /* Ensures they are the same width */
+    width: 100%;
+    max-width: 300px;
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 6px;
@@ -145,76 +215,90 @@ th.sorted-desc::after {
     transition: all 0.3s ease-in-out;
 }
 
-/* Ensure uniformity for all form controls */
+    .search-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+/* === Form Controls Consistency === */
 .form-control {
     width: 100%;
-    max-width: 300px; /* Matches the search-input */
+    max-width: 300px;
 }
 
-/* Make sure labels are aligned properly */
+/* === Filter Label Styling === */
 .filter-label {
     font-weight: 600;
     margin-bottom: 5px;
-    display: block;
 }
 
-/* Responsive Fix */
-@media (max-width: 768px) {
-    .search-input,
-    .form-control {
-        max-width: 100%; /* Allow them to be full width on smaller screens */
-    }
-}
-
-/* === Ensure Dropdowns and Inputs Have the Same Width === */
+/* === Adjustments for Dropdowns === */
 .filter-container select,
 .filter-container input {
     width: 100%;
-    max-width: 300px; /* Ensures they are exactly the same */
+    max-width: 300px;
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 6px;
     font-size: 0.9rem;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    box-sizing: border-box;
 }
 
-/* === Make Dropdowns and Inputs Consistent in Flexbox === */
-.filter-container .col-md-4 {
-    display: flex;
-    flex-direction: column;
+/* === Create Button Styling === */
+.create-btn {
+    flex-grow: 1;
+    text-align: center;
 }
 
-/* === Fix Label Alignment === */
-.filter-container label {
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-/* Responsive Fix */
-@media (max-width: 768px) {
-    .filter-container select,
-    .filter-container input {
-        max-width: 100%;
+    .create-btn a {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #d9534f;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.3s ease-in-out;
+        font-size: 1rem;
     }
-}
 
-/* Align filter search input with label */
-.filter-container {
+        .create-btn a i {
+            font-size: 1.2rem;
+        }
+
+        .create-btn a:hover {
+            background: #c9302c;
+        }
+
+/* === View Toggle Buttons Styling === */
+.view-toggle {
     display: flex;
-    justify-content: center; /* Centers both search and filter fields */
-    align-items: center; /* Ensures input and label are aligned */
-    gap: 10px; /* Adds spacing between label and input */
+    gap: 12px;
 }
 
-    /* Make sure input is properly sized */
-    .filter-container input {
-        max-width: 300px; /* Adjust width if needed */
-        padding: 8px;
-        font-size: 0.9rem;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
+    .view-toggle button {
+        background: #6c757d;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
     }
+
+        .view-toggle button i {
+            font-size: 1.2rem;
+        }
+
+        .view-toggle button:hover {
+            background: #5a6268;
+            transform: scale(1.1);
+        }
+
+        .view-toggle button.active {
+            background: #007bff;
+        }
 
 /* === Header Strip Styling === */
 .page-header {
@@ -229,84 +313,7 @@ th.sorted-desc::after {
     transition: all 0.3s ease-in-out;
 }
 
-/* Center Create Button */
-.create-btn {
-    flex-grow: 1;
-    text-align: center;
-}
-
-    .create-btn a {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px; /* Space between icon and text */
-        background: #d9534f;
-        color: white;
-        padding: 12px 18px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background 0.3s ease-in-out;
-        font-size: 1rem;
-    }
-
-        .create-btn a i {
-            font-size: 1.2rem; /* Adjust icon size */
-        }
-
-        .create-btn a:hover {
-            background: #c9302c;
-        }
-
-/* Aligning View Toggle Buttons to the Right */
-.view-toggle {
-    display: flex;
-    gap: 12px; /* More spacing between buttons */
-}
-
-    .view-toggle button {
-        background: #6c757d;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-    }
-
-        .view-toggle button i {
-            font-size: 1.2rem; /* Make icons more readable */
-        }
-
-        /* Improve Hover Effect */
-        .view-toggle button:hover {
-            background: #6c757d;
-            transform: scale(1.1); /* Subtle hover animation */
-        }
-
-        /* Make Active Button Stand Out */
-        .view-toggle button.active {
-        }
-
-/* Responsive for Mobile */
-@media (max-width: 768px) {
-    .page-header {
-        flex-wrap: wrap;
-        text-align: center;
-        padding: 15px;
-    }
-
-    .create-btn {
-        order: 1;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .view-toggle {
-        order: 2;
-        width: 100%;
-        justify-content: center;
-    }
-}
-/* Member Details Styling */
+/* === Member Card Styling === */
 .member-card {
     background: white;
     padding: 24px;
@@ -351,184 +358,9 @@ th.sorted-desc::after {
     color: #777;
 }
 
-/* Member Details Section */
-.member-card-content {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px 24px;
-}
-
-.member-detail {
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-    color: #6c757d;
-}
-
-    .member-detail strong {
-        color: #2c3e50;
-        font-weight: 600;
-    }
-
-    .member-detail a {
-        color: #e74c3c;
-        text-decoration: none;
-    }
-
-    .member-detail ul {
-        padding-left: 16px;
-        margin: 6px 0;
-        list-style-type: disc;
-    }
-
-.member-card-footer {
-    display: flex;
-    justify-content: flex-end;
-    border-top: 2px solid #e0e0e0;
-    padding-top: 16px;
-    margin-top: 16px;
-}
-
-.button-2 {
-    background: #2c3e50;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-    .button-2:hover {
-        background: #1a252f;
-    }
-
-/* Responsive Adjustments */
+/* === Responsive Adjustments for Member Cards === */
 @media (max-width: 768px) {
     .member-card-content {
         grid-template-columns: 1fr;
     }
 }
-
-/* === Filter Container Styling === */
-.filter-container {
-    display: flex;
-    justify-content: center; /* Center align the filters horizontally */
-    gap: 20px; /* Add space between the search fields */
-    margin-bottom: 20px;
-    flex-wrap: nowrap; /* Ensure they stay in one line */
-    width: 100%; /* Ensure the container spans the entire width */
-}
-
-    /* === Form Input Styling === */
-    .filter-container .search-input,
-    .filter-container .filter-select {
-        max-width: 350px; /* Adjust max-width for better layout */
-        width: 100%; /* Allow for full width usage */
-    }
-
-/* === Responsive Fixes for Smaller Screens === */
-@media (max-width: 768px) {
-    .filter-container {
-        flex-direction: column; /* Stack inputs vertically on small screens */
-        justify-content: center;
-    }
-
-        .search-input,
-        .filter-container select,
-        .filter-container input {
-            max-width: 100%; /* Full width for inputs */
-            margin-bottom: 10px; /* Adds margin between stacked inputs */
-        }
-}
-/* === Filter Container Styling === */
-.filter-container {
-    display: flex;
-    justify-content: center; /* Center align the filters horizontally */
-    gap: 20px; /* Add space between the search fields */
-    margin-bottom: 20px;
-    flex-wrap: nowrap; /* Ensure they stay in one line */
-    width: 100%; /* Ensure the container spans the entire width */
-}
-
-    /* === Form Input Styling === */
-    .filter-container .search-input,
-    .filter-container .filter-select {
-        max-width: 350px; /* Adjust max-width for better layout */
-        width: 100%; /* Allow for full width usage */
-    }
-
-/* === Responsive Fixes for Smaller Screens === */
-@media (max-width: 768px) {
-    .filter-container {
-        flex-direction: column; /* Stack inputs vertically on small screens */
-        justify-content: center;
-    }
-
-        .search-input,
-        .filter-container select,
-        .filter-container input {
-            max-width: 100%; /* Full width for inputs */
-            margin-bottom: 10px; /* Adds margin between stacked inputs */
-        }
-}
-/* === Filter Container Styling === */
-.filter-container {
-    display: flex;
-    justify-content: center; /* Center align the filters horizontally */
-    gap: 20px; /* Add space between the filter fields */
-    margin-bottom: 20px;
-    flex-wrap: nowrap; /* Ensure they stay in one line */
-    width: 100%; /* Ensure the container spans the entire width */
-}
-
-    /* === Form Input Styling === */
-    .filter-container .form-control {
-        max-width: 350px; /* Adjust max-width for better layout */
-        width: 100%; /* Allow for full width usage */
-    }
-
-/* === Responsive Fixes for Smaller Screens === */
-@media (max-width: 768px) {
-    .filter-container {
-        flex-direction: column; /* Stack inputs vertically on small screens */
-        justify-content: center;
-    }
-
-        .filter-container .form-control {
-            max-width: 100%; /* Full width for inputs */
-            margin-bottom: 10px; /* Adds margin between stacked inputs */
-        }
-}
-/* === Filter Container Styling === */
-.filter-container {
-    display: flex;
-    justify-content: center; /* Center align the filters horizontally */
-    gap: 20px; /* Add space between the search and filter fields */
-    margin-bottom: 20px;
-    flex-wrap: nowrap; /* Ensure they stay in one line */
-    width: 100%; /* Ensure the container spans the entire width */
-}
-
-/* === Form Input Styling === */
-.filter-container .form-control {
-    max-width: 350px; /* Adjust max-width for better layout */
-    width: 100%; /* Allow for full width usage */
-}
-
-/* === Responsive Fixes for Smaller Screens === */
-@media (max-width: 768px) {
-    .filter-container {
-        flex-direction: column; /* Stack inputs vertically on small screens */
-        justify-content: center;
-    }
-
-    .filter-container .form-control {
-        max-width: 100%; /* Full width for inputs */
-        margin-bottom: 10px; /* Adds margin between stacked inputs */
-    }
-}
-
