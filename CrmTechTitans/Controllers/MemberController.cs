@@ -3,8 +3,10 @@ using CrmTechTitans.Models;
 using CrmTechTitans.Models.Enumerations;
 using CrmTechTitans.Models.JoinTables;
 using CrmTechTitans.Models.ViewModels;
+using CrmTechTitans.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,42 +27,12 @@ namespace CrmTechTitans.Controllers
         {
             // Start with the base query
             var members = _context.Members
+                .Include(m => m.MemberThumbnail)
                 .Include(m => m.IndustryMembers)
                     .ThenInclude(im => im.Industry)
                 .AsQueryable();
 
-            // Filter by Member Name
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                members = members.Where(m => m.MemberName.Contains(searchString));
-            }
-
-            // Filter by Member Status
-            if (!string.IsNullOrEmpty(statusFilter))
-            {
-                var status = Enum.Parse<MembershipStatus>(statusFilter);
-                members = members.Where(m => m.MembershipStatus == status);
-            }
-
-            // Sorting
-            switch (sortField)
-            {
-                case "MemberName":
-                    members = sortDirection == "asc" ? members.OrderBy(m => m.MemberName) : members.OrderByDescending(m => m.MemberName);
-                    break;
-                case "MembershipStatus":
-                    members = sortDirection == "asc" ? members.OrderBy(m => m.MembershipStatus) : members.OrderByDescending(m => m.MembershipStatus);
-                    break;
-                default:
-                    members = members.OrderBy(m => m.MemberName); // Default sorting
-                    break;
-            }
-
-            // Pass sorting and filtering data to the view
-            ViewData["sortField"] = sortField;
-            ViewData["sortDirection"] = sortDirection;
-            ViewData["SearchString"] = searchString;
-            ViewData["statusFilter"] = statusFilter;
+            
 
             return View(await members.ToListAsync());
         }
@@ -74,6 +46,7 @@ namespace CrmTechTitans.Controllers
             }
 
             var member = await _context.Members
+                .Include(m => m.MemberPhoto)
                 .Include(m => m.MemberContacts)
                     .ThenInclude(mc => mc.Contact)
                 .Include(m => m.MemberAddresses)
@@ -112,10 +85,11 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MemberCreateViewModel model)
+        public async Task<IActionResult> Create(MemberCreateViewModel model, IFormFile? memberPicture, IFormFile? contactPicture)
         {
             if (ModelState.IsValid)
             {
+                await AddMemberPicture(model, memberPicture);
                 // Create Member
                 var member = new Member
                 {
@@ -126,7 +100,10 @@ namespace CrmTechTitans.Controllers
                     CompanyWebsite = model.CompanyWebsite,
                     MemberSince = model.MemberSince,
                     LastContactDate = model.LastContactDate,
-                    Notes = model.Notes
+                    Notes = model.Notes,
+                    MemberPhoto = model.MemberPhoto,
+                    MemberThumbnail = model.MemberThumbnail
+                 
                 };
 
                 // Add Addresses
@@ -145,12 +122,15 @@ namespace CrmTechTitans.Controllers
                 // Add Contacts
                 foreach (var contactModel in model.Contacts)
                 {
+                    await AddContactPicture(contactModel, contactPicture);
                     var contact = new Contact
                     {
                         FirstName = contactModel.FirstName,
                         LastName = contactModel.LastName,
                         Email = contactModel.Email,
-                        Phone = contactModel.Phone
+                        Phone = contactModel.Phone,
+                        ContactPhoto = contactModel.ContactPhoto,
+                        ContactThumbnail = contactModel.ContactThumbnail
                     };
                     member.MemberContacts.Add(new MemberContact { Contact = contact, ContactType = contactModel.ContactType });
                 }
@@ -192,6 +172,8 @@ namespace CrmTechTitans.Controllers
             }
 
             var member = await _context.Members
+                .Include(m => m.MemberPhoto)
+                .Include(m => m.MemberThumbnail)
                 .Include(m => m.MemberContacts)
                     .ThenInclude(mc => mc.Contact)
                 .Include(m => m.MemberAddresses)
@@ -210,6 +192,8 @@ namespace CrmTechTitans.Controllers
             {
                 ID = member.ID,
                 MemberName = member.MemberName,
+                MemberPhoto = member.MemberPhoto,
+                MemberThumbnail = member.MemberThumbnail,
                 // Map other member properties...
                 Addresses = member.MemberAddresses.Select(ma => new AddressViewModel
                 {
@@ -243,7 +227,7 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model)
+        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model, string? chkRemoveMemberImage, string? chkRemoveContactImage, IFormFile? memberPicture, IFormFile? contactPicture)
         {
             if (id != model.ID)
             {
@@ -254,9 +238,12 @@ namespace CrmTechTitans.Controllers
             {
                 try
                 {
+                   
                     // Fetch the existing member from the database
                     var member = await _context.Members
+                        .Include(m => m.MemberPhoto)
                         .Include(m => m.MemberContacts)
+                        .ThenInclude(mc => mc.Contact)
                         .Include(m => m.MemberAddresses)
                         .Include(m => m.IndustryMembers)
                         .FirstOrDefaultAsync(m => m.ID == id);
@@ -265,10 +252,42 @@ namespace CrmTechTitans.Controllers
                     {
                         return NotFound();
                     }
-
                     // Update Member properties
                     member.MemberName = model.MemberName;
+
                     // Update other member properties...
+
+                    //For image
+                    if (chkRemoveMemberImage != null)
+                    {
+                        var existingPhoto = await _context.MemberPhotos
+                                                           .Where(c => c.MemberID == member.ID)
+                                                           .FirstOrDefaultAsync();
+                        if (existingPhoto != null)
+                        {
+                            _context.MemberPhotos.Remove(existingPhoto);
+                        }
+
+                        var existingThumbnail = await _context.MemberThumbnails
+                                                              .Where(c => c.MemberID == member.ID)
+                                                              .FirstOrDefaultAsync();
+                        if (existingThumbnail != null)
+                        {
+                            _context.MemberThumbnails.Remove(existingThumbnail);
+                        }
+                        //Then, setting them to null will cause them to be deleted from the database.
+                        member.MemberPhoto = null;
+                        member.MemberThumbnail = null;
+                    }
+                    else
+                    {
+                        await AddMemberPicture(model, memberPicture);
+                        member.MemberPhoto = model.MemberPhoto;
+                        member.MemberThumbnail = model.MemberThumbnail;
+                    }
+
+                    
+                   
 
                     // Update Addresses
                     member.MemberAddresses.Clear();
@@ -288,12 +307,15 @@ namespace CrmTechTitans.Controllers
                     member.MemberContacts.Clear();
                     foreach (var contactModel in model.Contacts)
                     {
+                        
                         var contact = new Contact
                         {
                             FirstName = contactModel.FirstName,
                             LastName = contactModel.LastName,
                             Email = contactModel.Email,
-                            Phone = contactModel.Phone
+                            Phone = contactModel.Phone,
+                            ContactPhoto = contactModel.ContactPhoto,
+                            ContactThumbnail = contactModel.ContactThumbnail
                         };
                         member.MemberContacts.Add(new MemberContact { Contact = contact, ContactType = contactModel.ContactType });
                     }
@@ -327,7 +349,7 @@ namespace CrmTechTitans.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new {model.ID});
             }
 
             // If the model is invalid, repopulate available industries
@@ -364,7 +386,8 @@ namespace CrmTechTitans.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var member = await _context.Members.FindAsync(id);
+            var member = await _context.Members
+                .FindAsync(id);
             if (member != null)
             {
                 _context.Members.Remove(member);
@@ -378,5 +401,112 @@ namespace CrmTechTitans.Controllers
         {
             return _context.Members.Any(e => e.ID == id);
         }
+
+        private async Task AddMemberPicture(MemberCreateViewModel member, IFormFile thePicture)
+        {
+            if (thePicture != null)
+            {
+                string mimeType = thePicture.ContentType;
+                long fileLength = thePicture.Length;
+                if (!(mimeType == "" || fileLength == 0)) // Check if file exists
+                {
+                    if (mimeType.Contains("image"))
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await thePicture.CopyToAsync(memoryStream);
+                        var pictureArray = memoryStream.ToArray(); // Convert to byte array
+
+                        // Retrieve existing MemberPhoto and MemberThumbnail from the database
+                        var existingPhoto = await _context.MemberPhotos
+                                                          .Where(p => p.MemberID == member.ID)
+                                                          .FirstOrDefaultAsync();
+                        var existingThumbnail = await _context.MemberThumbnails
+                                                              .Where(t => t.MemberID == member.ID)
+                                                              .FirstOrDefaultAsync();
+
+                        if (existingPhoto != null)
+                        {
+                            // Update the existing photo instead of creating a new one
+                            existingPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
+                        }
+                        else
+                        {
+                            member.MemberPhoto = new MemberPhoto
+                            {
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600),
+                                MimeType = "image/webp"
+                            };
+                        }
+
+                        if (existingThumbnail != null)
+                        {
+                            // Update existing thumbnail
+                            existingThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
+                        }
+                        else
+                        {
+                            member.MemberThumbnail = new MemberThumbnail
+                            {
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
+                                MimeType = "image/webp"
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task AddContactPicture(ContactViewModel contact, IFormFile thePicture)
+        {
+            if (thePicture != null)
+            {
+                string mimeType = thePicture.ContentType;
+                long fileLength = thePicture.Length;
+                if (!(mimeType == "" || fileLength == 0))
+                {
+                    if (mimeType.Contains("image"))
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await thePicture.CopyToAsync(memoryStream);
+                        var pictureArray = memoryStream.ToArray();
+
+                        var existingPhoto = await _context.ContactPhotos
+                                                          .Where(p => p.ContactID == contact.ID)
+                                                          .FirstOrDefaultAsync();
+                        var existingThumbnail = await _context.ContactThumbnails
+                                                              .Where(t => t.ContactID == contact.ID)
+                                                              .FirstOrDefaultAsync();
+
+                        if (existingPhoto != null)
+                        {
+                            // Update existing photo instead of inserting a new one
+                            existingPhoto.Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600);
+                        }
+                        else
+                        {
+                            contact.ContactPhoto = new ContactPhoto
+                            {
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 500, 600),
+                                MimeType = "image/webp"
+                            };
+                        }
+
+                        if (existingThumbnail != null)
+                        {
+                            existingThumbnail.Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70);
+                        }
+                        else
+                        {
+                            contact.ContactThumbnail = new ContactThumbnail
+                            {
+                                Content = ResizeImage.ShrinkImageWebp(pictureArray, 50, 70),
+                                MimeType = "image/webp"
+                            };
+                        }
+                    }
+                }
+            }
+        }
     }
+
 }

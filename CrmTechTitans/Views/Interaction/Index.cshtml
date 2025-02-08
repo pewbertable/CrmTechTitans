@@ -12,16 +12,7 @@
 	<div class="main-content">
 		<header class="page-header">
 
-
-            <h1>All Interactions</h1>
-            <div class="d-flex align-items-center gap-3">
-              <!--  <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
-                    <i class="fas fa-user-plus"></i> Create New Interaction
-                </a>
-            </div>-->
-        </header>
-        <p></p>
-
+			<h1>All Interactions</h1>
 			<div class="d-flex align-items-center gap-3">
 				<!--  <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
 						<i class="fas fa-user-plus"></i> Create New Interaction
@@ -81,7 +72,7 @@
 @section Scripts {
 	<script>
 		// Sort table function
-		  function sortTable(columnIndex, initialDirection = "asc") {
+		 function sortTable(columnIndex, initialDirection = "asc") {
 			 var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
 			 table = document.getElementById("interactionTable");
 			 switching = true;
@@ -135,15 +126,15 @@
 			 }
 		 }
 
-		  $(document).ready(function () {
+		 $(document).ready(function () {
 			// Filter table based on input values
 			function filterTable() {
 				var searchFilter = $('#searchFilter').val().toLowerCase();
 
-				console.log("Search Filter:", searchFilter);
+				console.log("search Filter:", searchFilter);
 
 				$('#interactionTable tbody tr').each(function () {
-					var searchText = $(this).find('td:nth-child(2)').text().toLowerCase();
+					var searchText = $(this).find('td:nth-child(1)').text().toLowerCase();
 
 					var searchMatch = searchFilter === "" || searchText.includes(searchFilter);
 
@@ -152,13 +143,15 @@
 			}
 
 			// Attach filter function to input events
-			$('#searchFilter).on('input', filterTable);
+			$('#searchFilter').on('input', filterTable);
 
 			// Initialize Bootstrap Tooltips
 			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 				return new bootstrap.Tooltip(tooltipTriggerEl);
 			});
+
+
 
 
 		});
@@ -177,5 +170,3 @@
 			}
 	</style>
 }
-
-

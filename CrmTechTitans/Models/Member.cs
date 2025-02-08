@@ -44,6 +44,10 @@ namespace CrmTechTitans.Models
         [Display(Name = "Notes")]
         public string? Notes { get; set; }
 
+        public MemberPhoto? MemberPhoto { get; set; }
+
+        public MemberThumbnail? MemberThumbnail { get; set; }
+
         [Display(Name = "Membership Status")]
         public MembershipStatus MembershipStatus { get; set; }
         public ICollection<MemberIndustry> IndustryMembers { get; set; } = new HashSet<MemberIndustry>();

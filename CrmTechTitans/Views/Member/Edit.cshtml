@@ -1,4 +1,5 @@
 ﻿@using CrmTechTitans.Models.Enumerations
+@using CrmTechTitans.Models
 @model CrmTechTitans.Models.ViewModels.MemberCreateViewModel
 
 @{
@@ -14,13 +15,29 @@
     <div class="member-card">
         <div class="member-card-header">
             <div class="member-avatar">
+               @{
+            
+            var hasMemberPicture = (Model.MemberPhoto?.Content != null);
+            if (hasMemberPicture)
+            {
+                @:<div>
+                    string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
+                    string imageSrc = string.Format("data:" + Model.MemberPhoto.MimeType + ";base64,{0}", imageBase64);
+                    <img src="@imageSrc" alt="Profile Picture of @Model.MemberName" 
+                    title="Profile Picture of @Model.MemberName" class="img-fluid rounded" />
+                @:</div><hr />
+            }else
+            {
                 <i class="fas fa-user-edit"></i>
+            }
+               }
+               
             </div>
             <div class="member-info">
                 <h2 class="member-name">Edit Member Information</h2>
             </div>
         </div>
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div class="member-card-content">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ID" />
@@ -34,6 +51,30 @@
                         <span asp-validation-for="MemberName" class="text-danger"></span>
                     </div>
                 </div>
+                 <div class="member-detail">
+                    @{
+                        if (hasMemberPicture)
+                        {
+                            <div class="form-group">
+                                <div class="form-check m-3">
+                                    <input  class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
+                                    <label  class="form-check-label" for="chkRemoveMemberImage">
+                                    <strong>Check to remove Image</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    }
+                  </div>
+
+                  <div class="member-detail">
+                  <div class="form-group">
+                <label asp-for="MemberPhoto" class="control-label">Member Picture:</label>
+                <div class="input-group mb-3">
+                <input asp-for="MemberPhoto" type="file" class="form-control" name="memberPicture" id="memberPicture">
+                </div>
+                </div>
+                  </div>
 
                 <div class="member-detail">
                     <i class="fas fa-id-card"></i>
@@ -156,11 +197,29 @@
 
                 <!-- Contacts Section -->
                 <div class="member-detail">
-                    <i class="fas fa-address-book"></i>
+                     <i class="fas fa-address-book"></i>
                     <h3>Contacts</h3>
                     @for (int i = 0; i < Model.Contacts.Count; i++)
-                    {
+                    {                     
+
                         <div class="contact-form">
+                            <div class="form-group">
+                                @{
+                            var hasContactPicture = (Model.Contacts[i].ContactPhoto?.Content != null);
+                            if (hasContactPicture)
+                            {
+                                @:<div>
+                                    string imageBase64 = Convert.ToBase64String(Model.Contacts[i].ContactPhoto.Content);
+                                    string imageSrc = string.Format("data:" + Model.Contacts[i].ContactPhoto.MimeType + ";base64,{0}", imageBase64);
+                                    <img src="@imageSrc" alt="Profile Picture of @Model.Contacts[i].FirstName" 
+                                        title="Profile Picture of @Model.Contacts[i].FirstName" class="img-fluid rounded" />
+                                @:</div><hr />
+                            }else
+                            {
+                                
+                            }
+                            }
+                            </div>
                             <div class="form-group">
                                 <label asp-for="Contacts[i].FirstName" class="control-label">First Name</label>
                                 <input asp-for="Contacts[i].FirstName" class="form-control" placeholder="Enter First Name" />
@@ -170,6 +229,26 @@
                                 <label asp-for="Contacts[i].LastName" class="control-label">Last Name</label>
                                 <input asp-for="Contacts[i].LastName" class="form-control" placeholder="Enter Last Name" />
                                 <span asp-validation-for="Contacts[i].LastName" class="text-danger"></span>
+                            </div>
+                           @{
+                                if (hasContactPicture)
+                                {
+                                    <div class="form-group">
+                                        <div class="form-check m-3">
+                        
+                                            <input class="form-check-input" type="checkbox" id="chkRemoveContactImage" name="chkRemoveContactImage">
+                                            <label class="form-check-label" for="chkRemoveContactImage">
+                                            <strong>Check to remove Image</strong>
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="form-group">
+                            <label asp-for="Contacts[i].ContactPhoto" class="control-label">Contact Picture:</label>
+                            <div class="input-group mb-3">
+                            <input asp-for="Contacts[i].ContactPhoto" type="file" class="form-control" name="contactPicture" id="contactPicture">
+                            </div>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Contacts[i].Email" class="control-label">Email</label>

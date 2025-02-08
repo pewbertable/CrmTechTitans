@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Member>
 
 @{
-    ViewData["Title"] = "All Members";
+	ViewData["Title"] = "All Members";
 }
 <partial name="_Notification" />
 
@@ -12,26 +12,29 @@
             <h1>All Members</h1>
         </div>
         <p></p>
+	<!-- Page Title -->
+	<header class="page-header d-flex justify-content-between align-items-center">
+		<div>
+			<h1>All Members</h1>
+		</div>
 
         <div class="d-flex align-items-center gap-3">
-            <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
-                <i class="fas fa-user-plus"></i> Create New Member
-            </a>
-            <p></p>
+             <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system"> 
+                 <i class="fas fa-user-plus"></i> Create New Member 
+             </a> 
 
-            <!-- View Toggle -->
-            <div class="view-toggle d-flex align-items-center">
-                <button class="btn btn-secondary active me-2" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button class="btn btn-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
-                    <i class="fas fa-table"></i>
-                </button>
-            </div>
-        </div>
-    </header>
+			<!-- View Toggle -->
+			<div class="view-toggle d-flex align-items-center">
+				<button class="btn btn-secondary active me-2" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
+					<i class="fas fa-th-large"></i>
+				</button>
+				<button class="btn btn-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
+					<i class="fas fa-table"></i>
+				</button>
+			</div>
+		</div>
+	</header>
 
-    <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">
         <div class="row">
             <!-- Search by Member Name -->
@@ -40,93 +43,115 @@
                 <input type="text" id="searchString" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member’s name to search">
             </div>
 
-            <!-- Filter by Member Status -->
-            <div class="col-md-6 mb-3">
-                <label for="statusFilter" class="form-label">Filter by Member Status</label>
-                <select id="statusFilter" class="form-control" data-bs-toggle="tooltip" title="Filter members based on status">
-                    <option value="">All Statuses</option>
-                    <option value="GoodStanding">Good Standing</option>
-                    <option value="OutStanding">Out Standing</option>
-                    <option value="Cancelled">Cancelled</option>
-                </select>
-            </div>
-        </div>
-    </section>
+			<!-- Filter by Member Status -->
+			<div class="col-md-6 mb-3">
+				<label for="statusFilter" class="form-label">Filter by Member Status</label>
+				<select id="statusFilter" class="form-control" data-bs-toggle="tooltip" title="Filter members based on status">
+					<option value="">All Statuses</option>
+					<option value="GoodStanding">Good Standing</option>
+					<option value="OutStanding">Out Standing</option>
+					<option value="Cancelled">Cancelled</option>
+				</select>
+			</div>
+		</div>
+	</section>
 
-    <!-- Sorting Buttons -->
-    <div class="btn-group mb-4">
-        <button id="sortByName" class="btn btn-secondary" data-bs-toggle="tooltip" title="Sort members by name">Sort by Name</button>
-        <button id="sortByStatus" class="btn btn-secondary" data-bs-toggle="tooltip" title="Sort members by status">Sort by Status</button>
-    </div>
 
-    <!-- Card View -->
-    <section class="members-grid" id="cards-view">
-        @foreach (var item in Model)
-        {
-            <div class="member-card" data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
-                <div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
-                    @item.MembershipStatus
-                </div>
-                <div class="card-header">
-                    <div class="company-logo">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <div class="company-info">
-                        <h2 class="company-name">@item.MemberName</h2>
-                        <p class="membership-type">@item.MembershipType</p>
-                    </div>
-                </div>
+	<!-- Card View -->
+	<section class="members-grid" id="cards-view">
+		@foreach (var item in Model)
+		{
+			<div class="member-card" data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
+				<div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
+					@item.MembershipStatus
+				</div>
+				<div class="card-header">
+					<div class="company-logo">
+						@{
+							if (item.MemberThumbnail?.Content != null)
+							{
+								string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
+								string imageSrc = string.Format("data:" + item.MemberThumbnail.MimeType + ";base64,{0}", imageBase64);
+								<img src="@imageSrc" alt="Profile Picture of @item?.MemberName"
+									 title="Profile Picture of @item?.MemberName" class="img-fluid rounded" />
+							}
+							else
+							{
+								<i class="fas fa-building"></i>
+							}
 
-                <div class="card-content">
-                    <div class="data-grid">
-                        <div class="data-item">
-                            <i class="fas fa-users"></i>
-                            <div>
-                                <span class="data-label">Company Size</span>
-                                <span class="data-value">@item.CompanySize employees</span>
-                            </div>
-                        </div>
-                        <div class="data-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <div>
-                                <span class="data-label">Member Since</span>
-                                <span class="data-value">@item.MemberSince.ToString("MMM yyyy")</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+						}
 
-                <div class="card-footer">
-                    <div class="card-actions">
-                        <a href="#" class="btn btn-link text-danger" data-bs-toggle="tooltip" title="Archive this member">
-                            <i class="fas fa-archive"></i> Archive
-                        </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-link text-primary" data-bs-toggle="tooltip" title="View member details">
-                            <i class="fas fa-info-circle"></i> Details
-                        </a>
-                    </div>
-                </div>
-            </div>
-        }
-    </section>
+					</div>
+					<div class="company-info">
+						<h2 class="company-name">@item.MemberName</h2>
+						<p class="membership-type">@item.MembershipType</p>
+					</div>
+				</div>
+
+				<div class="card-content">
+					<div class="data-grid">
+						<div class="data-item">
+							<i class="fas fa-users"></i>
+							<div>
+								<span class="data-label">Company Size</span>
+								<span class="data-value">@item.CompanySize employees</span>
+							</div>
+						</div>
+						<div class="data-item">
+							<i class="fas fa-calendar-alt"></i>
+							<div>
+								<span class="data-label">Member Since</span>
+								<span class="data-value">@item.MemberSince.ToString("MMM yyyy")</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-footer">
+					<div class="card-actions">
+						<a href="#" class="btn btn-link text-danger" data-bs-toggle="tooltip" title="Archive this member">
+							<i class="fas fa-archive"></i> Archive
+						</a>
+						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-link text-primary" data-bs-toggle="tooltip" title="View member details">
+							<i class="fas fa-info-circle"></i> Details
+						</a>
+					</div>
+				</div>
+			</div>
+		}
+	</section>
 
     <!-- Table View -->
     <section class="table-responsive" id="table-view" style="display: none;">
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Company Size</th>
-                    <th>Member Since</th>
-                    <th>Status</th>
-                    <th class="text-center">Actions</th>
+					<th onclick="sortTable(0)">Logo</th>
+					<th onclick="sortTable(1)">Name</th>
+					<th onclick="sortTable(2)">Type</th>
+					<th onclick="sortTable(3)">Company Size</th>
+					<th onclick="sortTable(4)">Member Since</th>
+					<th onclick="sortTable(5)">Status</th>
+					<th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
+                        <td>
+                            @{
+                                if(item.MemberThumbnail?.Content != null)
+                                {
+                                    string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
+                                    string imageSrc = string.Format("data:" + item.MemberThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                    <img src="@imageSrc" alt="Profile Picture of @item?.MemberName"
+                                         title="Profile Picture of @item?.MemberName" class="img-fluid rounded" />
+                                }
+
+                             }
+                        </td>
                         <td>@item.MemberName</td>
                         <td>@item.MembershipType</td>
                         <td>@item.CompanySize</td>
@@ -144,7 +169,7 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+               document.addEventListener('DOMContentLoaded', () => {
             const preferredView = localStorage.getItem('preferredView') || 'cards';
             document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
             document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';
@@ -160,50 +185,81 @@
                 });
             });
 
-            function filterAndSort() {
-                const searchValue = document.getElementById('searchString').value.toLowerCase();
-                const statusValue = document.getElementById('statusFilter').value;
+			// Determine the current sorting direction
+			if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+				dir = "desc";
+			} else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+				dir = "asc";
+			}
 
-                document.querySelectorAll('.member-card, tbody tr').forEach(item => {
-                    const name = item.getAttribute('data-name').toLowerCase();
-                    const status = item.getAttribute('data-status');
+			// Remove sorting classes from all headers
+			for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+				table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+			}
 
-                    // Convert statusValue to PascalCase for comparison
-                    const statusFilter = statusValue.toLowerCase().replace(/(?:^|\s)\w/g, match => match.toUpperCase());
+			// Add sorting class to the clicked header
+			table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+			// Perform sorting
 
-                    item.style.display = (name.includes(searchValue) && (statusValue === '' || status === statusFilter.toLowerCase())) ? '' : 'none';
-                });
-            }
+			while (switching) {
+				switching = false;
+				rows = table.rows;
+				for (i = 1; i < (rows.length - 1); i++) {
+					shouldSwitch = false;
+					x = rows[i].getElementsByTagName("td")[columnIndex];
+					y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+					if (dir === "asc") {
+						if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+							shouldSwitch = true;
+							break;
+						}
+					} else if (dir === "desc") {
+						if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+							shouldSwitch = true;
+							break;
+						}
+					}
+				}
+				if (shouldSwitch) {
+					rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+					switching = true;
+					switchcount++;
+				} else if (switchcount === 0 && dir === "asc") {
+					dir = "desc";
+					switching = true;
+				}
+			}
+		}
 
-            function sortBy(field) {
-                const cardsView = document.getElementById('cards-view');
-                const tableView = document.getElementById('table-view');
+		$(document).ready(function () {
 
-                const items = Array.from(cardsView.querySelectorAll('.member-card'))
-                    .concat(Array.from(tableView.querySelectorAll('tbody tr')));
+			// Default status filter to Good Standing 
+			if (!sessionStorage.getItem("statusFilter")) {
+				$('#statusFilter').val("GoodStanding");
+				sessionStorage.setItem("statusFilter", "GoodStanding");
+			} else {
+				$('#statusFilter').val(sessionStorage.getItem("statusFilter"));
+			}
 
-                items.sort((a, b) => {
-                    const aValue = a.getAttribute(`data-${field}`).toLowerCase();
-                    const bValue = b.getAttribute(`data-${field}`).toLowerCase();
+			// Filter table based on input values
+			function filterTable() {
+				var memberFilter = $('#memberFilter').val().toLowerCase();
+				var statusFilter = $('#statusFilter').val().toLowerCase();
 
-                    if (aValue < bValue) return -1;
-                    if (aValue > bValue) return 1;
-                    return 0;
-                });
+				console.log("member Filter:", memberFilter);
+				console.log("Status Filter:", statusFilter);
 
-                items.forEach(item => {
-                    if (item.classList.contains('member-card')) {
-                        cardsView.appendChild(item);
-                    } else {
-                        tableView.querySelector('tbody').appendChild(item);
-                    }
-                });
-            }
+				$('#membersTable tbody tr').each(function () {
+					var memberText = $(this).find('td:nth-child(2)').text().toLowerCase();
+					var statusText = $(this).find('td:nth-child(6)').text().toLowerCase();
 
-            document.getElementById('searchString').addEventListener('input', filterAndSort);
-            document.getElementById('statusFilter').addEventListener('change', filterAndSort);
-            document.getElementById('sortByName').addEventListener('click', () => sortBy('name'));
-            document.getElementById('sortByStatus').addEventListener('click', () => sortBy('status'));
+					var memberMatch = memberFilter === "" || memberText.includes(memberFilter);
+					var statusMatch = statusFilter === "" || statusText.includes(statusFilter);
+					$(this).toggle(memberMatch && statusMatch);
+				});
+			}
+			// Apply filtering when the page loads
+			filterTable();
 
             // Initialize Bootstrap Tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
