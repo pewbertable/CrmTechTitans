@@ -14,10 +14,10 @@
         <p></p>
 
         <div class="d-flex align-items-center gap-3">
-             <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system"> 
-                 <i class="fas fa-user-plus"></i> Create New Member 
-             </a> 
-             <p></p>
+            <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
+                <i class="fas fa-user-plus"></i> Create New Member
+            </a>
+            <p></p>
 
             <!-- View Toggle -->
             <div class="view-toggle d-flex align-items-center">
@@ -31,6 +31,7 @@
         </div>
     </header>
 
+    <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">
         <div class="row">
             <!-- Search by Member Name -->
@@ -38,8 +39,6 @@
                 <label for="searchString" class="form-label">Search by Member Name</label>
                 <input type="text" id="searchString" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member’s name to search">
             </div>
-            <p> </p>
-            <p></p>
 
             <!-- Filter by Member Status -->
             <div class="col-md-6 mb-3">
@@ -134,7 +133,6 @@
                         <td>@item.MemberSince.ToShortDateString()</td>
                         <td><span class="status-tag">@item.MembershipStatus</span></td>
                         <td class="text-center action-buttons">
-                          @*  <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit member details">Edit</a>*@
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View member details">Details</a>
                         </td>
                     </tr>
@@ -146,7 +144,7 @@
 
 @section Scripts {
     <script>
-               document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const preferredView = localStorage.getItem('preferredView') || 'cards';
             document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
             document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';

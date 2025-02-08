@@ -43,8 +43,7 @@
         border-bottom: none; /* Remove last row border */
     }
 
-/* === Action Buttons: Modern Look === */
-/* === Table Action Buttons: Consistent & Neutral === */
+/ /* === Action Buttons: Modern Look === */
 .action-buttons {
     display: flex;
     justify-content: center;
@@ -68,11 +67,18 @@
 
 /* Unified Button Color: Modern Gray */
 .btn-edit, .btn-details {
-    background-color: #6c757d; /* Neutral Gray */
+{
+    background: #6c757d;
     color: white;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2sease;
+    text-decoration: none !important;
+}
 }
 
-    /* Hover Effect */
     .btn-edit:hover, .btn-details:hover {
         background-color: #5a6268; /* Slightly darker on hover */
     }
@@ -85,7 +91,6 @@
         min-width: 80px;
     }
 }
-
 
 .btn-details {
     background-color: #686868;
@@ -196,6 +201,7 @@ th.sorted-desc::after {
 /* Align filter search input with label */
 .filter-container {
     display: flex;
+    justify-content: center; /* Centers both search and filter fields */
     align-items: center; /* Ensures input and label are aligned */
     gap: 10px; /* Adds spacing between label and input */
 }
@@ -210,25 +216,6 @@ th.sorted-desc::after {
         box-sizing: border-box;
     }
 
-
-/* Align filter search input with label */
-.filter-container {
-    display: flex;
-    align-items: center; /* Ensures input and label are aligned */
-    gap: 10px; /* Adds spacing between label and input */
-}
-
-    /* Make sure input is properly sized */
-    .filter-container input {
-        max-width: 300px; /* Adjust width if needed */
-        padding: 8px;
-        font-size: 0.9rem;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-    }
-
-/* === Header Strip Styling === */
 /* === Header Strip Styling === */
 .page-header {
     display: flex;
@@ -425,3 +412,123 @@ th.sorted-desc::after {
         grid-template-columns: 1fr;
     }
 }
+
+/* === Filter Container Styling === */
+.filter-container {
+    display: flex;
+    justify-content: center; /* Center align the filters horizontally */
+    gap: 20px; /* Add space between the search fields */
+    margin-bottom: 20px;
+    flex-wrap: nowrap; /* Ensure they stay in one line */
+    width: 100%; /* Ensure the container spans the entire width */
+}
+
+    /* === Form Input Styling === */
+    .filter-container .search-input,
+    .filter-container .filter-select {
+        max-width: 350px; /* Adjust max-width for better layout */
+        width: 100%; /* Allow for full width usage */
+    }
+
+/* === Responsive Fixes for Smaller Screens === */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column; /* Stack inputs vertically on small screens */
+        justify-content: center;
+    }
+
+        .search-input,
+        .filter-container select,
+        .filter-container input {
+            max-width: 100%; /* Full width for inputs */
+            margin-bottom: 10px; /* Adds margin between stacked inputs */
+        }
+}
+/* === Filter Container Styling === */
+.filter-container {
+    display: flex;
+    justify-content: center; /* Center align the filters horizontally */
+    gap: 20px; /* Add space between the search fields */
+    margin-bottom: 20px;
+    flex-wrap: nowrap; /* Ensure they stay in one line */
+    width: 100%; /* Ensure the container spans the entire width */
+}
+
+    /* === Form Input Styling === */
+    .filter-container .search-input,
+    .filter-container .filter-select {
+        max-width: 350px; /* Adjust max-width for better layout */
+        width: 100%; /* Allow for full width usage */
+    }
+
+/* === Responsive Fixes for Smaller Screens === */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column; /* Stack inputs vertically on small screens */
+        justify-content: center;
+    }
+
+        .search-input,
+        .filter-container select,
+        .filter-container input {
+            max-width: 100%; /* Full width for inputs */
+            margin-bottom: 10px; /* Adds margin between stacked inputs */
+        }
+}
+/* === Filter Container Styling === */
+.filter-container {
+    display: flex;
+    justify-content: center; /* Center align the filters horizontally */
+    gap: 20px; /* Add space between the filter fields */
+    margin-bottom: 20px;
+    flex-wrap: nowrap; /* Ensure they stay in one line */
+    width: 100%; /* Ensure the container spans the entire width */
+}
+
+    /* === Form Input Styling === */
+    .filter-container .form-control {
+        max-width: 350px; /* Adjust max-width for better layout */
+        width: 100%; /* Allow for full width usage */
+    }
+
+/* === Responsive Fixes for Smaller Screens === */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column; /* Stack inputs vertically on small screens */
+        justify-content: center;
+    }
+
+        .filter-container .form-control {
+            max-width: 100%; /* Full width for inputs */
+            margin-bottom: 10px; /* Adds margin between stacked inputs */
+        }
+}
+/* === Filter Container Styling === */
+.filter-container {
+    display: flex;
+    justify-content: center; /* Center align the filters horizontally */
+    gap: 20px; /* Add space between the search and filter fields */
+    margin-bottom: 20px;
+    flex-wrap: nowrap; /* Ensure they stay in one line */
+    width: 100%; /* Ensure the container spans the entire width */
+}
+
+/* === Form Input Styling === */
+.filter-container .form-control {
+    max-width: 350px; /* Adjust max-width for better layout */
+    width: 100%; /* Allow for full width usage */
+}
+
+/* === Responsive Fixes for Smaller Screens === */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column; /* Stack inputs vertically on small screens */
+        justify-content: center;
+    }
+
+    .filter-container .form-control {
+        max-width: 100%; /* Full width for inputs */
+        margin-bottom: 10px; /* Adds margin between stacked inputs */
+    }
+}
+

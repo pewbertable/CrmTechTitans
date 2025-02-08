@@ -4,11 +4,10 @@
     ViewData["Title"] = "All Addresses";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <partial name="_Notification" />
 
-
 <div class="crm-container">
-    <!-- Main Content -->
     <div class="main-content">
         <header class="page-header">
             <h1>All Municipalities</h1>
@@ -17,18 +16,16 @@
 
         <!-- Filter Section -->
         <div class="filter-container">
-            <div class="row">
-                <!-- Filter by Municipality -->
-                <div class="col-md-4">
-                    <label for="municipalityFilter" class="filter-label">Search by Municipality:</label>
-                    <input type="text" id="municipalityFilter" class="form-control search-input" placeholder="Enter municipality name">
-                </div>
-                <p></p>
-                <!-- Filter by Province -->
-                <div class="col-md-4">
-                    <label for="provinceFilter" class="filter-label">Search by Province:</label>
-                    <input type="text" id="provinceFilter" class="form-control search-input" placeholder="Enter province name">
-                </div>
+            <!-- Filter by Municipality -->
+            <div class="col-md-4">
+                <label for="municipalityFilter" class="filter-label">Search by Municipality:</label>
+                <input type="text" id="municipalityFilter" class="form-control search-input" placeholder="Enter municipality name">
+            </div>
+
+            <!-- Filter by Province -->
+            <div class="col-md-4">
+                <label for="provinceFilter" class="filter-label">Search by Province:</label>
+                <input type="text" id="provinceFilter" class="form-control search-input" placeholder="Enter province name">
             </div>
         </div>
 

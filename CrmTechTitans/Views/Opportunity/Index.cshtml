@@ -9,7 +9,6 @@
 <partial name="_Notification" />
 
 <div class="crm-container">
-    <!-- Main Content -->
     <div class="main-content">
         <header class="page-header">
             <h1>All Opportunities</h1>
@@ -22,30 +21,28 @@
 
         <!-- Filter Section -->
         <div class="filter-container">
-            <div class="row">
-                <!-- Status Filter -->
-                <div class="col-md-4">
-                    <label for="statusFilter">Filter by Status:</label>
-                    <select id="statusFilter" class="form-control">
-                        <option value="">All</option>
-                        @foreach (var status in Enum.GetValues(typeof(Status)))
-                        {
-                            <option value="@status">@status</option>
-                        }
-                    </select>
-                </div>
-                <p></p>
-                <!-- Priority Filter -->
-                <div class="col-md-4">
-                    <label for="priorityFilter">Filter by Priority:</label>
-                    <select id="priorityFilter" class="form-control">
-                        <option value="">All</option>
-                        @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
-                        {
-                            <option value="@priority">@priority</option>
-                        }
-                    </select>
-                </div>
+            <!-- Status Filter -->
+            <div class="col-md-4">
+                <label for="statusFilter">Filter by Status:</label>
+                <select id="statusFilter" class="form-control">
+                    <option value="">All</option>
+                    @foreach (var status in Enum.GetValues(typeof(Status)))
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Priority Filter -->
+            <div class="col-md-4">
+                <label for="priorityFilter">Filter by Priority:</label>
+                <select id="priorityFilter" class="form-control">
+                    <option value="">All</option>
+                    @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
+                    {
+                        <option value="@priority">@priority</option>
+                    }
+                </select>
             </div>
         </div>
 
