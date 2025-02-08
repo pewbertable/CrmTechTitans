@@ -51,17 +51,16 @@ body {
     width: 100%; /* Ensure the container spans the entire width */
 }
 
-    .filter-container .form-control {
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 1rem;
-        border: 1px solid #ccc;
-    }
-
+    .filter-container .form-control,
     .filter-container .search-input,
     .filter-container .filter-select {
         max-width: 350px; /* Adjust max-width for better layout */
         width: 100%; /* Allow for full width usage */
+        padding: 10px;
+        border-radius: 6px; /* Consistent border radius */
+        font-size: 0.95rem; /* Consistent font size */
+        border: 1px solid #ccc;
+        background-color: #f8f9fa; /* Consistent background color */
     }
 
         /* Focus Effect for inputs */

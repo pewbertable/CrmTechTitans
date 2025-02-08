@@ -21,10 +21,10 @@
 
         <!-- Filter Section -->
         <div class="filter-container">
-            <!-- Status Filter -->
+            <!-- Filter by Status -->
             <div class="col-md-4">
-                <label for="statusFilter">Filter by Status:</label>
-                <select id="statusFilter" class="form-control">
+                <label for="statusFilter" class="filter-label">Filter by Status:</label>
+                <select id="statusFilter" class="form-control search-input">
                     <option value="">All</option>
                     @foreach (var status in Enum.GetValues(typeof(Status)))
                     {
@@ -33,10 +33,10 @@
                 </select>
             </div>
 
-            <!-- Priority Filter -->
+            <!-- Filter by Priority -->
             <div class="col-md-4">
-                <label for="priorityFilter">Filter by Priority:</label>
-                <select id="priorityFilter" class="form-control">
+                <label for="priorityFilter" class="filter-label">Filter by Priority:</label>
+                <select id="priorityFilter" class="form-control search-input">
                     <option value="">All</option>
                     @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
                     {
@@ -45,6 +45,7 @@
                 </select>
             </div>
         </div>
+
 
         <!-- Opportunities Table -->
         <table class="table custom-table" id="opportunitiesTable">
