@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Member>
 
 @{
-	ViewData["Title"] = "All Members";
+    ViewData["Title"] = "All Members";
 }
 <partial name="_Notification" />
 
@@ -14,22 +14,24 @@
         <p></p>
 	<!-- Page Title -->
 	<header class="page-header d-flex justify-content-between align-items-center">
-		
-
-        <div class="d-flex align-items-center gap-3">
+		<div class="d-flex align-items-center gap-3">
              <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system"> 
                  <i class="fas fa-user-plus"></i> Create New Member 
              </a> 
 
 			<!-- View Toggle -->
-			<div class="view-toggle d-flex align-items-center">
-				<button class="btn btn-secondary active me-2" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
-					<i class="fas fa-th-large"></i>
-				</button>
-				<button class="btn btn-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
-					<i class="fas fa-table"></i>
-				</button>
-			</div>
+<!-- View Toggle -->
+<div class="view-toggle d-flex align-items-center justify-content-center gap-2">
+    <button class="btn btn-outline-secondary view-btn active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
+        <i class="fas fa-th-large"></i>
+    </button>
+	<p></p>
+    <button class="btn btn-outline-secondary view-btn" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
+        <i class="fas fa-table"></i>
+    </button>
+</div>
+
+
 		</div>
 	</header>
 
@@ -37,14 +39,14 @@
         <div class="row">
             <!-- Search by Member Name -->
             <div class="col-md-6 mb-3">
-                <label for="searchString" class="form-label">Search by Member Name</label>
-                <input type="text" id="searchString" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member’s name to search">
+                <label for="memberNameFilter" class="filter-label">Search by Member Name</label>
+                <input type="text" id="memberNameFilter" class="form-control search-input" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member’s name to search">
             </div>
 
 			<!-- Filter by Member Status -->
 			<div class="col-md-6 mb-3">
-				<label for="statusFilter" class="form-label">Filter by Member Status</label>
-				<select id="statusFilter" class="form-control" data-bs-toggle="tooltip" title="Filter members based on status">
+				<label for="membershipStatusFilter" class="filter-label">Filter by Member Status</label>
+				<select id="membershipStatusFilter" class="form-control filter-select" data-bs-toggle="tooltip" title="Filter members based on status">
 					<option value="">All Statuses</option>
 					<option value="GoodStanding">Good Standing</option>
 					<option value="OutStanding">Out Standing</option>
@@ -53,7 +55,6 @@
 			</div>
 		</div>
 	</section>
-
 
 	<!-- Card View -->
 	<section class="members-grid" id="cards-view">
@@ -167,7 +168,7 @@
 
 @section Scripts {
     <script>
-               document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const preferredView = localStorage.getItem('preferredView') || 'cards';
             document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
             document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';
@@ -233,16 +234,16 @@
 
 			// Default status filter to Good Standing 
 			if (!sessionStorage.getItem("statusFilter")) {
-				$('#statusFilter').val("GoodStanding");
+				$('#membershipStatusFilter').val("GoodStanding");
 				sessionStorage.setItem("statusFilter", "GoodStanding");
 			} else {
-				$('#statusFilter').val(sessionStorage.getItem("statusFilter"));
+				$('#membershipStatusFilter').val(sessionStorage.getItem("statusFilter"));
 			}
 
 			// Filter table based on input values
 			function filterTable() {
-				var memberFilter = $('#memberFilter').val().toLowerCase();
-				var statusFilter = $('#statusFilter').val().toLowerCase();
+				var memberFilter = $('#memberNameFilter').val().toLowerCase();
+				var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
 
 				console.log("member Filter:", memberFilter);
 				console.log("Status Filter:", statusFilter);

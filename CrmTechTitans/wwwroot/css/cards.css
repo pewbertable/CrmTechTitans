@@ -10,8 +10,8 @@
 
 .member-card {
     background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 8px; /* Adjusted border-radius for consistency with the rest of the app */
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* Adjusted box-shadow for a more subtle look */
     overflow: hidden;
     transition: transform 0.2s ease;
     position: relative;
@@ -20,19 +20,17 @@
 }
 
     .member-card:hover {
-/*        transform: translateY(-3px);*/
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Slightly lighter shadow on hover */
     }
 
 /* Card Header */
 .card-header {
-    padding: 20px;
-    padding-top: 50px;
-    background: #f8f9fa;
+    padding: 16px;
+    background: #f7f7f7; /* Changed to match the app's theme */
     display: flex;
     align-items: center;
     gap: 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd; /* Light border for consistency */
 }
 
 .company-logo {
@@ -53,8 +51,8 @@
 
 .company-name {
     margin: 0;
-    font-size: 1.2rem;
-    color: #424242;
+    font-size: 1.1rem; /* Adjusted font size */
+    color: #333; /* Darker color for better contrast */
     font-weight: 600;
 }
 
@@ -66,7 +64,7 @@
 
 /* Card Content */
 .card-content {
-    padding: 20px;
+    padding: 16px;
     flex-grow: 1;
 }
 
@@ -99,8 +97,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    border-top: 1px solid #eee;
-    background: #f8f9fa;
+    border-top: 1px solid #ddd; /* Consistent border color */
+    background: #f7f7f7; /* Consistent with header */
 }
 
 /* Status Badges */
@@ -149,19 +147,65 @@
 }
 
     .btn-link.text-danger {
+        /* Style for danger links */
     }
 
     .btn-link.text-primary {
+        /* Style for primary links */
     }
 
     .btn-link:hover {
-        background: rgba(0, 0, 0, 0.05);
+        background: rgba(0, 0, 0, 0.05); /* Lighter hover effect */
     }
 
 .action-label {
     font-weight: 500;
     font-size: 0.9rem;
 }
+
+/* View Toggle Buttons */
+.view-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px; /* Reduced gap for a more compact design */
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 0.9rem; /* Slightly smaller font size */
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid #ccc; /* Subtle border */
+    background: transparent;
+    color: #333; /* Neutral text color */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+    .view-btn:hover,
+    .view-btn.active {
+        background-color: #f0f0f0; /* Light grey hover and active background */
+        color: #333; /* Keep the text color dark for clarity */
+        border-color: #bbb; /* Slightly darker border on hover */
+    }
+
+    .view-btn i {
+        margin-right: 6px; /* Adds a small space between icon and text */
+    }
+
+    .view-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2); /* Subtle focus effect */
+    }
+
+    /* Active button state */
+    .view-btn.active {
+        background-color: #e0e0e0; /* Slightly darker grey for active state */
+        border-color: #999;
+    }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
