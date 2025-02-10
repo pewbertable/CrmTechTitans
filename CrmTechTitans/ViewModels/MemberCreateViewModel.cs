@@ -1,4 +1,5 @@
 ﻿using CrmTechTitans.Models.Enumerations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,10 @@ namespace CrmTechTitans.Models.ViewModels
 
         [Display(Name = "Membership Type")]
         [Required(ErrorMessage = "Membership Type is required")]
-        public MembershipType MembershipType { get; set; }
+        public int SelectedMembershipTypeID { get; set; } // Stores the selected MembershipType ID
+
+        public List<MembershipTypeViewModel> AvailableMembershipTypes { get; set; } = new List<MembershipTypeViewModel>(); // List for dropdown
+
 
         [Display(Name = "Contacted By")]
         [StringLength(100, ErrorMessage = "Contacted By cannot exceed 100 characters")]
@@ -137,4 +141,15 @@ namespace CrmTechTitans.Models.ViewModels
         [Required(ErrorMessage = "NAICS Code is required")]
         public int NAICS { get; set; }
     }
+
+  
+     public class MembershipTypeViewModel
+      {
+                public int ID { get; set; }
+
+                [Display(Name = "Membership Type")]
+                public string Name { get; set; }
+      }
+    
+
 }

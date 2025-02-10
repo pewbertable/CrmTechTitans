@@ -70,6 +70,15 @@ namespace CrmTechTitans.Controllers
             {
                 Contacts = new List<ContactViewModel> { new ContactViewModel() }, // Add one empty contact
                 Addresses = new List<AddressViewModel> { new AddressViewModel() }, // Add one empty address
+
+                // Load Available Membership Types
+                AvailableMembershipTypes = _context.MembershipTypes
+            .Select(m => new MembershipTypeViewModel
+            {
+                ID = m.ID,
+                Name = m.Name
+            }).ToList(),
+
                 AvailableIndustries = _context.Industries
             .Select(industry => new IndustryViewModel
             {
@@ -94,7 +103,7 @@ namespace CrmTechTitans.Controllers
                 var member = new Member
                 {
                     MemberName = model.MemberName,
-                    MembershipType = model.MembershipType,
+                    MembershipType = await _context.MembershipTypes.FindAsync(model.SelectedMembershipTypeID),
                     ContactedBy = model.ContactedBy,
                     CompanySize = model.CompanySize,
                     CompanyWebsite = model.CompanyWebsite,
@@ -118,6 +127,16 @@ namespace CrmTechTitans.Controllers
                     };
                     member.MemberAddresses.Add(new MemberAddress { Address = address, AddressType = addressModel.AddressType });
                 }
+
+                //Add MembershipType
+                // Reload dropdown values if form submission fails
+                model.AvailableMembershipTypes = await _context.MembershipTypes
+                    .Select(m => new MembershipTypeViewModel
+                    {
+                        ID = m.ID,
+                        Name = m.Name
+                    }).ToListAsync();
+
 
                 // Add Contacts
                 foreach (var contactModel in model.Contacts)
@@ -175,7 +194,7 @@ namespace CrmTechTitans.Controllers
                 .Include(m => m.MemberPhoto)
                 .Include(m => m.MemberThumbnail)
                 .Include(m => m.MemberContacts)
-                    .ThenInclude(mc => mc.Contact)
+                .ThenInclude(mc => mc.Contact)
                 .Include(m => m.MemberAddresses)
                     .ThenInclude(ma => ma.Address)
                 .Include(m => m.IndustryMembers)

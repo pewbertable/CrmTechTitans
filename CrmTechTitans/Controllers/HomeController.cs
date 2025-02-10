@@ -34,16 +34,16 @@ namespace CrmTechTitans.Controllers
                     InactiveMembers = grp.Count(m => m.MembershipStatus == MembershipStatus.Cancelled)
                 }).FirstOrDefaultAsync();
 
-            var membershipSummary = await _context.Members
-                .GroupBy(m => m.MembershipType)
-                .Select(grp => new MembershipTypeCountVM
-                {
-                    AssociateCount = grp.Count(m => m.MembershipType == MembershipType.Associate),
-                    ChamberAssociateCount = grp.Count(m => m.MembershipType == MembershipType.ChamberAssociate),
-                    NonLocalIndustrialCount = grp.Count(m => m.MembershipType == MembershipType.NonLocalIndustrial),
-                    GovernmentAssociationCount = grp.Count(m => m.MembershipType == MembershipType.GovernmentEducationAssociate),
-                    LocalCount = grp.Count(m => m.MembershipType == MembershipType.Localindustrial)
-                }).FirstOrDefaultAsync();
+             var membershipSummary = await _context.Members
+            .GroupBy(m => m.MembershipType)
+            .Select(grp => new MembershipTypeCountVM
+            {
+                AssociateCount = grp.Count(m => m.MembershipType.Name == "Associate"),
+                ChamberAssociateCount = grp.Count(m => m.MembershipType.Name == "ChamberAssociate"),
+                NonLocalIndustrialCount = grp.Count(m => m.MembershipType.Name == "NonLocalIndustrial"),
+                GovernmentAssociationCount = grp.Count(m => m.MembershipType.Name == "GovernmentEducationAssociate"),
+                LocalCount = grp.Count(m => m.MembershipType.Name == "Localindustrial")
+            }).FirstOrDefaultAsync();
 
             var opportunitySummary = await _context.Opportunities
                 .GroupBy(o => o.Status)

@@ -82,6 +82,30 @@ namespace CrmTechTitans.Data
                         context.SaveChanges();
                     }
 
+                    if (!context.MembershipTypes.Any())
+                    {
+
+                        context.MembershipTypes.AddRange(
+
+                            new MembershipType { ID = 1, Name = "Associate" },
+                            new MembershipType { ID = 2, Name = "Localindustrial" },
+                            new MembershipType { ID = 3, Name = "ChamberAssociate" },
+                            new MembershipType { ID = 4, Name = "GovernmentEducationAssociate" },
+                            new MembershipType { ID = 5, Name = "NonLocalIndustrial" },
+                            new MembershipType { ID = 6, Name = "Other"}
+                            );
+                        context.SaveChanges();
+
+                    }
+
+                    // Fetch the membership types from the database
+                    var associate = context.MembershipTypes.FirstOrDefault(m => m.Name == "Associate");
+                    var localIndustrial = context.MembershipTypes.FirstOrDefault(m => m.Name == "Localindustrial");
+                    var chamberAssociate = context.MembershipTypes.FirstOrDefault(m => m.Name == "ChamberAssociate");
+                    var governmentEducationAssociate = context.MembershipTypes.FirstOrDefault(m => m.Name == "GovernmentEducationAssociate");
+                    var nonLocalIndustrial = context.MembershipTypes.FirstOrDefault(m => m.Name == "NonLocalIndustrial");
+                    var other = context.MembershipTypes.FirstOrDefault(m => m.Name == "Other");
+
                     if (!context.Members.Any())
                     {
 
@@ -92,7 +116,7 @@ namespace CrmTechTitans.Data
                                {
 
                                    MemberName = "Tech Solutions Inc.",
-                                   MembershipType = MembershipType.Associate,
+                                   MembershipType = associate,
                                    ContactedBy = "John Doe",
 
                                    CompanySize = CompanySize.Large,
@@ -106,7 +130,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Energy Corp",
-                                    MembershipType = MembershipType.Localindustrial,
+                                    MembershipType = localIndustrial,
                                     ContactedBy = "Jane Smith",
 
                                     CompanySize = CompanySize.Enterprise,
@@ -120,7 +144,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Green Innovations Ltd.",
-                                    MembershipType = MembershipType.ChamberAssociate,
+                                    MembershipType = chamberAssociate,
                                     ContactedBy = "Albert Green",
 
                                     CompanySize = CompanySize.Medium,
@@ -134,7 +158,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "City Logistics",
-                                    MembershipType = MembershipType.Localindustrial,
+                                    MembershipType = localIndustrial,
                                     ContactedBy = "Maria Johnson",
 
                                     CompanySize = CompanySize.Small,
@@ -148,7 +172,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "HealthCare Plus",
-                                    MembershipType = MembershipType.GovernmentEducationAssociate,
+                                    MembershipType = governmentEducationAssociate,
                                     ContactedBy = "Emily Wright",
 
                                     CompanySize = CompanySize.Enterprise,
@@ -162,7 +186,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Tech Electronics",
-                                    MembershipType = MembershipType.NonLocalIndustrial,
+                                    MembershipType = nonLocalIndustrial,
                                     ContactedBy = "James Carter",
 
                                     CompanySize = CompanySize.Large,
@@ -176,7 +200,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Auto Parts Co.",
-                                    MembershipType = MembershipType.Associate,
+                                    MembershipType = associate,
                                     ContactedBy = "Daniel Lee",
 
                                     CompanySize = CompanySize.Medium,
@@ -190,7 +214,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Foodies Market",
-                                    MembershipType = MembershipType.ChamberAssociate,
+                                    MembershipType = chamberAssociate,
                                     ContactedBy = "Linda Miller",
 
                                     CompanySize = CompanySize.Small,
@@ -204,7 +228,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Global Transport Ltd.",
-                                    MembershipType = MembershipType.Localindustrial,
+                                    MembershipType = localIndustrial,
                                     ContactedBy = "Nina Roberts",
 
                                     CompanySize = CompanySize.Enterprise,
@@ -218,7 +242,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Universal Tech Hub",
-                                    MembershipType = MembershipType.Associate,
+                                    MembershipType = associate,
                                     ContactedBy = "Oliver Thomas",
 
                                     CompanySize = CompanySize.Large,

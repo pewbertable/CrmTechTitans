@@ -79,11 +79,15 @@
                 <div class="member-detail">
                     <i class="fas fa-id-card"></i>
                     <div class="form-group">
-                        <label asp-for="MembershipType" class="control-label">Membership Type</label>
-                        <select asp-for="MembershipType" class="form-control" asp-items="Html.GetEnumSelectList<MembershipType>()">
-                            <option value="">Select Membership Type</option>
-                        </select>
-                        <span asp-validation-for="MembershipType" class="text-danger"></span>
+                        <label asp-for="SelectedMembershipTypeID" class="control-label">Membership Type</label>
+                        <select asp-for="SelectedMembershipTypeID" class="form-control">
+                                <option value="">Select Membership Type</option>
+                                @foreach (var type in Model.AvailableMembershipTypes)
+                                {
+                                    <option value="@type.ID">@type.Name</option>
+                                }
+                            </select>
+                        <span asp-validation-for="SelectedMembershipTypeID" class="text-danger"></span>
                     </div>
                 </div>
 

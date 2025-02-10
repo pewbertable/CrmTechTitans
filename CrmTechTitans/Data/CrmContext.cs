@@ -29,6 +29,8 @@ namespace CrmTechTitans.Data
 
         public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
 
+        public DbSet<MembershipType> MembershipTypes { get; set; }
+
         public DbSet<InteractionMember> InteractionMembers { get; set; }
 
         public DbSet<ContactPhoto> ContactPhotos { get; set; }
@@ -118,6 +120,7 @@ namespace CrmTechTitans.Data
                 .HasOne(im => im.Interaction)
                 .WithMany(i => i.InteractionMembers)
                 .HasForeignKey(im => im.InteractionID);
+
         }
 
 

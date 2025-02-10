@@ -74,24 +74,16 @@ namespace CrmTechTitans.Data.CrmMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Members",
+                name: "MembershipTypes",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    MemberName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    MembershipType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ContactedBy = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    CompanySize = table.Column<int>(type: "INTEGER", nullable: false),
-                    CompanyWebsite = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    MemberSince = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    LastContactDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Notes = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    MembershipStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Members", x => x.ID);
+                    table.PrimaryKey("PK_MembershipTypes", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,6 +100,75 @@ namespace CrmTechTitans.Data.CrmMigrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Opportunities", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactPhotos",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    ContactID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactPhotos", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ContactPhotos_Contacts_ContactID",
+                        column: x => x.ContactID,
+                        principalTable: "Contacts",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContactThumbnails",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    ContactID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactThumbnails", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ContactThumbnails_Contacts_ContactID",
+                        column: x => x.ContactID,
+                        principalTable: "Contacts",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MemberName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    MembershipTypeID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ContactedBy = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    CompanySize = table.Column<int>(type: "INTEGER", nullable: false),
+                    CompanyWebsite = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    MemberSince = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastContactDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Notes = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    MembershipStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Members_MembershipTypes_MembershipTypeID",
+                        column: x => x.MembershipTypeID,
+                        principalTable: "MembershipTypes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -234,6 +295,60 @@ namespace CrmTechTitans.Data.CrmMigrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MemberPhotos",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    MemberID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberPhotos", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_MemberPhotos_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MemberThumbnails",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    MemberID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MemberThumbnails", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_MemberThumbnails_Members_MemberID",
+                        column: x => x.MemberID,
+                        principalTable: "Members",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactPhotos_ContactID",
+                table: "ContactPhotos",
+                column: "ContactID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContactThumbnails_ContactID",
+                table: "ContactThumbnails",
+                column: "ContactID",
+                unique: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_IndustryMembers_MemberID",
                 table: "IndustryMembers",
@@ -263,11 +378,34 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "IX_MemberOpportunities_MemberID",
                 table: "MemberOpportunities",
                 column: "MemberID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberPhotos_MemberID",
+                table: "MemberPhotos",
+                column: "MemberID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Members_MembershipTypeID",
+                table: "Members",
+                column: "MembershipTypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MemberThumbnails_MemberID",
+                table: "MemberThumbnails",
+                column: "MemberID",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ContactPhotos");
+
+            migrationBuilder.DropTable(
+                name: "ContactThumbnails");
+
             migrationBuilder.DropTable(
                 name: "IndustryMembers");
 
@@ -284,6 +422,12 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "MemberOpportunities");
 
             migrationBuilder.DropTable(
+                name: "MemberPhotos");
+
+            migrationBuilder.DropTable(
+                name: "MemberThumbnails");
+
+            migrationBuilder.DropTable(
                 name: "Industries");
 
             migrationBuilder.DropTable(
@@ -296,10 +440,13 @@ namespace CrmTechTitans.Data.CrmMigrations
                 name: "Contacts");
 
             migrationBuilder.DropTable(
+                name: "Opportunities");
+
+            migrationBuilder.DropTable(
                 name: "Members");
 
             migrationBuilder.DropTable(
-                name: "Opportunities");
+                name: "MembershipTypes");
         }
     }
 }

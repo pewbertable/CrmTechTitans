@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmTechTitans.Data.CrmMigrations
 {
     [DbContext(typeof(CrmContext))]
-    [Migration("20250204222111_Initial")]
+    [Migration("20250210195409_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -79,6 +79,54 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.HasKey("ID");
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.ContactPhoto", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ContactID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ContactID")
+                        .IsUnique();
+
+                    b.ToTable("ContactPhotos");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.ContactThumbnail", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ContactID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ContactID")
+                        .IsUnique();
+
+                    b.ToTable("ContactThumbnails");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.Industry", b =>
@@ -238,7 +286,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Property<int>("MembershipStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MembershipType")
+                    b.Property<int>("MembershipTypeID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")
@@ -247,7 +295,72 @@ namespace CrmTechTitans.Data.CrmMigrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("MembershipTypeID");
+
                     b.ToTable("Members");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.MemberPhoto", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("MemberID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("MemberID")
+                        .IsUnique();
+
+                    b.ToTable("MemberPhotos");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.MemberThumbnail", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("MemberID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("MemberID")
+                        .IsUnique();
+
+                    b.ToTable("MemberThumbnails");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.MembershipType", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("MembershipTypes");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.Opportunity", b =>
@@ -275,6 +388,28 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.HasKey("ID");
 
                     b.ToTable("Opportunities");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.ContactPhoto", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Contact", "Contact")
+                        .WithOne("ContactPhoto")
+                        .HasForeignKey("CrmTechTitans.Models.ContactPhoto", "ContactID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.ContactThumbnail", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Contact", "Contact")
+                        .WithOne("ContactThumbnail")
+                        .HasForeignKey("CrmTechTitans.Models.ContactThumbnail", "ContactID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.JoinTables.InteractionMember", b =>
@@ -372,6 +507,39 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Navigation("Opportunity");
                 });
 
+            modelBuilder.Entity("CrmTechTitans.Models.Member", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.MembershipType", "MembershipType")
+                        .WithMany()
+                        .HasForeignKey("MembershipTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MembershipType");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.MemberPhoto", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Member", "Member")
+                        .WithOne("MemberPhoto")
+                        .HasForeignKey("CrmTechTitans.Models.MemberPhoto", "MemberID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.MemberThumbnail", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Member", "Member")
+                        .WithOne("MemberThumbnail")
+                        .HasForeignKey("CrmTechTitans.Models.MemberThumbnail", "MemberID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+                });
+
             modelBuilder.Entity("CrmTechTitans.Models.Address", b =>
                 {
                     b.Navigation("MemberAddresses");
@@ -379,6 +547,10 @@ namespace CrmTechTitans.Data.CrmMigrations
 
             modelBuilder.Entity("CrmTechTitans.Models.Contact", b =>
                 {
+                    b.Navigation("ContactPhoto");
+
+                    b.Navigation("ContactThumbnail");
+
                     b.Navigation("MemberContacts");
                 });
 
@@ -403,6 +575,10 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Navigation("MemberContacts");
 
                     b.Navigation("MemberOpportunities");
+
+                    b.Navigation("MemberPhoto");
+
+                    b.Navigation("MemberThumbnail");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.Opportunity", b =>

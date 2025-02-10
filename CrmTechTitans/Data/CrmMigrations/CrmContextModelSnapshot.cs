@@ -283,7 +283,7 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Property<int>("MembershipStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MembershipType")
+                    b.Property<int>("MembershipTypeID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")
@@ -291,6 +291,8 @@ namespace CrmTechTitans.Data.CrmMigrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("MembershipTypeID");
 
                     b.ToTable("Members");
                 });
@@ -341,6 +343,21 @@ namespace CrmTechTitans.Data.CrmMigrations
                         .IsUnique();
 
                     b.ToTable("MemberThumbnails");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.MembershipType", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("MembershipTypes");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.Opportunity", b =>
@@ -485,6 +502,17 @@ namespace CrmTechTitans.Data.CrmMigrations
                     b.Navigation("Member");
 
                     b.Navigation("Opportunity");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.Member", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.MembershipType", "MembershipType")
+                        .WithMany()
+                        .HasForeignKey("MembershipTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MembershipType");
                 });
 
             modelBuilder.Entity("CrmTechTitans.Models.MemberPhoto", b =>
