@@ -79,15 +79,18 @@
                 <div class="member-detail">
                     <i class="fas fa-id-card"></i>
                     <div class="form-group">
-                        <label asp-for="SelectedMembershipTypeID" class="control-label">Membership Type</label>
-                        <select asp-for="SelectedMembershipTypeID" class="form-control">
-                                <option value="">Select Membership Type</option>
-                                @foreach (var type in Model.AvailableMembershipTypes)
-                                {
-                                    <option value="@type.ID">@type.Name</option>
-                                }
-                            </select>
-                        <span asp-validation-for="SelectedMembershipTypeID" class="text-danger"></span>
+                        <label asp-for="SelectedMembershipTypeIDs" class="control-label">Membership Type</label>
+                        <div>
+                            @foreach (var type in Model.AvailableMembershipTypes)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="SelectedMembershipTypeIDs" value="@type.ID"
+                                        @(Model.SelectedMembershipTypeIDs.Contains(type.ID) ? "checked" : "") />
+                                    <label class="form-check-label">@type.Name</label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="SelectedMembershipTypeIDs" class="text-danger"></span>
                     </div>
                 </div>
 

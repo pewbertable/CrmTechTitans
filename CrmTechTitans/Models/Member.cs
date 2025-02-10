@@ -14,10 +14,7 @@ namespace CrmTechTitans.Models
         [StringLength(100, ErrorMessage = "Member name can't be longer than 100 characters")]
         public string MemberName { get; set; }
 
-        [Required]
-        [Display(Name = "Membership Type")]
-        public MembershipType MembershipType { get; set; }
-
+        
         [Display(Name = "Contacted By")]
         [StringLength(100)]
         public string? ContactedBy { get; set; }
@@ -50,6 +47,12 @@ namespace CrmTechTitans.Models
 
         [Display(Name = "Membership Status")]
         public MembershipStatus MembershipStatus { get; set; }
+
+        [Required]
+        [Display(Name = "Membership Type")]
+        public ICollection<MemberMembershipType> MemberMembershipTypes { get; set; } = new HashSet<MemberMembershipType>();
+
+
         public ICollection<MemberIndustry> IndustryMembers { get; set; } = new HashSet<MemberIndustry>();
         public ICollection<MemberAddress> MemberAddresses { get; set; } = new HashSet<MemberAddress>(); // Added relationship -Braydon Pew 01-22-2025
 

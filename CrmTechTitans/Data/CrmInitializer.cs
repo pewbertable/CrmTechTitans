@@ -98,25 +98,30 @@ namespace CrmTechTitans.Data
 
                     }
 
-                    // Fetch the membership types from the database
-                    var associate = context.MembershipTypes.FirstOrDefault(m => m.Name == "Associate");
-                    var localIndustrial = context.MembershipTypes.FirstOrDefault(m => m.Name == "Localindustrial");
-                    var chamberAssociate = context.MembershipTypes.FirstOrDefault(m => m.Name == "ChamberAssociate");
-                    var governmentEducationAssociate = context.MembershipTypes.FirstOrDefault(m => m.Name == "GovernmentEducationAssociate");
-                    var nonLocalIndustrial = context.MembershipTypes.FirstOrDefault(m => m.Name == "NonLocalIndustrial");
-                    var other = context.MembershipTypes.FirstOrDefault(m => m.Name == "Other");
+                    // Fetch all Membership Types from the database
+                    var membershipTypes = context.MembershipTypes.ToDictionary(m => m.Name, m => m);
 
+                    // Helper function to assign multiple membership types
+                    List<MemberMembershipType> AssignMembershipTypes(Member member, params string[] membershipTypeNames)
+                    {
+                        return membershipTypeNames.Select(typeName => new MemberMembershipType
+                        {
+                            Member = member,
+                            MembershipType = membershipTypes[typeName]
+                        }).ToList();
+                    }
                     if (!context.Members.Any())
                     {
 
 
-                        context.Members.AddRange(
+                        var members = new List<Member>
 
+                        {
                                new Member
                                {
 
                                    MemberName = "Tech Solutions Inc.",
-                                   MembershipType = associate,
+
                                    ContactedBy = "John Doe",
 
                                    CompanySize = CompanySize.Large,
@@ -130,7 +135,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Energy Corp",
-                                    MembershipType = localIndustrial,
+
                                     ContactedBy = "Jane Smith",
 
                                     CompanySize = CompanySize.Enterprise,
@@ -144,7 +149,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Green Innovations Ltd.",
-                                    MembershipType = chamberAssociate,
+
                                     ContactedBy = "Albert Green",
 
                                     CompanySize = CompanySize.Medium,
@@ -158,7 +163,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "City Logistics",
-                                    MembershipType = localIndustrial,
+
                                     ContactedBy = "Maria Johnson",
 
                                     CompanySize = CompanySize.Small,
@@ -172,7 +177,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "HealthCare Plus",
-                                    MembershipType = governmentEducationAssociate,
+
                                     ContactedBy = "Emily Wright",
 
                                     CompanySize = CompanySize.Enterprise,
@@ -186,7 +191,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Tech Electronics",
-                                    MembershipType = nonLocalIndustrial,
+
                                     ContactedBy = "James Carter",
 
                                     CompanySize = CompanySize.Large,
@@ -200,7 +205,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Auto Parts Co.",
-                                    MembershipType = associate,
+
                                     ContactedBy = "Daniel Lee",
 
                                     CompanySize = CompanySize.Medium,
@@ -214,7 +219,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Foodies Market",
-                                    MembershipType = chamberAssociate,
+
                                     ContactedBy = "Linda Miller",
 
                                     CompanySize = CompanySize.Small,
@@ -228,7 +233,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Global Transport Ltd.",
-                                    MembershipType = localIndustrial,
+
                                     ContactedBy = "Nina Roberts",
 
                                     CompanySize = CompanySize.Enterprise,
@@ -242,7 +247,7 @@ namespace CrmTechTitans.Data
                                 {
 
                                     MemberName = "Universal Tech Hub",
-                                    MembershipType = associate,
+
                                     ContactedBy = "Oliver Thomas",
 
                                     CompanySize = CompanySize.Large,
@@ -252,11 +257,29 @@ namespace CrmTechTitans.Data
                                     Notes = "Cloud services and data hosting provider.",
                                     MembershipStatus = MembershipStatus.GoodStanding
                                 }
-
-                        );
+                                };                    
+                                          
                         context.SaveChanges();
 
-                    }
+						// Assign multiple Membership Types to each member
+						var memberMembershipTypes = new List<MemberMembershipType>();
+
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[0], "Associate", "ChamberAssociate"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[1], "Localindustrial", "NonLocalIndustrial"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[2], "ChamberAssociate", "GovernmentEducationAssociate"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[3], "Localindustrial"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[4], "GovernmentEducationAssociate", "Other"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[5], "Associate", "Localindustrial"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[6], "ChamberAssociate", "NonLocalIndustrial"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[7], "GovernmentEducationAssociate", "Other"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[8], "Localindustrial", "ChamberAssociate"));
+						memberMembershipTypes.AddRange(AssignMembershipTypes(members[9], "Associate", "NonLocalIndustrial"));
+
+						// Add the many-to-many relationships
+						context.MemberMembershipTypes.AddRange(memberMembershipTypes);
+						context.SaveChanges();
+
+					}
                     if (!context.IndustryMembers.Any())
                     {
                         context.IndustryMembers.AddRange(

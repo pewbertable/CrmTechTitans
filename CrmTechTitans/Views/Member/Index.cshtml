@@ -84,7 +84,17 @@
 					</div>
 					<div class="company-info">
 						<h2 class="company-name">@item.MemberName</h2>
-						<p class="membership-type">@item.MembershipType</p>
+							<p class="member-type">
+								Membership Types:
+								@if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
+								{
+									@string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+								}
+								else
+								{
+									<span>No Membership Type Assigned</span>
+								}
+							</p>
 					</div>
 				</div>
 
@@ -152,7 +162,16 @@
                              }
                         </td>
                         <td>@item.MemberName</td>
-                        <td>@item.MembershipType</td>
+						<td>
+								@if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
+								{
+									@string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+								}
+								else
+								{
+									<span>No Membership Type Assigned</span>
+								}
+						</td>
                         <td>@item.CompanySize</td>
                         <td>@item.MemberSince.ToShortDateString()</td>
                         <td><span class="status-tag">@item.MembershipStatus</span></td>

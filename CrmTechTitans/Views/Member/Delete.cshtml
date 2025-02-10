@@ -32,7 +32,18 @@
             </div>
             <div class="member-info">
                 <h2 class="member-name">@Model.MemberName</h2>
-                <p class="member-type">@Model.MembershipType</p>
+               <p class="member-type">
+                    Membership Types: 
+                    @if (Model.MemberMembershipTypes.Any())
+                    {
+                        @string.Join(", ", Model.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+                    }
+                    else
+                    {
+                        <span>No Membership Type Assigned</span>
+                    }
+                </p>
+
             </div>
         </div>
         <div class="member-card-content">

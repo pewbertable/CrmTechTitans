@@ -1,5 +1,6 @@
 ﻿using CrmTechTitans.Models;
 using CrmTechTitans.Models.JoinTables;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 
 namespace CrmTechTitans.Data
@@ -30,6 +31,8 @@ namespace CrmTechTitans.Data
         public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
 
         public DbSet<MembershipType> MembershipTypes { get; set; }
+
+        public DbSet<MemberMembershipType> MemberMembershipTypes { get; set; }
 
         public DbSet<InteractionMember> InteractionMembers { get; set; }
 
@@ -121,7 +124,18 @@ namespace CrmTechTitans.Data
                 .WithMany(i => i.InteractionMembers)
                 .HasForeignKey(im => im.InteractionID);
 
-        }
+
+			// Configure Many - to - Many relationship for MemberMembershipType
+
+	        modelBuilder.Entity<MemberMembershipType>()
+		        .HasKey(mmt => new { mmt.MemberID, mmt.MembershipTypeID }); 
+
+	        modelBuilder.Entity<MemberMembershipType>()
+		        .HasOne(mmt => mmt.Member)
+		        .WithMany(m => m.MemberMembershipTypes)
+		        .HasForeignKey(mmt => mmt.MemberID);
+
+		}
 
 
     }

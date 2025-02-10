@@ -29,8 +29,10 @@ namespace CrmTechTitans.Controllers
             var members = _context.Members
                 .Include(m => m.MemberThumbnail)
                 .Include(m => m.IndustryMembers)
-                    .ThenInclude(im => im.Industry)
-                .AsQueryable();
+                .ThenInclude(im => im.Industry)
+				.Include(m => m.MemberMembershipTypes) // Include the join table
+			    .ThenInclude(mmt => mmt.MembershipType)
+				.AsQueryable();
 
             
 
@@ -48,7 +50,7 @@ namespace CrmTechTitans.Controllers
             var member = await _context.Members
                 .Include(m => m.MemberPhoto)
                 .Include(m => m.MemberContacts)
-                    .ThenInclude(mc => mc.Contact)
+                .ThenInclude(mc => mc.Contact)
                 .Include(m => m.MemberAddresses)
                     .ThenInclude(ma => ma.Address)
                 .Include(m => m.IndustryMembers)
@@ -102,8 +104,7 @@ namespace CrmTechTitans.Controllers
                 // Create Member
                 var member = new Member
                 {
-                    MemberName = model.MemberName,
-                    MembershipType = await _context.MembershipTypes.FindAsync(model.SelectedMembershipTypeID),
+                    MemberName = model.MemberName,                
                     ContactedBy = model.ContactedBy,
                     CompanySize = model.CompanySize,
                     CompanyWebsite = model.CompanyWebsite,
@@ -128,15 +129,14 @@ namespace CrmTechTitans.Controllers
                     member.MemberAddresses.Add(new MemberAddress { Address = address, AddressType = addressModel.AddressType });
                 }
 
-                //Add MembershipType
-                // Reload dropdown values if form submission fails
-                model.AvailableMembershipTypes = await _context.MembershipTypes
-                    .Select(m => new MembershipTypeViewModel
+                // Assign multiple membership types
+                foreach (var membershipTypeID in model.SelectedMembershipTypeIDs)
+                {
+                    member.MemberMembershipTypes.Add(new MemberMembershipType
                     {
-                        ID = m.ID,
-                        Name = m.Name
-                    }).ToListAsync();
-
+                        MembershipTypeID = membershipTypeID
+                    });
+                }
 
                 // Add Contacts
                 foreach (var contactModel in model.Contacts)
@@ -179,6 +179,14 @@ namespace CrmTechTitans.Controllers
                 Name = industry.Name,
                 NAICS = industry.NAICS
             }).ToList(); // Convert Industry entities to IndustryViewModels
+
+            // Reload membership types in case of validation failure
+            model.AvailableMembershipTypes = _context.MembershipTypes
+                .Select(m => new MembershipTypeViewModel
+                {
+                    ID = m.ID,
+                    Name = m.Name
+                }).ToList();
             return View(model);
         }
 

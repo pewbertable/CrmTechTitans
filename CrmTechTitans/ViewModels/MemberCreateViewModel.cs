@@ -18,9 +18,9 @@ namespace CrmTechTitans.Models.ViewModels
 
         [Display(Name = "Membership Type")]
         [Required(ErrorMessage = "Membership Type is required")]
-        public int SelectedMembershipTypeID { get; set; } // Stores the selected MembershipType ID
+        public List<int> SelectedMembershipTypeIDs { get; set; } = new List<int>();// Stores the selected MembershipType ID
 
-        public List<MembershipTypeViewModel> AvailableMembershipTypes { get; set; } = new List<MembershipTypeViewModel>(); // List for dropdown
+		public List<MembershipTypeViewModel> AvailableMembershipTypes { get; set; } = new List<MembershipTypeViewModel>(); // List for dropdown
 
 
         [Display(Name = "Contacted By")]
