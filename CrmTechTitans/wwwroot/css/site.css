@@ -191,3 +191,19 @@ th.sorted-desc::after {
         max-width: 100%; /* Full width for table */
     }
 }
+
+
+/* TOOLTIP DO NOT DELETE */
+
+/* Custom Tooltip Styles */
+.tooltip-inner {
+    background-color: #333; /* Background color */
+    color: #fff; /* Text color */
+    font-size: 14px; /* Font size */
+    padding: 10px; /* Padding */
+    border-radius: 5px; /* Border radius */
+}
+
+.tooltip-arrow::before {
+    border-top-color: #333; /* Arrow color */
+}
