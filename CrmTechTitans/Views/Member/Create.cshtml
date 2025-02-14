@@ -262,11 +262,26 @@
                 });
             }
 
+            function validateCurrentStep() {
+                let isValid = true;
+                const inputs = steps[currentStep].querySelectorAll('input, select, textarea');
+
+                inputs.forEach(input => {
+                    if (!$(input).valid()) {
+                        isValid = false;
+                    }
+                });
+
+                return isValid;
+            }
+
             nextButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    if (currentStep < steps.length - 1) {
-                        currentStep++;
-                        showStep(currentStep);
+                    if (validateCurrentStep()) {
+                        if (currentStep < steps.length - 1) {
+                            currentStep++;
+                            showStep(currentStep);
+                        }
                     }
                 });
             });
@@ -282,8 +297,13 @@
 
             showStep(currentStep);
 
+            function updateValidation() {
+                $.validator.unobtrusive.parse(document);
+            }
+
             // Add Contact
             document.getElementById('add-contact').addEventListener('click', function () {
+                const index = document.querySelectorAll('.contact-form').length;
                 const contactForm = document.createElement('div');
                 contactForm.classList.add('contact-form');
                 contactForm.innerHTML = `
@@ -315,10 +335,12 @@
                     </div>
                 `;
                 document.querySelector('#add-contact').before(contactForm);
+                updateValidation();
             });
 
             // Add Address
             document.getElementById('add-address').addEventListener('click', function () {
+                const index = document.querySelectorAll('.address-form').length;
                 const addressForm = document.createElement('div');
                 addressForm.classList.add('address-form');
                 addressForm.innerHTML = `
@@ -353,10 +375,12 @@
                                         <option value="@value">@value</option>
         }
                         </select>
-                    </div>
-                `;
+                           `;
                 document.querySelector('#add-address').before(addressForm);
+                updateValidation();
             });
+
+            updateValidation();
         });
     </script>
 

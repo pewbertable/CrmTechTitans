@@ -162,7 +162,7 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const cardsView = document.getElementById('cards-view');
             const tableView = document.getElementById('table-view');
             const viewButtons = document.querySelectorAll('.view-btn');
@@ -177,10 +177,13 @@
             }
 
             viewButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     setView(this.dataset.view);
                 });
             });
+
+            //Always reset to GoodStanding when page load
+            membershipStatusFilter.value = "GoodStanding";
 
             function filterMembers() {
                 const nameFilter = memberNameFilter.value.toLowerCase();
@@ -188,10 +191,11 @@
                 const members = document.querySelectorAll('.member-card, #membersTable tbody tr');
 
                 members.forEach(member => {
-                    const name = member.dataset.name;
-                    const status = member.dataset.status;
+                    const name = (member.dataset.name || '').toLowerCase();
+                    const status = (member.dataset.status || '').toLowerCase();
                     const nameMatch = name.includes(nameFilter);
                     const statusMatch = statusFilter === '' || status === statusFilter;
+
                     member.style.display = nameMatch && statusMatch ? '' : 'none';
                 });
             }
@@ -199,15 +203,19 @@
             memberNameFilter.addEventListener('input', filterMembers);
             membershipStatusFilter.addEventListener('change', filterMembers);
 
-            // Initialize view
+            //Initialize view preference
             const preferredView = localStorage.getItem('preferredView') || 'cards';
             setView(preferredView);
 
-            // Initialize tooltips
+            //Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+
+            // Apply GoodStanding filter when page load
+            filterMembers();
         });
+
     </script>
 }
