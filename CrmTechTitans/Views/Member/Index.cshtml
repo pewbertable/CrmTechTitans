@@ -98,8 +98,15 @@
                     </div>
                 </div>
                 <div class="card-actions">
-                    <a href="#" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Archive this member">
-                        <i class="fas fa-archive"></i>
+                   
+                    <a href="javascript:void(0);"
+                       class="btn btn-outline-danger btn-sm archive-btn"
+                       data-id="@item.ID"
+                       data-status="@item.MembershipStatus.ToString()"
+                       data-bs-toggle="tooltip"
+                       title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive this member" : "Archive this member")">
+                        <!-- Dynamically change the icon based on the status -->
+                        <i class="fas fa-archive @(item.MembershipStatus == MembershipStatus.Cancelled ? "fa-undo" : "fa-archive")"></i>
                     </a>
                     <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View member details">
                         <i class="fas fa-info-circle"></i>
