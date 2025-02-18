@@ -66,35 +66,33 @@ namespace CrmTechTitans.Controllers
             return View(member);
         }
 
-        //[HttpPost]
-        //public IActionResult ToggleArchive([FromBody] MembershipStatusUpdateVM model)
-        //{
-        //    if (model == null)
-        //    {
-        //        return BadRequest(new { message = "Invalid request data." });
-        //    }
+        [HttpPost]
+        public IActionResult ToggleArchive([FromBody] MembershipStatusUpdateVM model)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.NewStatus))
+            {
+                return BadRequest(new { message = "Invalid request data." });
+            }
 
-        //    var member = _context.Members.Find(model.MemberId);
-        //    if (member == null)
-        //    {
-        //        return NotFound(new { message = "Member not found." });
-        //    }
+            var member = _context.Members.Find(model.MemberId);
+            if (member == null)
+            {
+                return NotFound(new { message = "Member not found." });
+            }
 
-        //    // Debug: Log received data
-        //    Console.WriteLine($"Received MemberId: {model.MemberId}, NewStatus: {model.NewStatus}");
+            Console.WriteLine($"Received MemberId: {model.MemberId}, NewStatus: {model.NewStatus}");
 
-        //    if (!Enum.IsDefined(typeof(MembershipStatus), model.NewStatus))
-        //    {
-        //        return BadRequest(new { message = "Invalid membership status." });
-        //    }
+            if (!Enum.TryParse(model.NewStatus, true, out MembershipStatus newStatus))
+            {
+                return BadRequest(new { message = "Invalid membership status." });
+            }
 
-        //    member.MembershipStatus = model.NewStatus;
-        //    _context.SaveChanges();
+            // Update and save status
+            member.MembershipStatus = newStatus;
+            _context.SaveChanges();
 
-        //    return Ok(new { message = $"Member status updated to {model.NewStatus}" });
-        //}
-
-
+            return Ok(new { message = $"Member status updated to {newStatus}" });
+        }
 
 
         // GET: Member/Create

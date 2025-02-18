@@ -224,8 +224,50 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+            const archiveButtons = document.querySelectorAll('.archive-btn');
 
-           
+            archiveButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const memberId = this.dataset.id;
+                    let currentStatus = this.dataset.status.toLowerCase();
+                    console.log("Current Status:", currentStatus);
+
+                    const newStatus = (currentStatus === 'cancelled') ? 'GoodStanding' : 'Cancelled';
+
+                    console.log("New Status being sent:", newStatus);
+
+                    const confirmMessage = (currentStatus === 'cancelled')
+                        ? "Are you sure you want to unarchive this member?"
+                        : "Are you sure you want to archive this member?";
+
+                    if (!confirm(confirmMessage)) {
+                        return;
+                    }
+
+                    fetch(`/Member/ToggleArchive`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            memberId: parseInt(memberId),
+                            newStatus: newStatus 
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(error => { throw new Error(error.message); });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert(data.message);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Failed to update member status.");
+                        });
+                });
+            });
             filterMembers();
         });
 
