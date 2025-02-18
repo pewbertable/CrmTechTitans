@@ -111,9 +111,222 @@ body {
     color: var(--secondary);
 }
 
+
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+    .dark-mode-toggle:hover {
+        background: var(--highlight);
+    }
+
+/* Dashboard Tabs */
+.dashboard-tabs {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    background: var(--light-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    background: #f0f0f0;
+    color: var(--primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+    .tab-btn:hover {
+        background: var(--highlight);
+        color: white;
+    }
+
+    .tab-btn.active {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0px 4px 10px rgba(231, 76, 60, 0.5);
+    }
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Metric Cards */
+.metric-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 5px solid var(--secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+    .metric-card:hover {
+        transform: translateY(-5px);
+        border-left-color: var(--highlight);
+        box-shadow: 0px 6px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    /* Floating Glow Effect */
+    .metric-card::after {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: var(--highlight);
+        opacity: 0.15;
+        border-radius: 50%;
+        top: -10px;
+        right: -10px;
+        transition: all 0.4s ease-in-out;
+    }
+
+    .metric-card:hover::after {
+        width: 120px;
+        height: 120px;
+        opacity: 0.3;
+    }
+
+/* Different Accent Colors */
+.accent-blue {
+    border-left: 5px solid var(--accent);
+}
+
+.accent-red {
+    border-left: 5px solid var(--accent);
+}
+
+.accent-green {
+    border-left: 5px solid var(--accent);
+}
+
+/* Metric Icon */
+.metric-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-bg);
+}
+
+    .metric-icon i {
+        font-size: 1.6rem;
+        color: var(--primary);
+    }
+
+/* Metric Info */
+.metric-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.metric-info span {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin-top: 2rem;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    box-shadow: var(--box-shadow);
+}
+
+/* Floating Action Button (FAB) */
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+    .fab:hover {
+        transform: scale(1.1);
+        box-shadow: 0px 6px 20px rgba(231, 76, 60, 0.5);
+    }
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .links-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .dashboard-tabs {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .tab-btn {
+        width: 100%;
+    }
+
+    .metrics-grid {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 }

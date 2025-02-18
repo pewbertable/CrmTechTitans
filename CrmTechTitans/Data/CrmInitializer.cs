@@ -88,10 +88,10 @@ namespace CrmTechTitans.Data
                         context.MembershipTypes.AddRange(
 
                             new MembershipType { ID = 1, Name = "Associate" },
-                            new MembershipType { ID = 2, Name = "Localindustrial" },
-                            new MembershipType { ID = 3, Name = "ChamberAssociate" },
-                            new MembershipType { ID = 4, Name = "GovernmentEducationAssociate" },
-                            new MembershipType { ID = 5, Name = "NonLocalIndustrial" },
+                            new MembershipType { ID = 2, Name = "Local Industrial" },
+                            new MembershipType { ID = 3, Name = "Chamber Associate" },
+                            new MembershipType { ID = 4, Name = "Government Education Associate" },
+                            new MembershipType { ID = 5, Name = "Non-Local Industrial" },
                             new MembershipType { ID = 6, Name = "Other"}
                             );
                         context.SaveChanges();

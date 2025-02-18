@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Member>
+@using CrmTechTitans.Models.Enumerations
+
 
 @{
     ViewData["Title"] = "All Members";
@@ -152,6 +154,15 @@
                         <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
                         <td class="text-center">
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View member details">Details</a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm archive-btn @(item.MembershipStatus == MembershipStatus.Cancelled ? "btn-success" : "btn-danger")"
+                               data-id="@item.ID"
+                               data-status="@item.MembershipStatus.ToString()"
+                               data-bs-toggle="tooltip"
+                               title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive Member" : "Archive Member")">
+                                @(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive" : "Archive")
+                            </a>
+
                         </td>
                     </tr>
                 }
@@ -213,7 +224,8 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            // Apply GoodStanding filter when page load
+
+           
             filterMembers();
         });
 
