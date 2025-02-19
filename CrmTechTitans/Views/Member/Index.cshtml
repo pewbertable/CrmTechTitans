@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Member>
 @using CrmTechTitans.Models.Enumerations
 
-
 @{
     ViewData["Title"] = "All Members";
 }
@@ -98,7 +97,6 @@
                     </div>
                 </div>
                 <div class="card-actions">
-                   
                     <a href="javascript:void(0);"
                        class="btn btn-outline-danger btn-sm archive-btn"
                        data-id="@item.ID"
@@ -121,11 +119,11 @@
             <thead>
                 <tr>
                     <th>Logo</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Company Size</th>
-                    <th>Member Since</th>
-                    <th>Status</th>
+                    <th onclick="sortTable(1)">Name</th>
+                    <th onclick="sortTable(2)">Type</th>
+                    <th onclick="sortTable(3)">Company Size</th>
+                    <th onclick="sortTable(4)">Member Since</th>
+                    <th onclick="sortTable(5)">Status</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -169,7 +167,6 @@
                                title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive Member" : "Archive Member")">
                                 @(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive" : "Archive")
                             </a>
-
                         </td>
                     </tr>
                 }
@@ -256,7 +253,7 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             memberId: parseInt(memberId),
-                            newStatus: newStatus 
+                            newStatus: newStatus
                         })
                     })
                         .then(response => {
@@ -278,5 +275,76 @@
             filterMembers();
         });
 
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("membersTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
     </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+    </style>
 }
