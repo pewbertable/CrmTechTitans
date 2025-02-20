@@ -111,8 +111,6 @@ body {
     color: var(--secondary);
 }
 
-
-
 /* Dark mode toggle button */
 .dark-mode-toggle {
     background: var(--accent);

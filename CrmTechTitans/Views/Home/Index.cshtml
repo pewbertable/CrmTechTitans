@@ -4,6 +4,9 @@
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 }
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script> <!-- Add date-fns -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script> <!-- Add Chart.js date adapter -->
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 }
 @{
@@ -61,7 +64,6 @@
             </div>
         </a>
     </div>
-
 
     <div class="main-content">
         <header class="page-header">
@@ -226,10 +228,13 @@
                 </div>
             </div>
         </section>
-
     </div>
-
-
-
 </div>
 
+<script>
+    // Pass the data to JavaScript with dates formatted as ISO strings
+    window.memberCountOverTime = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.MemberCountOverTime.Select(m => new { Date = m.Date.ToString("yyyy-MM-dd"), m.Count })
+    ));
+    console.log("Member Count Over Time Data:", window.memberCountOverTime);
+</script>

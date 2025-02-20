@@ -139,10 +139,14 @@
     <footer class="border-top footer text-muted"></footer>
 
     <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Load Chart.js first -->
+    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script> <!-- Required by the adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script> <!-- Then the date adapter -->
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
 
     <!-- Sidebar Toggle Script -->
     <script>
@@ -188,3 +192,4 @@
 
 </body>
 </html>
+
