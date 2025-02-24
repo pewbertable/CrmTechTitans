@@ -27,9 +27,34 @@
                 <div class="member-detail">
                     <i class="fas fa-comment"></i>
                     <div class="form-group">
-                        <label asp-for="interaction" class="control-label">Interaction</label>
-                        <textarea asp-for="interaction" class="form-control" rows="4" placeholder="Enter interaction details"></textarea>
-                        <span asp-validation-for="interaction" class="text-danger"></span>
+                        <label asp-for="InteractionDetails" class="control-label"></label>
+                        <textarea asp-for="InteractionDetails" class="form-control" rows="4" placeholder="Enter interaction details"></textarea>
+                        <span asp-validation-for="InteractionDetails" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="form-group">
+                        <label asp-for="Date" class="control-label"></label>
+                        <input asp-for="Date" class="form-control" type="date" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="member-detail">
+                    <i class="fas fa-user"></i>
+                    <div class="form-group">
+                        <label asp-for="ContactId" class="control-label">Person</label>
+                        <input type="text" id="contactFilter" class="form-control mb-2" placeholder="Type to filter contacts..." onkeyup="filterContacts()">
+                        <select asp-for="ContactId" class="form-control" id="contactSelect">
+                            <option value="">Select a person</option>
+                            @foreach (var contact in ViewBag.Contacts as List<CrmTechTitans.Models.Contact>)
+                            {
+                                <option value="@contact.ID">@contact.FullFormalName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ContactId" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -46,7 +71,23 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function filterContacts() {
+            var input, filter, select, options, i;
+            input = document.getElementById("contactFilter");
+            filter = input.value.toLowerCase();
+            select = document.getElementById("contactSelect");
+            options = select.getElementsByTagName("option");
+
+            for (i = 0; i < options.length; i++) {
+                var txtValue = options[i].textContent || options[i].innerText;
+                if (txtValue.toLowerCase().includes(filter)) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 }

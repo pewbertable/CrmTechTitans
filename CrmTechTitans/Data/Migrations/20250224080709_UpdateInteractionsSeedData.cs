@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace CrmTechTitans.Data.CrmMigrations
+namespace CrmTechTitans.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddMemberCountOverTime : Migration
+    public partial class UpdateInteractionsSeedData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,6 +1,5 @@
 ﻿using CrmTechTitans.Models;
 using CrmTechTitans.Models.JoinTables;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 
 namespace CrmTechTitans.Data
@@ -11,37 +10,23 @@ namespace CrmTechTitans.Data
             : base(options)
         {
         }
-        public DbSet<Member> Members { get; set; }
 
+        public DbSet<Member> Members { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-
         public DbSet<Opportunity> Opportunities { get; set; }
-
         public DbSet<Interaction> Interactions { get; set; }
-
         public DbSet<Industry> Industries { get; set; }
-
         public DbSet<MemberIndustry> IndustryMembers { get; set; }
-
         public DbSet<MemberAddress> MemberAddresses { get; set; }
-
         public DbSet<MemberContact> MemberContacts { get; set; }
-
         public DbSet<MemberOpportunity> MemberOpportunities { get; set; }
-
         public DbSet<MembershipType> MembershipTypes { get; set; }
-
         public DbSet<MemberMembershipType> MemberMembershipTypes { get; set; }
-
         public DbSet<InteractionMember> InteractionMembers { get; set; }
-
         public DbSet<ContactPhoto> ContactPhotos { get; set; }
-
         public DbSet<ContactThumbnail> ContactThumbnails { get; set; }
-
         public DbSet<MemberPhoto> MemberPhotos { get; set; }
-
         public DbSet<MemberThumbnail> MemberThumbnails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -73,13 +58,12 @@ namespace CrmTechTitans.Data
 
             modelBuilder.Entity<MemberAddress>()
                 .HasOne(ma => ma.Address)
-                  .WithMany(m => m.MemberAddresses)
+                .WithMany(m => m.MemberAddresses)
                 .HasForeignKey(ma => ma.AddressID);
 
-            //Configure Many-to-Many relationship for MemberContact
-
+            // Configure Many-to-Many relationship for MemberContact
             modelBuilder.Entity<MemberContact>()
-              .HasKey(mc => new { mc.ContactID, mc.MemberID });
+                .HasKey(mc => new { mc.ContactID, mc.MemberID });
 
             modelBuilder.Entity<MemberContact>()
                 .HasOne(mc => mc.Contact)
@@ -92,13 +76,12 @@ namespace CrmTechTitans.Data
                 .HasForeignKey(mc => mc.MemberID);
 
             modelBuilder.Entity<MemberContact>()
-            .Property(mc => mc.ContactType)
-            .HasConversion<int>();
+                .Property(mc => mc.ContactType)
+                .HasConversion<int>();
 
-            //Configure Many-to-Many relationship for MemberContact
-
+            // Configure Many-to-Many relationship for MemberOpportunity
             modelBuilder.Entity<MemberOpportunity>()
-              .HasKey(mc => new { mc.OpportunityID, mc.MemberID });
+                .HasKey(mc => new { mc.OpportunityID, mc.MemberID });
 
             modelBuilder.Entity<MemberOpportunity>()
                 .HasOne(mc => mc.Opportunity)
@@ -110,7 +93,7 @@ namespace CrmTechTitans.Data
                 .WithMany(m => m.MemberOpportunities)
                 .HasForeignKey(mc => mc.MemberID);
 
-            //Configure Many-to-Many relationship for InteractionMember
+            // Configure Many-to-Many relationship for InteractionMember
             modelBuilder.Entity<InteractionMember>()
                 .HasKey(im => im.InteractionMemberID);
 
@@ -124,21 +107,21 @@ namespace CrmTechTitans.Data
                 .WithMany(i => i.InteractionMembers)
                 .HasForeignKey(im => im.InteractionID);
 
+            // Configure Many-to-Many relationship for MemberMembershipType
+            modelBuilder.Entity<MemberMembershipType>()
+                .HasKey(mmt => new { mmt.MemberID, mmt.MembershipTypeID });
 
-			// Configure Many - to - Many relationship for MemberMembershipType
+            modelBuilder.Entity<MemberMembershipType>()
+                .HasOne(mmt => mmt.Member)
+                .WithMany(m => m.MemberMembershipTypes)
+                .HasForeignKey(mmt => mmt.MemberID);
 
-	        modelBuilder.Entity<MemberMembershipType>()
-		        .HasKey(mmt => new { mmt.MemberID, mmt.MembershipTypeID }); 
-
-	        modelBuilder.Entity<MemberMembershipType>()
-		        .HasOne(mmt => mmt.Member)
-		        .WithMany(m => m.MemberMembershipTypes)
-		        .HasForeignKey(mmt => mmt.MemberID);
-
-		}
-
-
+            // Configure one-to-many relationship between Interaction and Contact
+            modelBuilder.Entity<Interaction>()
+                .HasOne(i => i.Contact)
+                .WithMany() // Assuming Contact doesn't have a collection of Interactions
+                .HasForeignKey(i => i.ContactId)
+                .OnDelete(DeleteBehavior.SetNull);
+        }
     }
-
-
 }

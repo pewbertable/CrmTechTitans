@@ -21,16 +21,16 @@
             </div>
         </div>
         <div class="member-card-content">
-            <form asp-action="Edit">
+            <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
 
                 <div class="member-detail">
                     <i class="fas fa-comment"></i>
                     <div class="form-group">
-                        <label asp-for="interaction" class="control-label">Interaction</label>
-                        <textarea asp-for="interaction" class="form-control" rows="4"></textarea>
-                        <span asp-validation-for="interaction" class="text-danger"></span>
+                        <label asp-for="InteractionDetails" class="control-label">Interaction</label>
+                        <textarea asp-for="InteractionDetails" class="form-control" rows="4" placeholder="Enter interaction details"></textarea>
+                        <span asp-validation-for="InteractionDetails" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="member-detail">
@@ -44,26 +44,50 @@
                 <div class="member-detail">
                     <i class="fas fa-user-tie"></i>
                     <div class="form-group">
-                        <label asp-for="Person" class="control-label">Contacted Person</label>
-                        <input asp-for="Person" class="form-control" placeholder="Enter Contacted Person" />
-                        <span asp-validation-for="Person" class="text-danger"></span>
+                        <label asp-for="ContactId" class="control-label">Contacted Person</label>
+                        <input type="text" id="contactFilter" class="form-control mb-2" placeholder="Type to filter contacts..." onkeyup="filterContacts()">
+                        <select asp-for="ContactId" class="form-control" id="contactSelect">
+                            <option value="">Select a person</option>
+                            @foreach (var contact in ViewBag.Contacts as List<CrmTechTitans.Models.Contact>)
+                            {
+                                <option value="@contact.ID">@contact.FullFormalName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ContactId" class="text-danger"></span>
                     </div>
                 </div>
+
+                <div class="member-card-footer">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="button-2">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
             </form>
-        </div>
-        <div class="member-card-footer">
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save"></i> Save Changes
-            </button>
-            <a asp-action="Index" class="button-2">
-                <i class="fas fa-arrow-left"></i> Back to List
-            </a>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function filterContacts() {
+            var input, filter, select, options, i;
+            input = document.getElementById("contactFilter");
+            filter = input.value.toLowerCase();
+            select = document.getElementById("contactSelect");
+            options = select.getElementsByTagName("option");
+
+            for (i = 0; i < options.length; i++) {
+                var txtValue = options[i].textContent || options[i].innerText;
+                if (txtValue.toLowerCase().includes(filter)) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmTechTitans.Data.CrmMigrations
 {
     [DbContext(typeof(CrmContext))]
-    [Migration("20250219201532_AddMemberCountOverTime")]
-    partial class AddMemberCountOverTime
+    [Migration("20250224074040_02-24")]
+    partial class _0224
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -154,16 +154,19 @@ namespace CrmTechTitans.Data.CrmMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Person")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("interaction")
+                    b.Property<string>("InteractionDetails")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
 
                     b.ToTable("Interactions");
                 });
@@ -418,6 +421,16 @@ namespace CrmTechTitans.Data.CrmMigrations
                         .HasForeignKey("CrmTechTitans.Models.ContactThumbnail", "ContactID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Contact");
+                });
+
+            modelBuilder.Entity("CrmTechTitans.Models.Interaction", b =>
+                {
+                    b.HasOne("CrmTechTitans.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Contact");
                 });

@@ -34,17 +34,17 @@
                     }
                     else
                     {
-                        <text>No Member Associated</text>
+                        <text>No Members Associated</text>
                     }
                 </span>
             </div>
 
-            <!-- Interaction -->
+            <!-- Interaction Details -->
             <div class="member-detail">
                 <i class="fas fa-comment"></i>
                 <span>
                     <strong>Interaction:</strong>
-                    @Html.DisplayFor(model => model.interaction)
+                    @Html.DisplayFor(model => model.InteractionDetails)
                 </span>
             </div>
 
@@ -53,24 +53,24 @@
                 <i class="fas fa-calendar-alt"></i>
                 <span>
                     <strong>Date:</strong>
-                    @Html.DisplayFor(model => model.Date)
+                    @Model.Date.ToString("f") <!-- Full date/time pattern (long) -->
                 </span>
             </div>
 
-            <!-- Person -->
+            <!-- Contacted Person -->
             <div class="member-detail">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-user-tie"></i>
                 <span>
-                    <strong>Person:</strong>
-                    @Html.DisplayFor(model => model.Person)
+                    <strong>Contacted Person:</strong>
+                    @Model.Contact?.FullFormalName ?? "N/A"
                 </span>
             </div>
         </div>
         <div class="member-card-footer">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="button-1">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Edit
             </a>
-            <a asp-action="Index" class="button-2">
+            <a asp-action="Index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Back to Interactions
             </a>
         </div>
