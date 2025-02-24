@@ -269,3 +269,15 @@ h1 {
         gap: 0.5rem;
     }
 }
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 15px;
+}
+
+.filter-item {
+    flex: 1; /* Ensures both input fields share space equally */
+    min-width: 250px; /* Prevents excessive shrinking */
+}

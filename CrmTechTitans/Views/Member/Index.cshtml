@@ -25,12 +25,12 @@
     </header>
 
     <section class="filter-container bg-light p-3 rounded mb-4">
-        <div class="row">
-            <div class="col-md-6 mb-3">
+        <div class="filter-row d-flex align-items-end gap-3">
+            <div class="filter-item">
                 <label for="memberNameFilter" class="form-label">Search by Member Name</label>
                 <input type="text" id="memberNameFilter" class="form-control" placeholder="Enter member name">
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="filter-item">
                 <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
                 <select id="membershipStatusFilter" class="form-select">
                     <option value="">All Statuses</option>
@@ -41,6 +41,8 @@
             </div>
         </div>
     </section>
+
+
 
     <section class="members-grid" id="cards-view">
         @foreach (var item in Model)
