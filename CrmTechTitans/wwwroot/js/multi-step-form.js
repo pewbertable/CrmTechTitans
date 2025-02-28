@@ -48,31 +48,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Validate required fields
         const requiredFields = currentStepElement.querySelectorAll(".required, .required-address, .required-contact");
+
         requiredFields.forEach((field) => {
+            let errorSpan = field.closest(".form-group")?.querySelector(".field-validation-error");
+
             if (!field.value.trim()) {
                 isValid = false;
                 field.classList.add("invalid");
+
+                // Show error message
+                if (errorSpan) {
+                    errorSpan.style.display = "block";
+                }
             } else {
                 field.classList.remove("invalid");
-                field.classList.add("valid");
+
+                // Hide error message if input is valid
+                if (errorSpan) {
+                    errorSpan.style.display = "none";
+                }
             }
         });
 
-        // Step-specific validations
+        // Step 1 Specific: Validate membership type selection
         if (currentStepElement.id === "step1") {
-            // Validate membership type selection
             const membershipChecked = document.querySelectorAll(".membership-type:checked").length > 0;
-            document.querySelector(".membership-error").style.display = membershipChecked ? "none" : "block";
+            const membershipError = document.querySelector(".membership-error");
+
+            if (membershipError) {
+                membershipError.style.display = membershipChecked ? "none" : "block";
+            }
+
             isValid = isValid && membershipChecked;
-        } else if (currentStepElement.id === "step4") {
-            // Validate industry selection
-            const industriesSelected = document.querySelector(".required-industry").selectedOptions.length > 0;
-            document.querySelector(".industry-validation-message").style.display = industriesSelected ? "none" : "block";
-            isValid = isValid && industriesSelected;
         }
 
         return isValid;
     }
+
+
+
 
     // Navigate to next step
     nextButtons.forEach((button) => {

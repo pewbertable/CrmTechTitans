@@ -47,6 +47,7 @@
                                 <span class="input-icon"><i class="fas fa-user"></i></span>
                                 <input asp-for="MemberName" class="form-input required" placeholder="Enter member name" />
                             </div>
+                            <span class="field-validation-error membername-error" style="display: none;">Member name is required</span>
                             <span asp-validation-for="MemberName" class="field-validation-error"></span>
                         </div>
                         <div class="form-group half-width">
@@ -82,6 +83,7 @@
                             <select asp-for="CompanySize" class="form-select required" asp-items="Html.GetEnumSelectList<CompanySize>()">
                                 <option value="">Select Company Size</option>
                             </select>
+                            <span class="field-validation-error companysize-error" style="display: none;">Company size is required</span>
                             <span asp-validation-for="CompanySize" class="field-validation-error"></span>
 
                             <label asp-for="CompanyWebsite">Company Website</label>
