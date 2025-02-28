@@ -1,4 +1,4 @@
-﻿﻿@using CrmTechTitans.Models.Enumerations
+﻿@using CrmTechTitans.Models.Enumerations
 @model CrmTechTitans.Models.ViewModels.MemberCreateViewModel
 
 @{
@@ -6,240 +6,327 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    .required-asterisk {
-        color: red;
-    }
-</style>
+<link rel="stylesheet" href="~/css/multi-step-form.css" />
 
-<div class="main-content">
-    <header class="page-header">
-        <h1>Create Member</h1>
-        <p class="text-muted">Fill in the details below to add a new member to the database.</p>
-    </header>
-
-    <div class="member-card">
-        <div class="member-card-header">
-            <div class="member-avatar">
-                <i class="fas fa-user-plus"></i>
-            </div>
-            <div class="member-info">
-                <h2 class="member-name">New Member Information</h2>
+<div class="container">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Create Member</h1>
+                    <p>Fill in the details below to add a new member to the database.</p>
+                </div>
             </div>
         </div>
-        <div class="member-card-content">
+
+        <!-- Form Steps Progress Indicator -->
+        <div class="step-progress">
+            <div class="step-progress-bar" id="progress-bar"></div>
+            <div class="step-indicator active" data-step="1">1</div>
+            <div class="step-indicator" data-step="2">2</div>
+            <div class="step-indicator" data-step="3">3</div>
+            <div class="step-indicator" data-step="4">4</div>
+        </div>
+
+        <div class="form-body">
             <form asp-action="Create" method="post" id="multiStepForm" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <p class="text-muted"><span class="required-asterisk">*</span> Indicates a required field.</p>
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+                <p class="required-field-note"><span class="required-asterisk">*</span> Indicates a required field.</p>
+
                 <!-- Step 1: Member Details -->
                 <div class="form-step active" id="step1">
-                    <h3>Step 1: Member Details</h3>
-                    <div class="member-detail">
-                        <i class="fas fa-user"></i>
-                        <div class="form-group">
-                            <label asp-for="MemberName" class="control-label">Member Name  <span class="required-asterisk">*</span></label>
-                            <input asp-for="MemberName" class="form-control" placeholder="Enter member name" />
-                            <span asp-validation-for="MemberName" class="text-danger"></span>
+                    <h2>Step 1: Member Details</h2>
+
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label asp-for="MemberName">Member Name <span class="required-asterisk">*</span></label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-user"></i></span>
+                                <input asp-for="MemberName" class="form-input required" placeholder="Enter member name" />
+                            </div>
+                            <span asp-validation-for="MemberName" class="field-validation-error"></span>
+                        </div>
+                        <div class="form-group half-width">
+                            <label asp-for="MemberPhoto">Company Picture</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-image"></i></span>
+                                <input asp-for="MemberPhoto" type="file" class="form-input" name="MemberPicture" id="MemberPicture" onchange="previewImage(this, 'memberPhotoPreview')" />
+                            </div>
+                            <div class="image-preview">
+                                <img id="memberPhotoPreview" class="preview-image" src="#" alt="Preview" />
+                            </div>
                         </div>
                     </div>
-                    <div class="member-detail">
-                        <i class="fas fa-user"></i>
-                        <div class="form-group">
-                            <label asp-for="MemberPhoto" class="control-label">Company Picture:</label>
-                            <input asp-for="MemberPhoto" type="file" class="form-control" name="MemberPicture" id="MemberPicture">
-                        </div>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-id-card"></i>
-                        <div class="form-group">
-                            <label asp-for="SelectedMembershipTypeIDs" class="control-label">Membership Type  <span class="required-asterisk">*</span></label>
-                            <div>
+
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label>Membership Type <span class="required-asterisk">*</span></label>
+                            <div class="checkbox-group">
                                 @foreach (var type in Model.AvailableMembershipTypes)
                                 {
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" name="SelectedMembershipTypeIDs" value="@type.ID"
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" class="form-checkbox membership-type" name="SelectedMembershipTypeIDs" value="@type.ID"
                                         @(Model.SelectedMembershipTypeIDs.Contains(type.ID) ? "checked" : "") />
-                                        <label class="form-check-label">@type.Name</label>
+                                        <label>@type.Name</label>
                                     </div>
                                 }
                             </div>
-                            <span asp-validation-for="SelectedMembershipTypeIDs" class="text-danger"></span>
+                            <span class="field-validation-error membership-error" style="display: none;">Please select at least one membership type</span>
+                            <span asp-validation-for="SelectedMembershipTypeIDs" class="field-validation-error"></span>
                         </div>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-user-tie"></i>
-                        <div class="form-group">
-                            <label asp-for="ContactedBy" class="control-label">Contacted By</label>
-                            <input asp-for="ContactedBy" class="form-control" placeholder="Enter contact person" />
-                            <span asp-validation-for="ContactedBy" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="member-detail">
-                        <i class="fas fa-building"></i>
-                        <div class="form-group">
-                            <label asp-for="CompanySize" class="control-label">Company Size  <span class="required-asterisk">*</span></label>
-                            <select asp-for="CompanySize" class="form-control" asp-items="Html.GetEnumSelectList<CompanySize>()">
+                        <div class="form-group half-width">
+                            <label asp-for="CompanySize">Company Size <span class="required-asterisk">*</span></label>
+                            <select asp-for="CompanySize" class="form-select required" asp-items="Html.GetEnumSelectList<CompanySize>()">
                                 <option value="">Select Company Size</option>
                             </select>
-                            <span asp-validation-for="CompanySize" class="text-danger"></span>
+                            <span asp-validation-for="CompanySize" class="field-validation-error"></span>
+
+                            <label asp-for="CompanyWebsite">Company Website</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-globe"></i></span>
+                                <input asp-for="CompanyWebsite" class="form-input" placeholder="Enter company website" />
+                            </div>
+                            <span asp-validation-for="CompanyWebsite" class="field-validation-error"></span>
+
+                            <label asp-for="ContactedBy">Contacted By</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-user-tie"></i></span>
+                                <input asp-for="ContactedBy" class="form-input" placeholder="Enter contact person" />
+                            </div>
+                            <span asp-validation-for="ContactedBy" class="field-validation-error"></span>
                         </div>
                     </div>
-                    <div class="member-detail">
-                        <i class="fas fa-globe"></i>
-                        <div class="form-group">
-                            <label asp-for="CompanyWebsite" class="control-label">Company Website</label>
-                            <input asp-for="CompanyWebsite" class="form-control" placeholder="Enter company website" />
-                            <span asp-validation-for="CompanyWebsite" class="text-danger"></span>
-                        </div>
-                    </div>
+
                     <div class="form-navigation">
-                        <button type="button" class="btn btn-primary next-step">Next</button>
+                        <button type="button" class="btn btn-primary next-step">Continue <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
                 <!-- Step 2: Dates and Notes -->
                 <div class="form-step" id="step2">
-                    <h3>Step 2: Dates and Notes</h3>
-                    <div class="member-detail">
-                        <i class="fas fa-calendar-alt"></i>
-                        <div class="form-group">
-                            <label asp-for="MemberSince" class="control-label">Member Since</label>
-                            <input asp-for="MemberSince" class="form-control" type="date" />
-                            <span asp-validation-for="MemberSince" class="text-danger"></span>
+                    <h2>Step 2: Dates and Notes</h2>
+
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label asp-for="MemberSince">Member Since</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-calendar-alt"></i></span>
+                                <input asp-for="MemberSince" class="form-input" type="date" />
+                            </div>
+                            <span asp-validation-for="MemberSince" class="field-validation-error"></span>
+                        </div>
+                        <div class="form-group half-width">
+                            <label asp-for="LastContactDate">Last Contact Date</label>
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-calendar-check"></i></span>
+                                <input asp-for="LastContactDate" class="form-input" type="date" />
+                            </div>
+                            <span asp-validation-for="LastContactDate" class="field-validation-error"></span>
                         </div>
                     </div>
-                    <div class="member-detail">
-                        <i class="fas fa-phone"></i>
-                        <div class="form-group">
-                            <label asp-for="LastContactDate" class="control-label">Last Contact Date</label>
-                            <input asp-for="LastContactDate" class="form-control" type="date" />
-                            <span asp-validation-for="LastContactDate" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <label asp-for="Notes">Notes</label>
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-sticky-note"></i></span>
+                            <textarea asp-for="Notes" class="form-textarea" rows="4" placeholder="Enter any additional notes"></textarea>
                         </div>
+                        <span asp-validation-for="Notes" class="field-validation-error"></span>
                     </div>
-                    <div class="member-detail">
-                        <i class="fas fa-sticky-note"></i>
-                        <div class="form-group">
-                            <label asp-for="Notes" class="control-label">Notes</label>
-                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Enter any additional notes"></textarea>
-                            <span asp-validation-for="Notes" class="text-danger"></span>
-                        </div>
-                    </div>
+
                     <div class="form-navigation">
-                        <button type="button" class="btn btn-secondary prev-step">Previous</button>
-                        <button type="button" class="btn btn-primary next-step">Next</button>
+                        <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn btn-primary next-step">Continue <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
                 <!-- Step 3: Addresses -->
                 <div class="form-step" id="step3">
-                    <h3>Step 3: Addresses</h3>
-                    <div class="member-detail">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h3>Addresses</h3>
+                    <h2>Step 3: Addresses</h2>
+
+                    <div id="addresses-container">
                         @for (int i = 0; i < Model.Addresses.Count; i++)
                         {
-                            <div class="address-form">
-                                <div class="form-group">
-                                    <label asp-for="Addresses[i].Street" class="control-label">Street  <span class="required-asterisk">*</span></label>
-                                    <input asp-for="Addresses[i].Street" class="form-control" placeholder="Enter Street Address" />
-                                    <span asp-validation-for="Addresses[i].Street" class="text-danger"></span>
+                            <div class="address-form form-card" data-address-index="@i">
+                                <div class="form-card-header">
+                                    <h3>Address @(i + 1)</h3>
+                                    @if (i > 0)
+                                    {
+                                        <button type="button" class="btn btn-danger remove-address">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    }
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Addresses[i].City" class="control-label">City  <span class="required-asterisk">*</span></label>
-                                    <input asp-for="Addresses[i].City" class="form-control" placeholder="Enter City" />
-                                    <span asp-validation-for="Addresses[i].City" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Addresses[i].Province" class="control-label">Province  <span class="required-asterisk">*</span></label>
-                                    <select asp-for="Addresses[i].Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()">
-                                        <option value="">Select Province</option>
-                                    </select>
-                                    <span asp-validation-for="Addresses[i].Province" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Addresses[i].PostalCode" class="control-label">Postal Code</label>
-                                    <input asp-for="Addresses[i].PostalCode" class="form-control" placeholder="Enter Postal Code" />
-                                    <span asp-validation-for="Addresses[i].PostalCode" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Addresses[i].AddressType" class="control-label">Address Type</label>
-                                    <select asp-for="Addresses[i].AddressType" class="form-control" asp-items="Html.GetEnumSelectList<AddressType>()">
-                                        <option value="">Select Address Type</option>
-                                    </select>
-                                    <span asp-validation-for="Addresses[i].AddressType" class="text-danger"></span>
+                                <div class="form-card-body">
+                                    <div class="form-row">
+                                        <div class="form-group half-width">
+                                            <label asp-for="Addresses[i].Street">Street <span class="required-asterisk">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+                                                <input asp-for="Addresses[i].Street" class="form-input required-address" placeholder="Enter Street Address" />
+                                            </div>
+                                            <span asp-validation-for="Addresses[i].Street" class="field-validation-error"></span>
+                                        </div>
+                                        <div class="form-group half-width">
+                                            <label asp-for="Addresses[i].City">City <span class="required-asterisk">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-city"></i></span>
+                                                <input asp-for="Addresses[i].City" class="form-input required-address" placeholder="Enter City" />
+                                            </div>
+                                            <span asp-validation-for="Addresses[i].City" class="field-validation-error"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group third-width">
+                                            <label asp-for="Addresses[i].Province">Province <span class="required-asterisk">*</span></label>
+                                            <select asp-for="Addresses[i].Province" class="form-select required-address" asp-items="Html.GetEnumSelectList<Province>()">
+                                                <option value="">Select Province</option>
+                                            </select>
+                                            <span asp-validation-for="Addresses[i].Province" class="field-validation-error"></span>
+                                        </div>
+                                        <div class="form-group third-width">
+                                            <label asp-for="Addresses[i].PostalCode">Postal Code</label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-mail-bulk"></i></span>
+                                                <input asp-for="Addresses[i].PostalCode" class="form-input" placeholder="Enter Postal Code" />
+                                            </div>
+                                            <span asp-validation-for="Addresses[i].PostalCode" class="field-validation-error"></span>
+                                        </div>
+                                        <div class="form-group third-width">
+                                            <label asp-for="Addresses[i].AddressType">Address Type</label>
+                                            <select asp-for="Addresses[i].AddressType" class="form-select" asp-items="Html.GetEnumSelectList<AddressType>()">
+                                                <option value="">Select Address Type</option>
+                                            </select>
+                                            <span asp-validation-for="Addresses[i].AddressType" class="field-validation-error"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         }
-                        <button type="button" id="add-address" class="btn btn-secondary add-button">Add Address</button>
                     </div>
+
+                    <button type="button" id="add-address" class="btn btn-secondary add-button">
+                        <i class="fas fa-plus"></i> Add Address
+                    </button>
+                    <div class="address-validation-message field-validation-error" style="display: none;">Please complete at least one address with all required fields</div>
+
                     <div class="form-navigation">
-                        <button type="button" class="btn btn-secondary prev-step">Previous</button>
-                        <button type="button" class="btn btn-primary next-step">Next</button>
+                        <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="button" class="btn btn-primary next-step">Continue <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
                 <!-- Step 4: Contacts and Industries -->
                 <div class="form-step" id="step4">
-                    <h3>Step 4: Contacts and Industries</h3>
-                    <div class="member-detail">
-                        <i class="fas fa-address-book"></i>
-                        <h3>Contacts</h3>
+                    <h2>Step 4: Contacts and Industries</h2>
+
+                    <div id="contacts-container">
                         @for (int i = 0; i < Model.Contacts.Count; i++)
                         {
-                            <div class="contact-form">
-                                <div class="form-group">
-                                    <label asp-for="Contacts[i].FirstName" class="control-label">First Name  <span class="required-asterisk">*</span></label>
-                                    <input asp-for="Contacts[i].FirstName" class="form-control" placeholder="Enter first name" />
-                                    <span asp-validation-for="Contacts[i].FirstName" class="text-danger"></span>
+                            <div class="contact-form form-card" data-contact-index="@i">
+                                <div class="form-card-header">
+                                    <h3>Contact @(i + 1)</h3>
+                                    @if (i > 0)
+                                    {
+                                        <button type="button" class="btn btn-danger remove-contact">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    }
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Contacts[i].LastName" class="control-label">Last Name</label>
-                                    <input asp-for="Contacts[i].LastName" class="form-control" placeholder="Enter last name" />
-                                    <span asp-validation-for="Contacts[i].LastName" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Contacts[i].Email" class="control-label">Email</label>
-                                    <input asp-for="Contacts[i].Email" class="form-control" placeholder="Enter email" />
-                                    <span asp-validation-for="Contacts[i].Email" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Contacts[i].Phone" class="control-label">Phone  <span class="required-asterisk">*</span></label>
-                                    <input asp-for="Contacts[i].Phone" class="form-control" placeholder="Enter phone number" />
-                                    <span asp-validation-for="Contacts[i].Phone" class="text-danger"></span>
-                                </div>
-                                <!-- Contact Photo Upload -->
-                                <div class="form-group">
-                                    <label asp-for="Contacts[i].ContactPhoto">Upload Contact Photo</label>
-                                    <input asp-for="Contacts[i].ContactPhoto" type="file" name="ContactPicture" class="form-control" accept="image/*" />
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Contacts[i].ContactType" class="control-label">Contact Type</label>
-                                    <select asp-for="Contacts[i].ContactType" class="form-control" asp-items="Html.GetEnumSelectList<ContactType>()">
-                                        <option value="">Select Contact Type</option>
-                                    </select>
-                                    <span asp-validation-for="Contacts[i].ContactType" class="text-danger"></span>
+                                <div class="form-card-body">
+                                    <div class="form-row">
+                                        <div class="form-group half-width">
+                                            <label asp-for="Contacts[i].FirstName">First Name <span class="required-asterisk">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-user"></i></span>
+                                                <input asp-for="Contacts[i].FirstName" class="form-input required-contact" placeholder="Enter first name" />
+                                            </div>
+                                            <span asp-validation-for="Contacts[i].FirstName" class="field-validation-error"></span>
+                                        </div>
+                                        <div class="form-group half-width">
+                                            <label asp-for="Contacts[i].LastName">Last Name</label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-user"></i></span>
+                                                <input asp-for="Contacts[i].LastName" class="form-input" placeholder="Enter last name" />
+                                            </div>
+                                            <span asp-validation-for="Contacts[i].LastName" class="field-validation-error"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group half-width">
+                                            <label asp-for="Contacts[i].Email">Email</label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                                                <input asp-for="Contacts[i].Email" class="form-input" placeholder="Enter email" type="email" />
+                                            </div>
+                                            <span asp-validation-for="Contacts[i].Email" class="field-validation-error"></span>
+
+                                        </div>
+                                        <div class="form-group half-width">
+                                            <label asp-for="Contacts[i].Phone">Phone <span class="required-asterisk">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-phone"></i></span>
+                                                <input asp-for="Contacts[i].Phone" class="form-input required-contact" placeholder="Enter phone number" />
+                                            </div>
+                                            <span asp-validation-for="Contacts[i].Phone" class="field-validation-error"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group half-width">
+                                            <label asp-for="Contacts[i].ContactPhoto">Contact Photo</label>
+                                            <div class="input-group">
+                                                <span class="input-icon"><i class="fas fa-camera"></i></span>
+                                                <input asp-for="Contacts[i].ContactPhoto" type="file" class="form-input" name="ContactPicture" accept="image/*" onchange="previewContactImage(this, @i)" />
+                                            </div>
+                                            <div class="image-preview">
+                                                <img class="preview-image contact-preview" id="contact-preview-@i" src="#" alt="Preview" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group half-width">
+                                            <label asp-for="Contacts[i].ContactType">Contact Type</label>
+                                            <select asp-for="Contacts[i].ContactType" class="form-select" asp-items="Html.GetEnumSelectList<ContactType>()">
+                                                <option value="">Select Contact Type</option>
+                                            </select>
+                                            <span asp-validation-for="Contacts[i].ContactType" class="field-validation-error"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         }
-                        <button type="button" id="add-contact" class="btn btn-secondary add-button">Add Contact</button>
                     </div>
-                    <div class="member-detail">
-                        <i class="fas fa-industry"></i>
-                        <h3>Industries</h3>
-                        <div class="form-group">
-                            <label>Select Industries  <span class="required-asterisk">*</span></label>
-                            <select asp-for="SelectedIndustryIds" class="form-control" multiple>
-                                @foreach (var industry in Model.AvailableIndustries)
-                                {
-                                    <option value="@industry.ID">@industry.Name (NAICS: @industry.NAICS)</option>
-                                }
-                            </select>
-                            <span asp-validation-for="SelectedIndustryIds" class="text-danger"></span>
+
+                    <button type="button" id="add-contact" class="btn btn-secondary add-button">
+                        <i class="fas fa-plus"></i> Add Contact
+                    </button>
+                    <div class="contact-validation-message field-validation-error" style="display: none;">Please complete at least one contact with all required fields</div>
+
+                    <div class="form-card">
+                        <div class="form-card-header">
+                            <h3>Industries <span class="required-asterisk">*</span></h3>
+                        </div>
+                        <div class="form-card-body">
+                            <div class="form-group">
+                                <select asp-for="SelectedIndustryIds" class="form-select required-industry" multiple size="6">
+                                    @foreach (var industry in Model.AvailableIndustries)
+                                    {
+                                        <option value="@industry.ID">@industry.Name (NAICS: @industry.NAICS)</option>
+                                    }
+                                </select>
+                                <small class="form-text">Hold Ctrl (or Cmd on Mac) to select multiple industries</small>
+                                <div class="industry-validation-message field-validation-error" style="display: none;">Please select at least one industry</div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="form-navigation">
-                        <button type="button" class="btn btn-secondary prev-step">Previous</button>
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left"></i> Back</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Submit</button>
                     </div>
                 </div>
             </form>
@@ -248,141 +335,7 @@
 </div>
 
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const steps = document.querySelectorAll('.form-step');
-            const nextButtons = document.querySelectorAll('.next-step');
-            const prevButtons = document.querySelectorAll('.prev-step');
-
-            let currentStep = 0;
-
-            function showStep(step) {
-                steps.forEach((s, index) => {
-                    s.classList.toggle('active', index === step);
-                });
-            }
-
-            function validateCurrentStep() {
-                let isValid = true;
-                const inputs = steps[currentStep].querySelectorAll('input, select, textarea');
-
-                inputs.forEach(input => {
-                    if (!$(input).valid()) {
-                        isValid = false;
-                    }
-                });
-
-                return isValid;
-            }
-
-            nextButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (validateCurrentStep()) {
-                        if (currentStep < steps.length - 1) {
-                            currentStep++;
-                            showStep(currentStep);
-                        }
-                    }
-                });
-            });
-
-            prevButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (currentStep > 0) {
-                        currentStep--;
-                        showStep(currentStep);
-                    }
-                });
-            });
-
-            showStep(currentStep);
-
-            function updateValidation() {
-                $.validator.unobtrusive.parse(document);
-            }
-
-            // Add Contact
-            document.getElementById('add-contact').addEventListener('click', function () {
-                const index = document.querySelectorAll('.contact-form').length;
-                const contactForm = document.createElement('div');
-                contactForm.classList.add('contact-form');
-                contactForm.innerHTML = `
-                    <div class="form-group">
-                        <label>First Name</label>
-                        <input name="Contacts[${document.querySelectorAll('.contact-form').length}].FirstName" class="form-control" placeholder="Enter first name" />
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name</label>
-                        <input name="Contacts[${document.querySelectorAll('.contact-form').length}].LastName" class="form-control" placeholder="Enter last name" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input name="Contacts[${document.querySelectorAll('.contact-form').length}].Email" class="form-control" placeholder="Enter email" />
-                    </div>
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input name="Contacts[${document.querySelectorAll('.contact-form').length}].Phone" class="form-control" placeholder="Enter phone number" />
-                    </div>
-                    <div class="form-group">
-                        <label>Contact Type</label>
-                        <select name="Contacts[${document.querySelectorAll('.contact-form').length}].ContactType" class="form-control">
-                            <option value="">Select Contact Type</option>
-        @foreach (var value in Enum.GetValues(typeof(ContactType)))
-        {
-                                        <option value="@value">@value</option>
-        }
-                        </select>
-                    </div>
-                `;
-                document.querySelector('#add-contact').before(contactForm);
-                updateValidation();
-            });
-
-            // Add Address
-            document.getElementById('add-address').addEventListener('click', function () {
-                const index = document.querySelectorAll('.address-form').length;
-                const addressForm = document.createElement('div');
-                addressForm.classList.add('address-form');
-                addressForm.innerHTML = `
-                    <div class="form-group">
-                        <label>Street</label>
-                        <input name="Addresses[${document.querySelectorAll('.address-form').length}].Street" class="form-control" placeholder="Enter Street Address" />
-                    </div>
-                    <div class="form-group">
-                        <label>City</label>
-                        <input name="Addresses[${document.querySelectorAll('.address-form').length}].City" class="form-control" placeholder="Enter City" />
-                    </div>
-                    <div class="form-group">
-                        <label>Province</label>
-                        <select name="Addresses[${document.querySelectorAll('.address-form').length}].Province" class="form-control">
-                            <option value="">Select Province</option>
-        @foreach (var value in Enum.GetValues(typeof(Province)))
-        {
-                                        <option value="@value">@value</option>
-        }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Postal Code</label>
-                        <input name="Addresses[${document.querySelectorAll('.address-form').length}].PostalCode" class="form-control" placeholder="Enter Postal Code" />
-                    </div>
-                    <div class="form-group">
-                        <label>Address Type</label>
-                        <select name="Addresses[${document.querySelectorAll('.address-form').length}].AddressType" class="form-control">
-                            <option value="">Select Address Type</option>
-        @foreach (var value in Enum.GetValues(typeof(AddressType)))
-        {
-                                        <option value="@value">@value</option>
-        }
-                        </select>
-                           `;
-                document.querySelector('#add-address').before(addressForm);
-                updateValidation();
-            });
-
-            updateValidation();
-        });
-    </script>
-
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/js/multi-step-form.js"></script>
 }
+
