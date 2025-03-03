@@ -226,7 +226,7 @@ namespace CrmTechTitans.Controllers
             return View(model);
         }
 
-        // GET: Member/Edit/5
+        //GET Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -238,13 +238,14 @@ namespace CrmTechTitans.Controllers
                 .Include(m => m.MemberPhoto)
                 .Include(m => m.MemberThumbnail)
                 .Include(m => m.MemberContacts)
-                    .ThenInclude(mc => mc.Contact)
+                .ThenInclude(mc => mc.Contact)
+                .Include(m => m.MemberMembershipTypes) // Include the join table
+                .ThenInclude(mmt => mmt.MembershipType)
                 .Include(m => m.MemberAddresses) // Ensure we include addresses
-                    .ThenInclude(ma => ma.Address) // Include the Address entity
+                .ThenInclude(ma => ma.Address) // Include the Address entity
                 .Include(m => m.IndustryMembers)
-                    .ThenInclude(im => im.Industry)
+                .ThenInclude(im => im.Industry)
                 .FirstOrDefaultAsync(m => m.ID == id);
-
 
             if (member == null)
             {
@@ -265,9 +266,9 @@ namespace CrmTechTitans.Controllers
                 MembershipStatus = member.MembershipStatus,
                 MemberPhoto = member.MemberPhoto,
                 MemberThumbnail = member.MemberThumbnail,
-                // Map other member properties...
                 Addresses = member.MemberAddresses.Select(ma => new AddressViewModel
                 {
+                    ID = ma.Address.ID, // Ensure ID is mapped
                     Street = ma.Address.Street,
                     City = ma.Address.City,
                     Province = ma.Address.Province,
@@ -285,14 +286,23 @@ namespace CrmTechTitans.Controllers
                     ContactPhoto = mc.Contact.ContactPhoto,
                     ContactThumbnail = mc.Contact.ContactThumbnail
                 }).ToList(),
-                SelectedIndustryIds = member.IndustryMembers.Select(im => im.IndustryID).ToList(), // Selected industry IDs
+                SelectedIndustryIds = member.IndustryMembers.Select(im => im.IndustryID).ToList(),
+                SelectedMembershipTypeIDs = member.MemberMembershipTypes
+                    .Select(mmt => mmt.MembershipTypeID)
+                    .ToList(),
                 AvailableIndustries = _context.Industries
-            .Select(industry => new IndustryViewModel
-            {
-                ID = industry.ID,
-                Name = industry.Name,
-                NAICS = industry.NAICS
-            }).ToList() // Convert Industry entities to IndustryViewModels // Populate available industries
+                    .Select(industry => new IndustryViewModel
+                    {
+                        ID = industry.ID,
+                        Name = industry.Name,
+                        NAICS = industry.NAICS
+                    }).ToList(),
+                AvailableMembershipTypes = _context.MembershipTypes
+                    .Select(mt => new MembershipTypeViewModel
+                    {
+                        ID = mt.ID,
+                        Name = mt.Name
+                    }).ToList()
             };
 
             return View(model);
@@ -319,6 +329,7 @@ namespace CrmTechTitans.Controllers
                         .ThenInclude(mc => mc.Contact)
                         .Include(m => m.MemberAddresses)
                         .Include(m => m.IndustryMembers)
+                        .Include(m => m.MemberMembershipTypes)
                         .FirstOrDefaultAsync(m => m.ID == id);
 
                     if (member == null)
@@ -353,10 +364,9 @@ namespace CrmTechTitans.Controllers
                         if (model.MemberThumbnail != null) member.MemberThumbnail = model.MemberThumbnail;
                     }
 
-                    // Update Addresses: Instead of clearing, update existing addresses
+                    // Update Addresses
                     foreach (var addressModel in model.Addresses)
                     {
-                        // Ensure Address ID is valid before searching
                         if (addressModel.ID > 0)
                         {
                             var existingAddress = member.MemberAddresses
@@ -364,7 +374,6 @@ namespace CrmTechTitans.Controllers
 
                             if (existingAddress != null)
                             {
-                                // Update existing address
                                 existingAddress.Address.Street = addressModel.Street;
                                 existingAddress.Address.City = addressModel.City;
                                 existingAddress.Address.Province = addressModel.Province;
@@ -373,7 +382,6 @@ namespace CrmTechTitans.Controllers
                             }
                             else
                             {
-                                // Add a new address if it doesn't exist
                                 member.MemberAddresses.Add(new MemberAddress
                                 {
                                     Address = new Address
@@ -389,8 +397,7 @@ namespace CrmTechTitans.Controllers
                         }
                     }
 
-
-                    // Update Contacts: Instead of clearing, update existing contacts
+                    // Update Contacts
                     foreach (var contactModel in model.Contacts)
                     {
                         var existingContact = member.MemberContacts.FirstOrDefault(c => c.Contact.ID == contactModel.ID);
@@ -423,6 +430,14 @@ namespace CrmTechTitans.Controllers
                         .Select(industryId => new MemberIndustry { IndustryID = industryId })
                         .ToList();
 
+                    // Update Membership Types
+                    member.MemberMembershipTypes = model.SelectedMembershipTypeIDs
+                        .Select(membershipTypeId => new MemberMembershipType
+                        {
+                            MembershipTypeID = membershipTypeId
+                        })
+                        .ToList();
+
                     // Save changes
                     _context.Update(member);
                     await _context.SaveChangesAsync();
@@ -439,7 +454,6 @@ namespace CrmTechTitans.Controllers
 
             return View(model);
         }
-
         // GET: Member/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
