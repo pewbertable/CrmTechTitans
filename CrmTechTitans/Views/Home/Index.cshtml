@@ -1,14 +1,29 @@
-﻿<!-- Index.cshtml -->
-@model CrmTechTitans.ViewModels.DashboardVM
+﻿@model CrmTechTitans.ViewModels.DashboardVM
+
 @section Styles {
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
+    <!-- Ensures the chart container takes the full width and has a set height -->
+    <style>
+        .chart-container {
+            width: 100%;
+            height: 400px; /* Adjust as needed */
+            position: relative; /* Required for Chart.js responsiveness */
+            margin-top: 1rem; /* Optional spacing */
+        }
+    </style>
 }
+
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script> <!-- Add date-fns -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script> <!-- Add Chart.js date adapter -->
+    <!-- Include Chart.js, date-fns, and the date adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
+
+    <!-- Your custom JS file that will actually build the chart -->
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 }
+
 @{
     ViewData["Title"] = "Dashboard Overview";
 }
@@ -31,14 +46,14 @@
             </div>
         </a>
 
-        <!-- Link to Membership Types -->
+        <!-- Link to Municipalities -->
         <a href="/Address/Index" class="link-card">
             <div class="link-icon">
                 <i class="fas fa-id-card"></i>
             </div>
             <div class="link-info">
                 <h3>Municipalities</h3>
-                <p>View and manage Members By Municipalities </p>
+                <p>View and manage Members By Municipalities</p>
             </div>
         </a>
 
@@ -65,9 +80,10 @@
         </a>
     </div>
 
+    <!-- If you really need two .main-content divs, keep both; if not, remove one. -->
     <div class="main-content">
         <header class="page-header">
-            <h1>Member Management Dashboard</h1>
+            <h1>Member Admin Center</h1>
             <div class="dashboard-tabs" id="dashboardTabs">
                 <button class="tab-btn active" data-tab="overview">Overview</button>
                 <button class="tab-btn" data-tab="membership">Membership Types</button>
@@ -88,7 +104,7 @@
                     </div>
                 </div>
 
-                <!-- Goodstanding Members Card -->
+                <!-- GoodStanding Members Card -->
                 <div class="metric-card accent-green">
                     <div class="metric-icon">
                         <i class="fas fa-user-check"></i>
@@ -122,6 +138,7 @@
                 </div>
             </div>
 
+            <!-- The Chart Container -->
             <div class="chart-container">
                 <canvas id="membersPerMonthChart"></canvas>
             </div>
@@ -231,10 +248,14 @@
     </div>
 </div>
 
+<!-- Pass the data to JavaScript with ISO date strings -->
 <script>
-    // Pass the data to JavaScript with dates formatted as ISO strings
     window.memberCountOverTime = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-        Model.MemberCountOverTime.Select(m => new { Date = m.Date.ToString("yyyy-MM-dd"), m.Count })
+        Model.MemberCountOverTime.Select(m => new
+        {
+            Date = m.Date.ToString("yyyy-MM-dd"),
+            m.Count
+        })
     ));
     console.log("Member Count Over Time Data:", window.memberCountOverTime);
 </script>

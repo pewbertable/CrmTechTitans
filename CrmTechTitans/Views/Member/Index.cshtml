@@ -7,22 +7,34 @@
 <partial name="_Notification" />
 
 <div class="container-fluid">
-    <header class="page-header d-flex justify-content-between align-items-center mb-4">
-        <h1>All Members</h1>
-        <div class="d-flex align-items-center gap-3">
-            <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new member to the system">
-                <i class="fas fa-user-plus"></i> Create New Member
+    <header class="page-header d-flex justify-content-between align-items-end mb-4">
+        <!-- Remove bottom margin on <h1> -->
+        <h1 class="mb-0">All Members</h1>
+
+        <div class="d-flex align-items-end gap-3">
+            <!-- Use .btn-secondary for a gray button -->
+            <a asp-action="Create" class="btn btn-secondary"
+               data-bs-toggle="tooltip"
+               title="Add a new member to the system">
+                <!-- Add .me-2 to create space between icon and text -->
+                <i class="fas fa-user-plus me-2"></i>
+                Create New Member
             </a>
+
             <div class="view-toggle">
-                <button class="view-btn active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
+                <button class="view-btn active" data-view="cards"
+                        data-bs-toggle="tooltip" title="Switch to Card View">
                     <i class="fas fa-th-large"></i>
                 </button>
-                <button class="view-btn" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
+                <button class="view-btn" data-view="table"
+                        data-bs-toggle="tooltip" title="Switch to Table View">
                     <i class="fas fa-table"></i>
                 </button>
             </div>
         </div>
     </header>
+</div>
+
 
     <section class="filter-container bg-light p-3 rounded mb-4">
         <div class="filter-row d-flex align-items-end gap-3">

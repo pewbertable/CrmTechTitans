@@ -261,7 +261,41 @@
             display: flex;
             justify-content: center;
             margin-top: 20px;
+            list-style: none; /* Ensures a clean list-style reset */
+            padding: 0; /* Removes default padding on list */
         }
+
+            .pagination li {
+                margin: 0 5px; /* Space between page links */
+            }
+
+                .pagination li a,
+                .pagination li span {
+                    /* Base link styling */
+                    display: inline-block;
+                    padding: 6px 12px;
+                    color: #6c757d; /* Gray text */
+                    background-color: #f8f9fa; /* Light gray background */
+                    border: 1px solid #d1d1d1; /* Subtle border */
+                    border-radius: 4px;
+                    text-decoration: none;
+                    transition: background-color 0.2s ease;
+                }
+
+                    .pagination li a:hover {
+                        background-color: #e2e3e5; /* Slightly darker hover background */
+                        text-decoration: none;
+                    }
+
+                .pagination li.active a,
+                .pagination li.active span {
+                    /* Active page styling */
+                    background-color: #6c757d; /* Darker gray */
+                    color: #fff; /* White text */
+                    border-color: #6c757d; /* Match background */
+                    cursor: default; /* Doesn’t look clickable */
+                }
+
 
             .pagination button {
                 margin: 0 5px;

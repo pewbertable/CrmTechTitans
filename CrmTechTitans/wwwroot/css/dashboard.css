@@ -328,3 +328,17 @@ body {
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 }
+.company-logo {
+    max-width: 300px; /* Or any width you prefer */
+    height: auto; /* Keeps aspect ratio consistent */
+    display: block; /* Helpful for centering */
+    margin: 0 auto; /* Centers logo horizontally if its container is wide */
+}
+.chart-container {
+    width: 100%;
+    height: 400px; /* Or any desired fixed/relative height */
+    position: relative; /* Required for Chart.js to handle responsive layout */
+    border: 2px solid grey; /* Adds a thin red border around the chart container */
+    margin-top: 1rem; /* Optional spacing above the chart container */
+    box-sizing: border-box; /* Ensures padding and border are included in total size */
+}
