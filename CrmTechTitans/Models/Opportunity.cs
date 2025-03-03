@@ -10,7 +10,7 @@ namespace CrmTechTitans.Models
 
         [Display(Name = "Title")]
         [StringLength(200, ErrorMessage = "Opportunity title can't be longer than 200 characters")]
-        public string? Title { get; set; }
+        public string Title { get; set; }
 
         public Status Status { get; set; }
 

@@ -1,508 +1,214 @@
-/* === General Styles === */
+﻿/* === General Styling === */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f6f9; /* Light gray background */
+    background-color: white;
     color: #333;
     line-height: 1.6;
     margin: 0;
     padding: 0;
 }
 
-/* === Main Container: Ensure Sidebar Doesn�t Take Too Much Space === */
-.main-container {
-    display: flex;
-    min-height: 100vh;
+/* === CRM Container Styling === */
+.crm-container {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* === Sidebar: Sliding, Clean & Professional === */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+/* === Page Header Styling === */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 50px; /* Increased padding for more space */
+    background-color: #f7f7f7;
+    border-radius: 10px; /* Slightly larger border-radius for a more rounded look */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Increased shadow for more depth */
+}
 
+.page-header h1 {
+    font-size: 2.2rem; /* Larger font size for more prominence */
+    font-weight: 700;
+    color: #333;
+}
+
+.page-header .btn-danger {
+    font-weight: 600;
+    font-size: 1.1rem; /* Larger button text */
+    padding: 12px 20px; /* Increased padding for the button */
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.page-header .btn-danger i {
+    margin-right: 10px; /* Increased space between icon and text */
+}
+
+/* === Filter Container Styling === */
+.filter-container {
+    display: flex;
+    justify-content: space-between; /* Align search and filter side by side */
+    gap: 20px; /* Adds space between search and filter */
+    margin-bottom: 20px;
+    flex-wrap: nowrap; /* Keep items in a single line */
+    width: 100%;
+}
+
+.filter-container .form-control,
+.filter-container .search-input,
+.filter-container .filter-select {
+    max-width: 350px; /* Adjust max-width for better layout */
+    width: 100%; /* Allow full width usage */
+    padding: 10px;
+    border-radius: 6px; /* Consistent border radius */
+    font-size: 0.95rem; /* Consistent font size */
+    border: 1px solid #ccc;
+    background-color: #f8f9fa; /* Consistent background color */
+}
+
+/* Focus Effect for inputs */
+.filter-container .search-input:focus,
+.filter-container .filter-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow */
+}
+
+/* === Sidebar Styling === */
 .sidebar {
     position: fixed;
     left: 0;
     top: 0;
-    width: 11rem;
-    max-width: 210px;
-    height: 100%;
-    background-color: #424242;
+    width: 15rem;
+    max-width: 220px;
+    height: 100vh;
+    background-color: #2e2e2e;
     color: white;
     display: flex;
     flex-direction: column;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
-    padding: 18px;
-    transition: transform 0.3s ease-in-out;
-    transform: translateX(-100%);
+    padding: 20px 15px;
+    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
     z-index: 1000;
-    font-family: 'Inter', sans-serif;
 }
 
-    /* Show Sidebar when Active */
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-/* === Sidebar Toggle Button (Hamburger) === */
-.sidebar-toggle {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    background-color: #424242;
+.sidebar .nav-link {
+    font-size: 1rem;
     color: white;
-    border: none;
-    padding: 8px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    transition: background 0.3s;
-    z-index: 1100;
-}
-
-    .sidebar-toggle:hover {
-        background-color: #5a5a5a;
-    }
-
-/* === Sidebar Links - Clean & Readable with Icons === */
-.sidebar a {
-    display: flex;
-    align-items: center;
-    padding: 10px 12px;
-    margin: 4px 4px;
-    font-size: 14px;
-    color: #ffffff;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background 0.3s, padding 0.2s, color 0.3s ease-in-out;
-}
-
-    /* Sidebar Icons */
-    .sidebar a i {
-        margin-right: 8px;
-        font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.8); /* Slightly dimmed white */
-        transition: color 0.3s ease-in-out;
-    }
-
-    /* Hover & Active State - Add Red Accent */
-    .sidebar a:hover,
-    .sidebar a.active {
-        background: rgba(255, 255, 255, 0.15);
-        padding-left: 16px;
-        font-weight: 600;
-    }
-
-        /* Make Icons Red on Hover */
-        .sidebar a:hover i,
-        .sidebar a.active i {
-            color: #e44444; /* Subtle red accent for a professional look */
-        }
-
-/* === Content Adjustments to Prevent Overlap === */
-.content-container {
-    margin-left: 0;
-    transition: margin-left 0.3s ease-in-out;
-    padding: 18px;
-}
-
-/* Move content when sidebar is open */
-.sidebar.active ~ .content-container {
-    margin-left: 210px;
-}
-
-/* === Responsive Adjustments === */
-@media (max-width: 1024px) {
-    .sidebar {
-        max-width: 230px;
-        padding: 14px;
-    }
-
-        .sidebar a {
-            padding: 9px 10px;
-            font-size: 13px;
-        }
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        max-width: 200px;
-        padding: 10px;
-    }
-
-    .content-container {
-        margin-left: 0;
-    }
-
-    .sidebar.active ~ .content-container {
-        margin-left: 0;
-    }
-}
-
-/* === Content Area: Takes More Space Now === */
-.content-container {
-    flex-grow: 1;
-    padding: 25px;
-    background-color: #ffffff;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-/* === Main Content: Adjusted for More Space === */
-.main-content {
-    max-width: 1600px; /* More width for better fit */
-    width: 100%;
-    margin: auto;
-    padding: 20px;
-}
-
-/* === Table Styling: Compact & Readable === */
-.custom-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.08);
-}
-
-    .custom-table th {
-        background: #424242;
-        color: white;
-        font-weight: 600;
-        text-transform: uppercase;
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .custom-table td {
-        padding: 10px;
-        border-bottom: 1px solid #e0e0e0;
-        font-size: 14px;
-    }
-
-    .custom-table tbody tr:hover {
-        background: #f8f9fa;
-    }
-
-/* === General CRM Button Styling === */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px; /* Space between icon and text */
-    padding: 6px 12px; /* Compact size */
-    font-size: 13px; /* Small but readable */
-    font-weight: 500;
-    color: white;
-    background-color: #f8d7da; /* Light Red */
-    border-radius: 4px; /* Slightly rounded for modern UI */
-    text-decoration: none;
-    border: 1px solid #dd2c2f; /* Soft border to match the theme */
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    min-width: 110px; /* Ensures uniform width */
-    box-shadow: none; /* Removed bottom shadow/filling */
-}
-
-    /* === Hover Effect - Slightly Darker Light Red === */
-    .btn:hover {
-        background-color: #dd2c2f; /* Slightly darker light red */
-        border-color: #e48c96; /* Slightly darker border */
-    }
-
-    /* === Icon Styling - Subtle & Clean === */
-    .btn i {
-        font-size: 13px; /* Adjusted icon size */
-        color: #e44444; /* Darker red to match the button */
-    }
-
-/* === Secondary Button - Light Gray === */
-.btn-secondary {
-    background-color: #e9ecef; /* Light gray */
-    color: #495057;
-    border: 1px solid #dee2e6;
-}
-
-    .btn-secondary:hover {
-        background-color: #dee2e6;
-    }
-
-/* === Success Button - Light Green === */
-.btn-success {
-    background-color: #d4edda; /* Light Green */
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-    .btn-success:hover {
-        background-color: #c3e6cb;
-    }
-
-/* === Danger Button - Light Red === */
-.btn-danger {
-    background-color: #f8d7da; /* Light red */
-    color: #721c24;
-    border: 1px solid #dd2c2f;
-}
-
-    .btn-danger:hover {
-        background-color: #dd2c2f;
-        border-color: #e48c96;
-    }
-
-/* === Muted Button - Non-Interactive Elements === */
-.btn-muted {
-    background-color: #f8f9fa; /* Very light gray */
-    color: #424242;
-    cursor: default;
-    opacity: 0.7;
-}
-
-    .btn-muted:hover {
-        background-color: #f8f9fa;
-    }
-
-/* === Mobile Responsiveness: Full-Width on Small Screens === */
-@media (max-width: 768px) {
-    .btn {
-        width: auto; /* Keeps button size flexible on small screens */
-    }
-}
-
-/* === Footer: Fixed at Bottom === */
-footer {
-    color: white;
-    text-align: center;
     padding: 12px;
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-}
-
-    footer a {
-        text-decoration: none;
-    }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-/* === Mobile Optimization: Sidebar Collapses === */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 180px; /* Further reduce sidebar */
-        padding: 10px;
-    }
-
-    .content-container {
-        padding: 15px;
-    }
-
-    .btn {
-        width: 100%;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-/* === Custom styles for the filter container === */
-.filter-container {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-    .filter-container .form-group {
-        margin-bottom: 15px;
-    }
-
-    .filter-container .form-label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        display: block;
-    }
-
-    .filter-container .form-control {
-        border-radius: 4px;
-        border: 1px solid #ced4da;
-        padding: 10px;
-        font-size: 14px;
-    }
-
-/* === Custom styles for the table === */
-.table.custom-table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-    border-collapse: collapse;
-}
-
-    .table.custom-table th,
-    .table.custom-table td {
-        padding: 12px;
-        vertical-align: middle;
-        border-top: 1px solid #dee2e6;
-    }
-
-    .table.custom-table thead th {
-        vertical-align: bottom;
-        border-bottom: 2px solid #dee2e6;
-        background-color: #424242;
-    }
-
-    .table.custom-table tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-
-    .table.custom-table .action-buttons a {
-        margin-right: 5px;
-    }
-
-/* === Custom styles for the member details page === */
-.member-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    transition: transform 0.2s ease;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-
-.member-card-header {
-    padding: 20px;
-    background: #f8f9fa;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.member-avatar {
-    width: 60px;
-    height: 60px;
-    flex-shrink: 0;
-    background: #e9ecef;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6c757d;
-    font-size: 24px;
-}
-
-.member-info {
-    flex-grow: 1;
-}
-
-.member-name {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #424242;
-    font-weight: 600;
-}
-
-.member-type {
-    margin: 4px 0 0;
-    color: #6c757d;
-    font-size: 1rem;
-}
-
-.member-card-content {
-    padding: 20px;
-    flex-grow: 1;
-}
-
-.member-detail {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    font-size: 1rem;
-}
-
-    .member-detail i {
-        color: #6c757d;
-        font-size: 1.2rem;
-    }
-
-.member-card-footer {
-    padding: 16px 20px;
-    border-top: 1px solid #eee;
-    background: #f8f9fa;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.web-link {
-    color: #007bff;
     text-decoration: none;
-}
-
-    .web-link:hover {
-        text-decoration: underline;
-    }
-
-/* === Custom styles for the multi-step form === */
-.form-step {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
-
-    .form-step.active {
-        display: block;
-        opacity: 1;
-    }
-
-.form-navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.add-button {
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-
-.button-1 {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-    .button-1:hover {
-        background-color: #0056b3;
-    }
+.sidebar .nav-link:hover {
+    background-color: #444;
+}
 
-.button-2 {
+/* === Buttons === */
+.btn {
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
     background-color: #6c757d;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-    .button-2:hover {
-        background-color: #5a6268;
+    /* This selector adds left margin whenever one .btn follows another .btn. */
+    .btn + .btn {
+        margin-left: 8px;
     }
 
-/* Custom styles for tooltips */
-.tooltip {
-    z-index: 1050; /* Ensure tooltips are in the foreground */
+
+/* === Table Container === */
+.table-container {
+    max-width: calc(100% - 15rem); /* Adjust table container width */
+    overflow-x: auto;
+    padding: 1rem;
+}
+
+/* === Action Buttons Styling === */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    transition: all 0.3s ease-in-out;
+    border: none;
+}
+
+.btn-sm:hover {
+    background-color: #5a6268;
+}
+
+/* === Sorting Indicators === */
+th.sorted-asc::after,
+th.sorted-desc::after {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+th.sorted-asc::after {
+    content: " ▲";
+}
+
+th.sorted-desc::after {
+    content: " ▼";
+}
+
+/* === Responsive Fixes for Smaller Screens === */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column; /* Stack inputs vertically on small screens */
+        justify-content: center;
+    }
+
+    .search-input,
+    .filter-container select,
+    .filter-container input {
+        max-width: 100%; /* Full width for inputs */
+        margin-bottom: 10px; /* Adds margin between stacked inputs */
+    }
+
+    .sidebar {
+        width: 12rem; /* Adjust width of sidebar */
+    }
+
+    .table-container {
+        max-width: 100%; /* Full width for table */
+    }
+}
+
+
+/* TOOLTIP DO NOT DELETE */
+
+/* Custom Tooltip Styles */
+.tooltip-inner {
+    background-color: #333; /* Background color */
+    color: #fff; /* Text color */
+    font-size: 14px; /* Font size */
+    padding: 10px; /* Padding */
+    border-radius: 5px; /* Border radius */
+}
+
+.tooltip-arrow::before {
+    border-top-color: #333; /* Arrow color */
 }

@@ -1,17 +1,36 @@
-﻿<!-- Index.cshtml -->
-@model CrmTechTitans.ViewModels.DashboardVM
+﻿@model CrmTechTitans.ViewModels.DashboardVM
+
 @section Styles {
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+
+    <!-- Ensures the chart container takes the full width and has a set height -->
+    <style>
+        .chart-container {
+            width: 100%;
+            height: 400px; /* Adjust as needed */
+            position: relative; /* Required for Chart.js responsiveness */
+            margin-top: 1rem; /* Optional spacing */
+        }
+    </style>
 }
+
 @section Scripts {
+    <!-- Include Chart.js, date-fns, and the date adapter -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
+
+    <!-- Your custom JS file that will actually build the chart -->
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
 }
+
 @{
     ViewData["Title"] = "Dashboard Overview";
 }
 
 <div class="main-content">
-    <header class="page-header">
+    <header class="page-header d-flex align-items-center">
+        <img src="~/images/Logo.png" alt="Company Logo" class="company-logo">
         <h1>Member Management Dashboard</h1>
     </header>
 
@@ -27,14 +46,14 @@
             </div>
         </a>
 
-        <!-- Link to Membership Types -->
+        <!-- Link to Municipalities -->
         <a href="/Address/Index" class="link-card">
             <div class="link-icon">
                 <i class="fas fa-id-card"></i>
             </div>
             <div class="link-info">
                 <h3>Municipalities</h3>
-                <p>View and manage Members By Municipalities </p>
+                <p>View and manage Members By Municipalities</p>
             </div>
         </a>
 
@@ -60,5 +79,183 @@
             </div>
         </a>
     </div>
+
+    <!-- If you really need two .main-content divs, keep both; if not, remove one. -->
+    <div class="main-content">
+        <header class="page-header">
+            <h1>Member Admin Center</h1>
+            <div class="dashboard-tabs" id="dashboardTabs">
+                <button class="tab-btn active" data-tab="overview">Overview</button>
+                <button class="tab-btn" data-tab="membership">Membership Types</button>
+                <button class="tab-btn" data-tab="opportunities">Opportunities</button>
+            </div>
+        </header>
+
+        <section class="tab-content active" id="overview">
+            <div class="metrics-grid">
+                <!-- Total Members Card -->
+                <div class="metric-card accent-blue">
+                    <div class="metric-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Total Members</h3>
+                        <span>@(Model.MemberCountSummary?.TotalMembers ?? 0)</span>
+                    </div>
+                </div>
+
+                <!-- GoodStanding Members Card -->
+                <div class="metric-card accent-green">
+                    <div class="metric-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>GoodStanding Members</h3>
+                        <span>@(Model.MemberCountSummary?.GoodStanding ?? 0)</span>
+                    </div>
+                </div>
+
+                <!-- Outstanding Members Card -->
+                <div class="metric-card accent-red">
+                    <div class="metric-icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>OutStanding Members</h3>
+                        <span>@(Model.MemberCountSummary?.OutStanding ?? 0)</span>
+                    </div>
+                </div>
+
+                <!-- Cancelled Members Card -->
+                <div class="metric-card accent-red">
+                    <div class="metric-icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Cancelled Members</h3>
+                        <span>@(Model.MemberCountSummary?.Cancelled ?? 0)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Chart Container -->
+            <div class="chart-container">
+                <canvas id="membersPerMonthChart"></canvas>
+            </div>
+        </section>
+
+        <section class="tab-content" id="membership">
+            <div class="metrics-grid">
+                <!-- Membership Type Cards -->
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Associate</h3>
+                        <span>@Model.MembershipTypeSummary.AssociateCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Chamber Associate</h3>
+                        <span>@Model.MembershipTypeSummary.ChamberAssociateCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Non-Local Industrial</h3>
+                        <span>@Model.MembershipTypeSummary.NonLocalIndustrialCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Government Association</h3>
+                        <span>@Model.MembershipTypeSummary.GovernmentAssociationCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Local</h3>
+                        <span>@Model.MembershipTypeSummary.LocalCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Others</h3>
+                        <span>@Model.MembershipTypeSummary.OtherCount</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tab-content" id="opportunities">
+            <div class="metrics-grid">
+                <!-- Opportunity Status Cards -->
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Qualification</h3>
+                        <span>@Model.OpportunityCountSummary.QualificationCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Negotiating</h3>
+                        <span>@Model.OpportunityCountSummary.NegotiationCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Closed - New Members</h3>
+                        <span>@Model.OpportunityCountSummary.ClosedNewMembersCount</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Closed - Not Interested</h3>
+                        <span>@Model.OpportunityCountSummary.ClosedNotInterestedCount</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 
+<!-- Pass the data to JavaScript with ISO date strings -->
+<script>
+    window.memberCountOverTime = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.MemberCountOverTime.Select(m => new
+        {
+            Date = m.Date.ToString("yyyy-MM-dd"),
+            m.Count
+        })
+    ));
+    console.log("Member Count Over Time Data:", window.memberCountOverTime);
+</script>

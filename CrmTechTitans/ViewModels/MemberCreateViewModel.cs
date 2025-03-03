@@ -1,4 +1,5 @@
 ﻿using CrmTechTitans.Models.Enumerations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,10 @@ namespace CrmTechTitans.Models.ViewModels
 
         [Display(Name = "Membership Type")]
         [Required(ErrorMessage = "Membership Type is required")]
-        public MembershipType MembershipType { get; set; }
+        public List<int> SelectedMembershipTypeIDs { get; set; } = new List<int>();// Stores the selected MembershipType ID
+
+		public List<MembershipTypeViewModel> AvailableMembershipTypes { get; set; } = new List<MembershipTypeViewModel>(); // List for dropdown
+
 
         [Display(Name = "Contacted By")]
         [StringLength(100, ErrorMessage = "Contacted By cannot exceed 100 characters")]
@@ -47,6 +51,10 @@ namespace CrmTechTitans.Models.ViewModels
         [Display(Name = "Membership Status")]
         [Required(ErrorMessage = "Membership Status is required")]
         public MembershipStatus MembershipStatus { get; set; }
+
+        public MemberPhoto? MemberPhoto { get; set; }
+
+        public MemberThumbnail? MemberThumbnail { get; set; }
 
         // Address Properties
         public List<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>();
@@ -114,6 +122,10 @@ namespace CrmTechTitans.Models.ViewModels
         [Display(Name = "Contact Type")]
         [Required(ErrorMessage = "Contact Type is required")]
         public ContactType ContactType { get; set; }
+
+        public ContactPhoto? ContactPhoto { get; set; }
+
+        public ContactThumbnail? ContactThumbnail { get; set; }
     }
 
     public class IndustryViewModel
@@ -129,4 +141,15 @@ namespace CrmTechTitans.Models.ViewModels
         [Required(ErrorMessage = "NAICS Code is required")]
         public int NAICS { get; set; }
     }
+
+  
+     public class MembershipTypeViewModel
+      {
+                public int ID { get; set; }
+
+                [Display(Name = "Membership Type")]
+                public string Name { get; set; }
+      }
+    
+
 }

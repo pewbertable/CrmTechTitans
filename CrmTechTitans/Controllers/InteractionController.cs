@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CrmTechTitans.Data;
 using CrmTechTitans.Models;
@@ -22,11 +19,12 @@ namespace CrmTechTitans.Controllers
         // GET: Interaction
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Interactions.Include(c => c.InteractionMembers)
-            .ThenInclude(mc => mc.Member)
-
-            .ToListAsync());
-        
+            var interactions = await _context.Interactions
+                .Include(i => i.Contact)
+                .Include(i => i.InteractionMembers)
+                    .ThenInclude(im => im.Member)
+                .ToListAsync();
+            return View(interactions);
         }
 
         // GET: Interaction/Details/5
@@ -38,8 +36,9 @@ namespace CrmTechTitans.Controllers
             }
 
             var interaction = await _context.Interactions
-                .Include(c => c.InteractionMembers)
-            .ThenInclude(mc => mc.Member)
+                .Include(i => i.Contact)
+                .Include(i => i.InteractionMembers)
+                    .ThenInclude(im => im.Member)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (interaction == null)
             {
@@ -50,17 +49,19 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Interaction/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Contacts = await _context.Contacts
+                .OrderBy(c => c.FirstName)
+                .ThenBy(c => c.LastName)
+                .ToListAsync();
             return View();
         }
 
         // POST: Interaction/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,interaction,Date,Person")] Interaction interaction)
+        public async Task<IActionResult> Create([Bind("Id,InteractionDetails,Date,ContactId")] Interaction interaction)
         {
             if (ModelState.IsValid)
             {
@@ -68,6 +69,7 @@ namespace CrmTechTitans.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Contacts = await _context.Contacts.ToListAsync();
             return View(interaction);
         }
 
@@ -84,15 +86,17 @@ namespace CrmTechTitans.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Contacts = await _context.Contacts
+                .OrderBy(c => c.FirstName)
+                .ThenBy(c => c.LastName)
+                .ToListAsync();
             return View(interaction);
         }
 
         // POST: Interaction/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,interaction,Date,Person")] Interaction interaction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,InteractionDetails,Date,ContactId")] Interaction interaction)
         {
             if (id != interaction.Id)
             {
@@ -106,11 +110,10 @@ namespace CrmTechTitans.Controllers
                     _context.Update(interaction);
                     await _context.SaveChangesAsync();
                     TempData["message"] = "Interaction edited successfully";
-
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    TempData["errMessage"] = "An error occured. Failed to edit the interaction.";
+                    TempData["errMessage"] = "An error occurred. Failed to edit the interaction.";
                     if (!InteractionExists(interaction.Id))
                     {
                         return NotFound();
@@ -122,6 +125,7 @@ namespace CrmTechTitans.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Contacts = await _context.Contacts.ToListAsync();
             return View(interaction);
         }
 
@@ -134,6 +138,7 @@ namespace CrmTechTitans.Controllers
             }
 
             var interaction = await _context.Interactions
+                .Include(i => i.Contact)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (interaction == null)
             {
@@ -142,6 +147,7 @@ namespace CrmTechTitans.Controllers
 
             return View(interaction);
         }
+
 
         // POST: Interaction/Delete/5
         [HttpPost, ActionName("Delete")]

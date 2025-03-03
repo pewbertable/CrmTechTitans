@@ -1,4 +1,4 @@
-@using CrmTechTitans.Models.Enumerations
+﻿@using CrmTechTitans.Models.Enumerations
 @model IEnumerable<CrmTechTitans.Models.Opportunity>
 
 @{
@@ -8,86 +8,173 @@
 
 <partial name="_Notification" />
 
-
 <div class="crm-container">
-    <!-- Main Content -->
     <div class="main-content">
         <header class="page-header">
             <h1>All Opportunities</h1>
-            <!-- <div class="d-flex align-items-center gap-3">
-                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system">
+            <div class="d-flex align-items-center gap-3">
+                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new Opportunity to the system">
                     <i class="fas fa-user-plus"></i> Create New Opportunity
                 </a>
-            </div>-->
-
+            </div>
         </header>
 
+        <!-- Filter Section -->
         <div class="filter-container">
-            <!-- Filter Inputs -->
-                <div class="row">
-                    <!-- Status Filter -->
-                    <div class="col-md-4">
-                        <label for="statusFilter">Filter by Status:</label>
-                        <select id="statusFilter" class="form-control">
-                            <option value="">All</option>
-                            @foreach (var status in Enum.GetValues(typeof(Status)))
-                            {
-                                <option value="@status">@status</option>
-                            }
-                        </select>
-                    </div>
-                    <p></p>
-                    <!-- Priority Filter -->
-                    <div class="col-md-4">
-                        <label for="priorityFilter">Filter by Priority:</label>
-                        <select id="priorityFilter" class="form-control">
-                            <option value="">All</option>
-                            @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
-                            {
-                                <option value="@priority">@priority</option>
-                            }
-                        </select>
-                    </div>
-
-                </div>
+            <!-- Filter by Status -->
+            <div class="col-md-4">
+                <label for="statusFilter" class="filter-label">Filter by Status:</label>
+                <select id="statusFilter" class="form-control search-input">
+                    <option value="">All</option>
+                    @foreach (var status in Enum.GetValues(typeof(Status)))
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
             </div>
 
-            <!-- Opportunities Table -->
-            <table class="table custom-table" id="opportunitiesTable">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Priority</th>
-                        <th class="text-center"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
+            <!-- Filter by Priority -->
+            <div class="col-md-4">
+                <label for="priorityFilter" class="filter-label">Filter by Priority:</label>
+                <select id="priorityFilter" class="form-control search-input">
+                    <option value="">All</option>
+                    @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
                     {
-                        <tr>
-                            <td>@item.Title</td>
-                            <td>@item.Status</td>
-                            <td>@item.Priority</td>
-                            <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">
-                                    Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
+                        <option value="@priority">@priority</option>
                     }
-                </tbody>
-            </table>
-        </section>
+                </select>
+            </div>
+        </div>
+
+        <!-- Opportunities Table -->
+        <table class="table custom-table" id="opportunitiesTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Title</th>
+                    <th onclick="sortTable(1)">Status</th>
+                    <th onclick="sortTable(2)">Priority</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Status</td>
+                        <td>@item.Priority</td>
+                        <td class="text-center action-buttons">
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Records per page -->
+        <div class="col-md-4">
+            <label for="recordsPerPage">Records per page:</label>
+            <select id="recordsPerPage" class="form-control">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="paginationControls" class="pagination">
+            <button id="prevPage" class="btn btn-primary">Previous</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" class="btn btn-primary">Next</button>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
+               $(document).ready(function () {
+            var currentPage = 1;
+            var recordsPerPage = parseInt($('#recordsPerPage').val());
+            var totalRecords = $('#opportunitiesTable tbody tr').length;
+            var totalPages = Math.ceil(totalRecords / recordsPerPage);
+
+            // Function to get visible rows (rows not hidden by filter)
+            function getVisibleRows() {
+                var visibleRows = $('#opportunitiesTable tbody tr').filter(function () {
+                    return $(this).css('display') !== 'none';
+                });
+
+                // If no filters are applied, return all rows
+                var statusFilter = $('#statusFilter').val().toLowerCase();
+                var priorityFilter = $('#priorityFilter').val().toLowerCase();
+
+                if (statusFilter === "" && priorityFilter === "") {
+                    return $('#opportunitiesTable tbody tr');
+                }
+
+                return visibleRows;
+            }
+
+            // Function to show the current page
+            function showPage(page) {
+                var visibleRows = getVisibleRows();
+                var startIndex = (page - 1) * recordsPerPage;
+                var endIndex = startIndex + recordsPerPage;
+
+                // Hide all rows first
+                $('#opportunitiesTable tbody tr').hide();
+
+                // Show only the rows for the current page
+                visibleRows.slice(startIndex, endIndex).show();
+
+                // Update page info
+                $('#pageInfo').text(`Page ${page} of ${totalPages}`);
+
+                // Enable/disable pagination buttons
+                $('#prevPage').prop('disabled', page === 1);
+                $('#nextPage').prop('disabled', page === totalPages);
+            }
+
+            // Function to update pagination
+            function updatePagination() {
+                var visibleRows = getVisibleRows();
+                totalRecords = visibleRows.length;
+                totalPages = Math.ceil(totalRecords / recordsPerPage);
+
+                if (currentPage > totalPages) {
+                    currentPage = totalPages > 0 ? totalPages : 1;
+                }
+
+                showPage(currentPage);
+            }
+
+            // Event listener for records per page dropdown
+            $('#recordsPerPage').on('change', function () {
+                recordsPerPage = parseInt($(this).val());
+                currentPage = 1; // Reset to the first page
+                updatePagination();
+            });
+
+            // Event listener for previous page button
+            $('#prevPage').on('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    console.log("Previous Page:", currentPage); // Debugging
+                    showPage(currentPage);
+                }
+            });
+
+            // Event listener for next page button
+            $('#nextPage').on('click', function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    console.log("Next Page:", currentPage); // Debugging
+                    showPage(currentPage);
+                }
+            });
+
             // Filter function
             function filterTable() {
                 var statusFilter = $('#statusFilter').val().toLowerCase();
@@ -106,17 +193,104 @@
                         $(this).hide();
                     }
                 });
+
+                // Reset pagination after filtering
+                currentPage = 1;
+                updatePagination();
             }
 
             // Attach filter function to input events
             $('#statusFilter, #priorityFilter').on('change', filterTable);
 
-            // Reset filters
-            $('#resetFilters').on('click', function (e) {
-                e.preventDefault(); // Prevent form submission
-                $('#statusFilter, #priorityFilter').val(''); // Clear filter values
-                filterTable(); // Reapply filtering to show all rows
-            });
+            // Initial page load
+            updatePagination();
         });
+         sortTable(0, "asc");
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("opportunitiesTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
     </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+            .pagination button {
+                margin: 0 5px;
+            }
+
+        #pageInfo {
+            margin: 0 10px;
+            line-height: 2;
+        }
+    </style>
 }

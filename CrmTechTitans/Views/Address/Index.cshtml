@@ -4,40 +4,39 @@
     ViewData["Title"] = "All Addresses";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <partial name="_Notification" />
 
-
 <div class="crm-container">
-    <!-- Main Content -->
     <div class="main-content">
         <header class="page-header">
             <h1>All Municipalities</h1>
         </header>
+        <p></p>
 
         <!-- Filter Section -->
         <div class="filter-container">
-            <div class="row">
-                <!-- Filter by Municipality -->
-                <div class="col-md-4">
-                    <label for="municipalityFilter" class="filter-label">Search by Municipality:</label>
-                    <input type="text" id="municipalityFilter" class="form-control search-input" placeholder="Enter municipality name">
-                </div>
+            <!-- Filter by Municipality -->
+            <div class="col-md-4">
+                <label for="municipalityFilter" class="filter-label">Search by Municipality:</label>
+                <input type="text" id="municipalityFilter" class="form-control search-input" placeholder="Enter municipality name">
+            </div>
 
-                <!-- Filter by Province -->
-                <div class="col-md-4">
-                    <label for="provinceFilter" class="filter-label">Search by Province:</label>
-                    <input type="text" id="provinceFilter" class="form-control search-input" placeholder="Enter province name">
-                </div>
+            <!-- Filter by Province -->
+            <div class="col-md-4">
+                <label for="provinceFilter" class="filter-label">Search by Province:</label>
+                <input type="text" id="provinceFilter" class="form-control search-input" placeholder="Enter province name">
             </div>
         </div>
 
+        <!-- Addresses Table -->
         <section class="members-table-container">
             <table class="table custom-table" id="addressTable">
                 <thead>
                     <tr>
-                        <th>Members</th>
-                        <th>Municipality</th>
-                        <th>Province</th>
+                        <th onclick="sortTable(0)">Members</th>
+                        <th onclick="sortTable(1)">Municipality</th>
+                        <th onclick="sortTable(2)">Province</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -63,37 +62,248 @@
                 </tbody>
             </table>
         </section>
+
+        <!-- Records per page -->
+        <div class="col-md-4">
+            <label for="recordsPerPage">Records per page:</label>
+            <select id="recordsPerPage" class="form-control">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="paginationControls" class="pagination">
+            <button id="prevPage" class="btn btn-primary">Previous</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" class="btn btn-primary">Next</button>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Filter function
-            function filterTable() {
+            var currentPage = 1;
+            var recordsPerPage = parseInt($('#recordsPerPage').val());
+
+            // Function to get visible rows (rows not hidden by filter)
+            function getVisibleRows() {
                 var municipalityFilter = $('#municipalityFilter').val().toLowerCase();
                 var provinceFilter = $('#provinceFilter').val().toLowerCase();
 
-                $('#addressTable tbody tr').each(function () {
+                var visibleRows = $('#addressTable tbody tr').filter(function () {
                     var municipalityText = $(this).find('td:nth-child(2)').text().toLowerCase();
                     var provinceText = $(this).find('td:nth-child(3)').text().toLowerCase();
 
                     var municipalityMatch = municipalityFilter === "" || municipalityText.includes(municipalityFilter);
                     var provinceMatch = provinceFilter === "" || provinceText.includes(provinceFilter);
 
-                    $(this).toggle(municipalityMatch && provinceMatch);
+                    return municipalityMatch && provinceMatch;
                 });
+
+                return visibleRows;
+            }
+
+            // Function to show the current page
+            function showPage(page) {
+                var visibleRows = getVisibleRows();
+                var totalPages = Math.ceil(visibleRows.length / recordsPerPage);
+
+                // Ensure currentPage is within valid range
+                if (page < 1) page = 1;
+                if (page > totalPages) page = totalPages;
+
+                var startIndex = (page - 1) * recordsPerPage;
+                var endIndex = startIndex + recordsPerPage;
+
+                // Hide all rows first
+                $('#addressTable tbody tr').hide();
+
+                // Show only the rows for the current page
+                visibleRows.slice(startIndex, endIndex).show();
+
+                // Update page info
+                $('#pageInfo').text(`Page ${page} of ${totalPages}`);
+
+                // Enable/disable pagination buttons
+                $('#prevPage').prop('disabled', page === 1);
+                $('#nextPage').prop('disabled', page === totalPages);
+            }
+
+            // Function to update pagination
+            function updatePagination() {
+                var visibleRows = getVisibleRows();
+                var totalPages = Math.ceil(visibleRows.length / recordsPerPage);
+
+                if (currentPage > totalPages) {
+                    currentPage = totalPages > 0 ? totalPages : 1;
+                }
+
+                showPage(currentPage);
+            }
+
+            // Event listener for records per page dropdown
+            $('#recordsPerPage').on('change', function () {
+                recordsPerPage = parseInt($(this).val());
+                currentPage = 1; // Reset to the first page
+                updatePagination();
+            });
+
+            // Event listener for previous page button
+            $('#prevPage').on('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            // Event listener for next page button
+            $('#nextPage').on('click', function () {
+                var visibleRows = getVisibleRows();
+                var totalPages = Math.ceil(visibleRows.length / recordsPerPage);
+
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // Filter function
+            function filterTable() {
+                currentPage = 1; // Reset to the first page
+                updatePagination();
             }
 
             // Attach filter function to input events
             $('#municipalityFilter, #provinceFilter').on('input', filterTable);
 
-            // Reset filters
-            $('#resetFilters').on('click', function () {
-                $('#municipalityFilter').val('');
-                $('#provinceFilter').val('');
-                filterTable();
-            });
+            // Initial page load
+            updatePagination();
         });
+         sortTable(1, "asc");
+
+        // Sorting function
+        function sortTable(columnIndex, initialDirection = "asc") {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("addressTable");
+            switching = true;
+            dir = initialDirection; // Default sorting direction
+
+            // Determine the current sorting direction
+            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
+                dir = "desc";
+            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
+                dir = "asc";
+            }
+
+            // Remove sorting classes from all headers
+            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
+                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
+            }
+
+            // Add sorting class to the clicked header
+            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
+
+            // Perform sorting
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                    if (dir === "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
     </script>
+
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            list-style: none; /* Ensures a clean list-style reset */
+            padding: 0; /* Removes default padding on list */
+        }
+
+            .pagination li {
+                margin: 0 5px; /* Space between page links */
+            }
+
+                .pagination li a,
+                .pagination li span {
+                    /* Base link styling */
+                    display: inline-block;
+                    padding: 6px 12px;
+                    color: #6c757d; /* Gray text */
+                    background-color: #f8f9fa; /* Light gray background */
+                    border: 1px solid #d1d1d1; /* Subtle border */
+                    border-radius: 4px;
+                    text-decoration: none;
+                    transition: background-color 0.2s ease;
+                }
+
+                    .pagination li a:hover {
+                        background-color: #e2e3e5; /* Slightly darker hover background */
+                        text-decoration: none;
+                    }
+
+                .pagination li.active a,
+                .pagination li.active span {
+                    /* Active page styling */
+                    background-color: #6c757d; /* Darker gray */
+                    color: #fff; /* White text */
+                    border-color: #6c757d; /* Match background */
+                    cursor: default; /* Doesn’t look clickable */
+                }
+
+
+            .pagination button {
+                margin: 0 5px;
+            }
+
+        #pageInfo {
+            margin: 0 10px;
+            line-height: 2;
+        }
+    </style>
 }

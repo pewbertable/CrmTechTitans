@@ -21,12 +21,8 @@ namespace CrmTechTitans.Controllers
         }
 
         // GET: Industry
-        public async Task<IActionResult> Index(string? SearchString, string? NAICSCode,
-     string? actionButton, string sortDirection = "asc", string sortField = "Name")
+        public async Task<IActionResult> Index(string? SearchString, string? NAICSCode)
         {
-            // List of sort options
-            string[] sortOptions = new[] { "Name", "NAICS" };
-
             // Count the number of filters applied
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
@@ -56,40 +52,9 @@ namespace CrmTechTitans.Controllers
                 ViewData["ShowFilter"] = "show";
             }
 
-            // Sorting logic
-            if (!String.IsNullOrEmpty(actionButton))
-            {
-                if (sortOptions.Contains(actionButton))
-                {
-                    if (actionButton == sortField)
-                    {
-                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
-                    }
-                    sortField = actionButton;
-                }
-            }
-
-            // Apply Sorting
-            if (sortField == "NAICS")
-            {
-                industries = sortDirection == "asc"
-                    ? industries.OrderBy(i => i.NAICS).ThenBy(i => i.Name)
-                    : industries.OrderByDescending(i => i.NAICS).ThenByDescending(i => i.Name);
-            }
-            else // Default: Sorting by Industry Name
-            {
-                industries = sortDirection == "asc"
-                    ? industries.OrderBy(i => i.Name).ThenBy(i => i.NAICS)
-                    : industries.OrderByDescending(i => i.Name).ThenByDescending(i => i.NAICS);
-            }
-
-            // Set sort for next request
-            ViewData["sortField"] = sortField;
-            ViewData["sortDirection"] = sortDirection;
-
             // Populate NAICS Code dropdown
             ViewBag.NAICSCodeList = new SelectList(await _context.Industries
-                .Select(i => i.NAICS.ToString()) 
+                .Select(i => i.NAICS.ToString())
                 .Distinct()
                 .OrderBy(n => n)
                 .ToListAsync());

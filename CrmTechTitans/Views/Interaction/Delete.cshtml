@@ -25,21 +25,34 @@
                 <i class="fas fa-comment"></i>
                 <span>
                     <strong>Interaction:</strong>
-                    @Html.DisplayFor(model => model.interaction)
+                    @Html.DisplayFor(model => model.InteractionDetails)
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-calendar-alt"></i>
+                <span>
+                    <strong>Date:</strong>
+                    @Model.Date.ToString("g") <!-- General date/time pattern -->
+                </span>
+            </div>
+            <div class="member-detail">
+                <i class="fas fa-user-tie"></i>
+                <span>
+                    <strong>Contacted Person:</strong>
+                    @Model.Contact?.FullFormalName ?? "N/A"
                 </span>
             </div>
         </div>
         <div class="member-card-footer">
-            <form asp-action="Delete">
+            <form asp-action="Delete" method="post">
                 <input type="hidden" asp-for="Id" />
-                <button type="submit" class="button-2">
+                <button type="submit" class="button-2 btn btn-danger">
                     <i class="fas fa-trash-alt"></i> Delete
                 </button>
+                <a asp-action="Index" class="button-1 btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
             </form>
-            <a asp-action="Index" class="button-1">
-                <i class="fas fa-arrow-left"></i> Cancel
-            </a>
         </div>
     </div>
 </div>
-

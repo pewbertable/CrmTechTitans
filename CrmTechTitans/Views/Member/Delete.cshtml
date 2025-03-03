@@ -14,11 +14,36 @@
     <div class="member-card">
         <div class="member-card-header">
             <div class="member-avatar">
-                <i class="fas fa-user-times"></i>
+               @{
+        if (Model.MemberPhoto?.Content != null)
+        {
+            @:<div class="member-photo">
+                string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
+                string imageSrc = string.Format("data:" + Model.MemberPhoto.MimeType + ";base64,{0}", imageBase64);
+                <img src="@imageSrc" alt="Profile Picture of @Model.MemberName" title="Profile Picture of @Model.MemberName" class="img-fluid rounded" />
+            @:</div><hr />
+					}
+					else
+					{
+						<i class="fas fa-user"></i>
+					}
+				}
+				
             </div>
             <div class="member-info">
                 <h2 class="member-name">@Model.MemberName</h2>
-                <p class="member-type">@Model.MembershipType</p>
+               <p class="member-type">
+                    Membership Types: 
+                    @if (Model.MemberMembershipTypes.Any())
+                    {
+                        @string.Join(", ", Model.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+                    }
+                    else
+                    {
+                        <span>No Membership Type Assigned</span>
+                    }
+                </p>
+
             </div>
         </div>
         <div class="member-card-content">

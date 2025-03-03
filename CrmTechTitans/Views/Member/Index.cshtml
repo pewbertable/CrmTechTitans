@@ -1,209 +1,299 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Member>
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "All Members";
 }
 <partial name="_Notification" />
 
-<div class="main-content">
-    <!-- Page Title -->
-    <header class="page-header d-flex justify-content-between align-items-center">
-        <div>
-            <h1>All Members</h1>
-        </div>
-
+<div class="container-fluid">
+    <header class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1>All Members</h1>
         <div class="d-flex align-items-center gap-3">
-             <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new member to the system"> 
-                 <i class="fas fa-user-plus"></i> Create New Member 
-             </a> 
-
-            <!-- View Toggle -->
-            <div class="view-toggle d-flex align-items-center">
-                <button class="btn btn-secondary active me-2" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button class="btn btn-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
-                    <i class="fas fa-table"></i>
-                </button>
-            </div>
+            <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new member to the system">
+                <i class="fas fa-user-plus"></i> Create New Member
+            </a>
+            <button id="exportExcelBtn" class="btn btn-success" data-bs-toggle="tooltip" title="Export members to Excel">
+                <i class="fas fa-file-excel"></i> Export to Excel
+            </button>
+            @* Card view temp disabled *@
+            @* <div class="btn-group" role="group" aria-label="View toggle"> *@
+            @*     <button type="button" class="btn btn-outline-secondary active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View"> *@
+            @*         <i class="fas fa-th-large"></i> *@
+            @*     </button> *@
+            @*     <button type="button" class="btn btn-outline-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View"> *@
+            @*         <i class="fas fa-table"></i> *@
+            @*     </button> *@
+            @* </div> *@
         </div>
     </header>
 
     <section class="filter-container bg-light p-3 rounded mb-4">
-        <div class="row">
-            <!-- Search by Member Name -->
-            <div class="col-md-6 mb-3">
-                <label for="searchString" class="form-label">Search by Member Name</label>
-                <input type="text" id="searchString" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member’s name to search">
+        <div class="filter-row d-flex align-items-end gap-3">
+            <div class="filter-item">
+                <label for="memberNameFilter" class="form-label">Search by Member Name</label>
+                <input type="text" id="memberNameFilter" class="form-control" placeholder="Enter member name">
             </div>
-
-            <!-- Filter by Member Status -->
-            <div class="col-md-6 mb-3">
-                <label for="statusFilter" class="form-label">Filter by Member Status</label>
-                <select id="statusFilter" class="form-control" data-bs-toggle="tooltip" title="Filter members based on status">
+            <div class="filter-item">
+                <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
+                <select id="membershipStatusFilter" class="form-select">
                     <option value="">All Statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="GoodStanding">Good Standing</option>
+                    <option value="OutStanding">Out Standing</option>
+                    <option value="Cancelled">Cancelled</option>
                 </select>
             </div>
         </div>
     </section>
 
-    <!-- Sorting Buttons -->
-    <div class="btn-group mb-4">
-        <button id="sortByName" class="btn btn-secondary" data-bs-toggle="tooltip" title="Sort members by name">Sort by Name</button>
-        <button id="sortByStatus" class="btn btn-secondary" data-bs-toggle="tooltip" title="Sort members by status">Sort by Status</button>
-    </div>
-
-    <!-- Card View -->
     <section class="members-grid" id="cards-view">
         @foreach (var item in Model)
         {
-            <div class="member-card" data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
-                <div class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
-                    @item.MembershipStatus
-                </div>
-                <div class="card-header">
-                    <div class="company-logo">
+            <div class="member-card" data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
+                <div class="card-logo">
+                    @if (item.MemberThumbnail?.Content != null)
+                    {
+                        string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
+                        string imageSrc = string.Format("data:{0};base64,{1}", item.MemberThumbnail.MimeType, imageBase64);
+                        <img src="@imageSrc" alt="@item.MemberName Logo" class="img-fluid rounded" />
+                    }
+                    else
+                    {
                         <i class="fas fa-building"></i>
-                    </div>
-                    <div class="company-info">
-                        <h2 class="company-name">@item.MemberName</h2>
-                        <p class="membership-type">@item.MembershipType</p>
-                    </div>
+                    }
                 </div>
-
                 <div class="card-content">
-                    <div class="data-grid">
-                        <div class="data-item">
+                    <div class="card-header">
+                        <h2 class="company-name">@item.MemberName</h2>
+                        <span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
+                            @item.MembershipStatus
+                        </span>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
                             <i class="fas fa-users"></i>
-                            <div>
-                                <span class="data-label">Company Size</span>
-                                <span class="data-value">@item.CompanySize employees</span>
-                            </div>
+                            <span>@item.CompanySize</span>
                         </div>
-                        <div class="data-item">
+                        <div class="detail-item">
                             <i class="fas fa-calendar-alt"></i>
-                            <div>
-                                <span class="data-label">Member Since</span>
-                                <span class="data-value">@item.MemberSince.ToString("MMM yyyy")</span>
-                            </div>
+                            <span>Member since @item.MemberSince.ToString("MMM yyyy")</span>
                         </div>
+                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
+                        {
+                            <div class="detail-item">
+                                <i class="fas fa-globe"></i>
+                                <a href="@item.CompanyWebsite" target="_blank">Website</a>
+                            </div>
+                        }
+                    </div>
+                    <div class="membership-types">
+                        <h3>Membership Types:</h3>
+                        <p>
+                            @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
+                            {
+                                @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+                            }
+                            else
+                            {
+                                <span>No Membership Type Assigned</span>
+                            }
+                        </p>
                     </div>
                 </div>
-
-                <div class="card-footer">
-                    <div class="card-actions">
-                        <a href="#" class="btn btn-link text-danger" data-bs-toggle="tooltip" title="Archive this member">
-                            <i class="fas fa-archive"></i> Archive
-                        </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-link text-primary" data-bs-toggle="tooltip" title="View member details">
-                            <i class="fas fa-info-circle"></i> Details
-                        </a>
-                    </div>
+                <div class="card-actions">
+                    <a href="javascript:void(0);"
+                       class="btn btn-outline-danger btn-sm archive-btn"
+                       data-id="@item.ID"
+                       data-status="@item.MembershipStatus.ToString()"
+                       data-bs-toggle="tooltip"
+                       title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive this member" : "Archive this member")">
+                        <!-- Dynamically change the icon based on the status -->
+                        <i class="fas fa-archive @(item.MembershipStatus == MembershipStatus.Cancelled ? "fa-undo" : "fa-archive")"></i>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View member details">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
                 </div>
             </div>
         }
     </section>
 
-    <!-- Table View -->
     <section class="table-responsive" id="table-view" style="display: none;">
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Company Size</th>
-                    <th>Member Since</th>
-                    <th>Status</th>
+                    <th>Logo</th>
+                    <th onclick="sortTable(1)">Name</th>
+                    <th onclick="sortTable(2)">Type</th>
+                    <th onclick="sortTable(3)">Company Size</th>
+                    <th onclick="sortTable(4)">Member Since</th>
+                    <th onclick="sortTable(5)">Status</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr data-name="@item.MemberName" data-status="@item.MembershipStatus.ToString().ToLower()">
+                    <tr data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
+                        <td>
+                            @if (item.MemberThumbnail?.Content != null)
+                            {
+                                string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
+                                string imageSrc = string.Format("data:{0};base64,{1}", item.MemberThumbnail.MimeType, imageBase64);
+                                <img src="@imageSrc" alt="@item.MemberName Logo" class="img-fluid rounded" style="max-width: 50px;" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-building"></i>
+                            }
+                        </td>
                         <td>@item.MemberName</td>
-                        <td>@item.MembershipType</td>
+                        <td>
+                            @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
+                            {
+                                @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+                            }
+                            else
+                            {
+                                <span>No Membership Type Assigned</span>
+                            }
+                        </td>
                         <td>@item.CompanySize</td>
                         <td>@item.MemberSince.ToShortDateString()</td>
-                        <td><span class="status-tag">@item.MembershipStatus</span></td>
-                        <td class="text-center action-buttons">
-                          @*  <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit member details">Edit</a>*@
-                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View member details">Details</a>
+                        <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View member details">Details</a>
+                            <a href="javascript:void(0);"
+                               class="btn btn-sm archive-btn @(item.MembershipStatus == MembershipStatus.Cancelled ? "btn-success" : "btn-danger")"
+                               data-id="@item.ID"
+                               data-status="@item.MembershipStatus.ToString()"
+                               data-bs-toggle="tooltip"
+                               title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive Member" : "Archive Member")">
+                                @(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive" : "Archive")
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </section>
+
+    <!-- Pagination Controls -->
+    <div class="row mt-4">
+        <!-- Records per page -->
+        <div class="col-md-4">
+            <label for="recordsPerPage">Records per page:</label>
+            <select id="recordsPerPage" class="form-control">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+        <!-- Pagination Controls -->
+        <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center">
+            <button id="prevPage" class="btn btn-primary me-2">Previous</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" class="btn btn-primary ms-2">Next</button>
+        </div>
+    </div>
+</div>
+
+<!-- Excel Export Modal -->
+<div class="modal fade" id="excelExportModal" tabindex="-1" aria-labelledby="excelExportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excelExportModalLabel">Export Members to Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="downloadForm" method="post" asp-action="DownloadMembers">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Select Members:</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="selectAllMembers" name="DownloadAll" value="true">
+                                <label class="form-check-label" for="selectAllMembers">Select All Members</label>
+                            </div>
+                            <div id="memberList" style="max-height: 200px; overflow-y: auto;">
+                                @foreach (var member in Model)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input member-checkbox" type="checkbox" name="SelectedMemberIds" value="@member.ID" id="member-@member.ID">
+                                        <label class="form-check-label" for="member-@member.ID">@member.MemberName</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Select Fields:</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="MemberName" id="field-MemberName" checked>
+                                <label class="form-check-label" for="field-MemberName">Member Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="CompanySize" id="field-CompanySize">
+                                <label class="form-check-label" for="field-CompanySize">Company Size</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="Website" id="field-Website">
+                                <label class="form-check-label" for="field-Website">Website</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="MembershipStatus" id="field-MembershipStatus">
+                                <label class="form-check-label" for="field-MembershipStatus">Membership Status</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="MemberSince" id="field-MemberSince">
+                                <label class="form-check-label" for="field-MemberSince">Member Since</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="Notes" id="field-Notes">
+                                <label class="form-check-label" for="field-Notes">Notes</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="downloadExcelBtn">Download Excel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const preferredView = localStorage.getItem('preferredView') || 'cards';
-            document.getElementById('cards-view').style.display = preferredView === 'cards' ? 'grid' : 'none';
-            document.getElementById('table-view').style.display = preferredView === 'table' ? 'block' : 'none';
+    <script src="~/js/excel.js"></script>
+    <script src="~/js/member.js"></script>
+    <style>
 
-            document.querySelectorAll('.view-toggle button').forEach(button => {
-                button.classList.toggle('active', button.dataset.view === preferredView);
-                button.addEventListener('click', () => {
-                    document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
-                    button.classList.add('active');
-                    localStorage.setItem('preferredView', button.dataset.view);
-                    document.getElementById('cards-view').style.display = button.dataset.view === 'cards' ? 'grid' : 'none';
-                    document.getElementById('table-view').style.display = button.dataset.view === 'table' ? 'block' : 'none';
-                });
-            });
+        th {
+            cursor: pointer;
+        }
 
-            function filterAndSort() {
-                const searchValue = document.getElementById('searchString').value.toLowerCase();
-                const statusValue = document.getElementById('statusFilter').value;
-
-                document.querySelectorAll('.member-card, tbody tr').forEach(item => {
-                    const name = item.getAttribute('data-name').toLowerCase();
-                    const status = item.getAttribute('data-status');
-
-                    item.style.display = (name.includes(searchValue) && (statusValue === '' || status === statusValue)) ? '' : 'none';
-                });
+            th.sorted-asc::after {
+                content: " ▲";
             }
 
-            function sortBy(field) {
-                const cardsView = document.getElementById('cards-view');
-                const tableView = document.getElementById('table-view');
-
-                const items = Array.from(cardsView.querySelectorAll('.member-card'))
-                    .concat(Array.from(tableView.querySelectorAll('tbody tr')));
-
-                items.sort((a, b) => {
-                    const aValue = a.getAttribute(`data-${field}`).toLowerCase();
-                    const bValue = b.getAttribute(`data-${field}`).toLowerCase();
-
-                    if (aValue < bValue) return -1;
-                    if (aValue > bValue) return 1;
-                    return 0;
-                });
-
-                items.forEach(item => {
-                    if (item.classList.contains('member-card')) {
-                        cardsView.appendChild(item);
-                    } else {
-                        tableView.querySelector('tbody').appendChild(item);
-                    }
-                });
+            th.sorted-desc::after {
+                content: " ▼";
             }
 
-            document.getElementById('searchString').addEventListener('input', filterAndSort);
-            document.getElementById('statusFilter').addEventListener('change', filterAndSort);
-            document.getElementById('sortByName').addEventListener('click', () => sortBy('name'));
-            document.getElementById('sortByStatus').addEventListener('click', () => sortBy('status'));
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
 
-            // Initialize Bootstrap Tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
+            .pagination button {
+                margin: 0 5px;
+            }
+
+        #pageInfo {
+            margin: 0 10px;
+            line-height: 2;
+        }
+    </style>
 }

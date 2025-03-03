@@ -1,4 +1,30 @@
 ﻿/* details.css - Only for details page */
+
+
+.member-card-details {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.member-card-header-details {
+    display: flex;
+    align-items: center;
+    padding: 17px 0 0 20px;
+    gap: 40px;
+    color: #fff;
+}
+
+
+.page-header-details {
+    text-align: center;
+}
+
+
 .details-page-header {
     background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
     padding: 2rem;
