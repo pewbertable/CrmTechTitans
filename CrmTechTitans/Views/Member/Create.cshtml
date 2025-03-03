@@ -54,6 +54,7 @@
                             <span class="text-danger d-none membername-error">Member name is required</span>
                             <span asp-validation-for="MemberName" class="text-danger"></span>
                         </div>
+
                         <div class="col-md-6">
                             <label asp-for="MemberPhoto" class="form-label">Company Picture</label>
                             <div class="input-group">
@@ -93,16 +94,17 @@
                             </div>
 
                             <div class="mb-3">
-                                <label asp-for="CompanyWebsite" class="form-label">Company Website</label>
+                                <label asp-for="CompanyWebsite" class="form-label">Company Website <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                    <input asp-for="CompanyWebsite" class="form-control" placeholder="Enter company website" />
+                                    <input asp-for="CompanyWebsite" class="form-control" placeholder="Ex. https://www.companywebsite.com" />
                                 </div>
+                                <span class="text-danger d-none companywebsite-error">Company Website is required</span>
                                 <span asp-validation-for="CompanyWebsite" class="text-danger"></span>
                             </div>
 
                             <div class="mb-3">
-                                <label asp-for="ContactedBy" class="form-label">Contacted By</label>
+                                <label asp-for="ContactedBy" class="form-label">Contact<span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
                                     <input asp-for="ContactedBy" class="form-control" placeholder="Enter contact person" />
@@ -114,6 +116,7 @@
 
                     <div class="d-flex justify-content-end mt-4">
                         <button type="button" class="btn btn-primary next-step">Continue <i class="fas fa-arrow-right ms-1"></i></button>
+
                     </div>
                 </div>
 
@@ -204,7 +207,7 @@
                                             <label asp-for="Addresses[i].PostalCode" class="form-label">Postal Code</label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-mail-bulk"></i></span>
-                                                <input asp-for="Addresses[i].PostalCode" class="form-control" placeholder="Enter Postal Code" />
+                                                <input asp-for="Addresses[i].PostalCode" class="form-control" placeholder="Ex. L4E 7K8" />
                                             </div>
                                             <span asp-validation-for="Addresses[i].PostalCode" class="text-danger"></span>
                                         </div>

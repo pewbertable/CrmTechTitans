@@ -53,7 +53,7 @@
 			<div class="member-detail">
 				<i class="fas fa-user-tie"></i>
 				<span>
-					<strong>Contacted By:</strong>
+					<strong>Contact Person:</strong>
 					@Html.DisplayFor(model => model.ContactedBy)
 				</span>
 			</div>
@@ -167,11 +167,11 @@
 										@memberContact.Contact.FullFormalName
 										@if (!string.IsNullOrEmpty(memberContact.Contact.Email))
 										{
-											<span> | @memberContact.Contact.Email</span>
+											<span> | <a href="mailto:@memberContact.Contact.Email">@memberContact.Contact.Email</a></span>
 										}
 										@if (!string.IsNullOrEmpty(memberContact.Contact.Phone))
 										{
-											<span> | @memberContact.Contact.Phone</span>
+											<span> | <a href="tel:@memberContact.Contact.Phone">@memberContact.Contact.Phone</a></span>
 										}
 									</li>
 								}
