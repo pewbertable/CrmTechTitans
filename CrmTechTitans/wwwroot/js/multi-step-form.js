@@ -18,61 +18,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalSteps = steps.length;
 
     // Initialize form validation
-    if (typeof $.validator !== "undefined" && typeof $.validator.unobtrusive !== "undefined") {
+    if ($.validator && $.validator.unobtrusive) {
         $.validator.unobtrusive.parse(form);
     }
 
     // Show specific step and update indicators
-    function showStep(step) {
+    const showStep = (step) => {
         steps.forEach((s, index) => {
+            s.classList.toggle("d-none", index !== step);
             s.classList.toggle("active", index === step);
         });
 
         currentStep = step;
+        progressBar.style.width = `${(currentStep / (totalSteps - 1)) * 100}%`;
 
-        // Update progress bar
-        const percent = (currentStep / (totalSteps - 1)) * 100;
-        progressBar.style.width = `${percent}%`;
-
-        // Update step indicators
         stepIndicators.forEach((indicator, index) => {
-            indicator.classList.toggle("active", index === step);
-            indicator.classList.toggle("completed", index < step);
+            indicator.classList.toggle("bg-primary", index === step);
+            indicator.classList.toggle("text-white", index === step);
+            indicator.classList.toggle("bg-light", index !== step);
+            indicator.classList.toggle("border", index !== step);
         });
-    }
+    };
 
     // Validate form fields for current step
-    function validateCurrentStep() {
+    const validateCurrentStep = () => {
         const currentStepElement = steps[currentStep];
         let isValid = true;
 
-        // Validate required fields
-        const requiredFields = currentStepElement.querySelectorAll(".required, .required-address, .required-contact");
-        requiredFields.forEach((field) => {
+        currentStepElement.querySelectorAll(".required, .required-address, .required-contact").forEach((field) => {
+            const errorSpan = field.closest(".form-group")?.querySelector(".field-validation-error");
             if (!field.value.trim()) {
                 isValid = false;
-                field.classList.add("invalid");
+                field.classList.add("is-invalid");
+                if (errorSpan) errorSpan.classList.remove("d-none");
             } else {
-                field.classList.remove("invalid");
-                field.classList.add("valid");
+                field.classList.remove("is-invalid");
+                if (errorSpan) errorSpan.classList.add("d-none");
             }
         });
 
-        // Step-specific validations
         if (currentStepElement.id === "step1") {
-            // Validate membership type selection
             const membershipChecked = document.querySelectorAll(".membership-type:checked").length > 0;
-            document.querySelector(".membership-error").style.display = membershipChecked ? "none" : "block";
+            const membershipError = document.querySelector(".membership-error");
+            if (membershipError) membershipError.classList.toggle("d-none", membershipChecked);
             isValid = isValid && membershipChecked;
-        } else if (currentStepElement.id === "step4") {
-            // Validate industry selection
-            const industriesSelected = document.querySelector(".required-industry").selectedOptions.length > 0;
-            document.querySelector(".industry-validation-message").style.display = industriesSelected ? "none" : "block";
-            isValid = isValid && industriesSelected;
         }
 
         return isValid;
-    }
+    };
 
     // Navigate to next step
     nextButtons.forEach((button) => {
@@ -93,17 +86,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Image preview functionality
-    function previewImage(input, previewId) {
+    const previewImage = (input, previewId) => {
         const preview = document.getElementById(previewId);
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 preview.src = e.target.result;
-                preview.style.display = "block";
+                preview.classList.remove("d-none");
             };
             reader.readAsDataURL(input.files[0]);
         }
-    }
+    };
 
     window.previewContactImage = (input, index) => {
         previewImage(input, `contact-preview-${index}`);
@@ -115,35 +108,35 @@ document.addEventListener("DOMContentLoaded", () => {
         const nextIndex = document.querySelectorAll(".address-form").length;
 
         const newAddressForm = document.createElement("div");
-        newAddressForm.className = "address-form form-card";
+        newAddressForm.className = "card mb-4 address-form";
         newAddressForm.dataset.addressIndex = nextIndex;
         newAddressForm.innerHTML = `
-        <div class="form-card-header">
-            <h3>Address ${nextIndex + 1}</h3>
-            <button type="button" class="btn btn-danger remove-address">
-                <i class="fas fa-trash"></i> Remove
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h3 class="h5 mb-0">Address ${nextIndex + 1}</h3>
+            <button type="button" class="btn btn-sm btn-danger remove-address">
+                <i class="fas fa-trash me-1"></i> Remove
             </button>
         </div>
-        <div class="form-card-body">
-            <div class="form-row">
-                <div class="form-group half-width">
-                    <label>Street <span class="required-asterisk">*</span></label>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Street <span class="text-danger">*</span></label>
                     <div class="input-group">
-                        <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
-                        <input name="Addresses[${nextIndex}].Street" class="form-input required-address" placeholder="Enter Street Address" />
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input name="Addresses[${nextIndex}].Street" class="form-control required-address" placeholder="Enter Street Address" />
                     </div>
                 </div>
-                <div class="form-group half-width">
-                    <label>City <span class="required-asterisk">*</span></label>
+                <div class="col-md-6">
+                    <label class="form-label">City <span class="text-danger">*</span></label>
                     <div class="input-group">
-                        <span class="input-icon"><i class="fas fa-city"></i></span>
-                        <input name="Addresses[${nextIndex}].City" class="form-input required-address" placeholder="Enter City" />
+                        <span class="input-group-text"><i class="fas fa-city"></i></span>
+                        <input name="Addresses[${nextIndex}].City" class="form-control required-address" placeholder="Enter City" />
                     </div>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group third-width">
-                    <label>Province <span class="required-asterisk">*</span></label>
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <label class="form-label">Province <span class="text-danger">*</span></label>
                     <select name="Addresses[${nextIndex}].Province" class="form-select required-address">
                         <option value="">Select Province</option>
                         ${Array.from(document.querySelector('select[name="Addresses[0].Province"]').options)
@@ -151,15 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 .join("")}
                     </select>
                 </div>
-                <div class="form-group third-width">
-                    <label>Postal Code</label>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <label class="form-label">Postal Code</label>
                     <div class="input-group">
-                        <span class="input-icon"><i class="fas fa-mail-bulk"></i></span>
-                        <input name="Addresses[${nextIndex}].PostalCode" class="form-input" placeholder="Enter Postal Code" />
+                        <span class="input-group-text"><i class="fas fa-mail-bulk"></i></span>
+                        <input name="Addresses[${nextIndex}].PostalCode" class="form-control" placeholder="Enter Postal Code" />
                     </div>
                 </div>
-                <div class="form-group third-width">
-                    <label>Address Type</label>
+                <div class="col-md-4">
+                    <label class="form-label">Address Type</label>
                     <select name="Addresses[${nextIndex}].AddressType" class="form-select">
                         <option value="">Select Address Type</option>
                         ${Array.from(document.querySelector('select[name="Addresses[0].AddressType"]').options)
@@ -181,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Re-initialize form validation for the new address form
-        if (typeof $.validator !== "undefined" && typeof $.validator.unobtrusive !== "undefined") {
+        if ($.validator && $.validator.unobtrusive) {
             $.validator.unobtrusive.parse(newAddressForm);
         }
     });
@@ -192,60 +185,61 @@ document.addEventListener("DOMContentLoaded", () => {
         const nextIndex = document.querySelectorAll(".contact-form").length;
 
         const newContactForm = document.createElement("div");
-        newContactForm.className = "contact-form form-card";
+        newContactForm.className = "card mb-4 contact-form";
+        newContactForm.dataset.contactIndex = nextIndex;
         newContactForm.innerHTML = `
-            <div class="form-card-header">
-                <h3>Contact ${nextIndex + 1}</h3>
-                <button type="button" class="btn btn-danger remove-contact">
-                    <i class="fas fa-trash"></i> Remove
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h3 class="h5 mb-0">Contact ${nextIndex + 1}</h3>
+                <button type="button" class="btn btn-sm btn-danger remove-contact">
+                    <i class="fas fa-trash me-1"></i> Remove
                 </button>
             </div>
-            <div class="form-card-body">
-                <div class="form-row">
-                    <div class="form-group half-width">
-                        <label>First Name <span class="required-asterisk">*</span></label>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label">First Name <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <span class="input-icon"><i class="fas fa-user"></i></span>
-                            <input name="Contacts[${nextIndex}].FirstName" class="form-input required-contact" placeholder="Enter first name" />
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input name="Contacts[${nextIndex}].FirstName" class="form-control required-contact" placeholder="Enter first name" />
                         </div>
                     </div>
-                    <div class="form-group half-width">
-                        <label>Last Name</label>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
                         <div class="input-group">
-                            <span class="input-icon"><i class="fas fa-user"></i></span>
-                            <input name="Contacts[${nextIndex}].LastName" class="form-input" placeholder="Enter last name" />
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group half-width">
-                        <label>Email</label>
-                        <div class="input-group">
-                            <span class="input-icon"><i class="fas fa-envelope"></i></span>
-                            <input name="Contacts[${nextIndex}].Email" class="form-input" placeholder="Enter email" type="email" />
-                        </div>
-                    </div>
-                    <div class="form-group half-width">
-                        <label>Phone <span class="required-asterisk">*</span></label>
-                        <div class="input-group">
-                            <span class="input-icon"><i class="fas fa-phone"></i></span>
-                            <input name="Contacts[${nextIndex}].Phone" class="form-input required-contact" placeholder="Enter phone number" />
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input name="Contacts[${nextIndex}].LastName" class="form-control" placeholder="Enter last name" />
                         </div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group half-width">
-                        <label>Contact Photo</label>
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label">Email</label>
                         <div class="input-group">
-                            <span class="input-icon"><i class="fas fa-camera"></i></span>
-                            <input type="file" name="ContactPicture" class="form-input" accept="image/*" onchange="previewContactImage(this, ${nextIndex})" />
-                        </div>
-                        <div class="image-preview">
-                            <img class="preview-image contact-preview" id="contact-preview-${nextIndex}" src="#" alt="Contact photo preview" />
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input name="Contacts[${nextIndex}].Email" class="form-control" placeholder="Enter email" type="email" />
                         </div>
                     </div>
-                    <div class="form-group half-width">
-                        <label>Contact Type</label>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input name="Contacts[${nextIndex}].Phone" class="form-control required-contact" placeholder="Enter phone number" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="form-label">Contact Photo</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-camera"></i></span>
+                            <input type="file" name="ContactPicture" class="form-control" accept="image/*" onchange="previewContactImage(this, ${nextIndex})" />
+                        </div>
+                        <div class="mt-2" style="max-width: 150px;">
+                            <img class="img-fluid d-none border rounded contact-preview" id="contact-preview-${nextIndex}" src="#" alt="Preview" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Contact Type</label>
                         <select name="Contacts[${nextIndex}].ContactType" class="form-select">
                             <option value="">Select Contact Type</option>
                             ${Array.from(document.querySelector('select[name="Contacts[0].ContactType"]').options)
@@ -258,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         contactsContainer.appendChild(newContactForm);
-        if (typeof $.validator !== "undefined" && typeof $.validator.unobtrusive !== "undefined") {
+        if ($.validator && $.validator.unobtrusive) {
             $.validator.unobtrusive.parse(newContactForm);
         }
 
@@ -268,22 +262,121 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Add Existing Contact functionality
+    document.getElementById("add-existing-contact").addEventListener("click", () => {
+        const existingContactSelect = document.getElementById("existingContact");
+        const selectedContactId = existingContactSelect.value;
+
+        if (selectedContactId) {
+            const selectedContact = Array.from(existingContactSelect.options).find(option => option.value === selectedContactId);
+            const contactDetails = selectedContact.text.split(" - ");
+            const [name, email] = contactDetails;
+            const [firstName, lastName] = name.split(" ");
+
+            const contactsContainer = document.getElementById("contacts-container");
+            const nextIndex = document.querySelectorAll(".contact-form").length;
+
+            const newContactForm = document.createElement("div");
+            newContactForm.className = "card mb-4 contact-form";
+            newContactForm.dataset.contactIndex = nextIndex;
+            newContactForm.innerHTML = `
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0">Contact ${nextIndex + 1}</h3>
+                    <button type="button" class="btn btn-sm btn-danger remove-contact">
+                        <i class="fas fa-trash me-1"></i> Remove
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">First Name <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input name="Contacts[${nextIndex}].FirstName" class="form-control required-contact" value="${firstName}" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input name="Contacts[${nextIndex}].LastName" class="form-control" value="${lastName}" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input name="Contacts[${nextIndex}].Email" class="form-control" value="${email}" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input name="Contacts[${nextIndex}].Phone" class="form-control required-contact" placeholder="Enter phone number" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">Contact Photo</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-camera"></i></span>
+                                <input type="file" name="ContactPicture" class="form-control" accept="image/*" onchange="previewContactImage(this, ${nextIndex})" />
+                            </div>
+                            <div class="mt-2" style="max-width: 150px;">
+                                <img class="img-fluid d-none border rounded contact-preview" id="contact-preview-${nextIndex}" src="#" alt="Preview" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Type</label>
+                            <select name="Contacts[${nextIndex}].ContactType" class="form-select">
+                                <option value="">Select Contact Type</option>
+                                ${Array.from(document.querySelector('select[name="Contacts[0].ContactType"]').options)
+                    .map((opt) => `<option value="${opt.value}">${opt.text}</option>`)
+                    .join("")}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            contactsContainer.appendChild(newContactForm);
+            if ($.validator && $.validator.unobtrusive) {
+                $.validator.unobtrusive.parse(newContactForm);
+            }
+
+            // Add remove handler
+            newContactForm.querySelector(".remove-contact").addEventListener("click", () => {
+                newContactForm.remove();
+            });
+        }
+    });
+
+    // Handle contact option change
+    document.querySelectorAll('input[name="contactOption"]').forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+            const newContactForm = document.getElementById("newContactForm");
+            const existingContactForm = document.getElementById("existingContactForm");
+
+            if (e.target.value === "new") {
+                newContactForm.style.display = "block";
+                existingContactForm.style.display = "none";
+            } else {
+                newContactForm.style.display = "none";
+                existingContactForm.style.display = "block";
+            }
+        });
+    });
+
     // Form submission validation
     form.addEventListener("submit", (e) => {
-        let isValid = true;
-        for (let i = 0; i < steps.length; i++) {
-            showStep(i);
-            if (!validateCurrentStep()) {
-                isValid = false;
-                alert('Please complete all required fields in step ' + (i + 1));
-                break;
-            }
+        if (!validateCurrentStep()) {
+            e.preventDefault(); // Prevent form submission if validation fails
+            alert('Please complete all required fields in the current step.');
         }
-
-        if (!isValid) {
-            e.preventDefault(); // Prevent form submission only if validation fails
-        }
-        // If valid, allow the form to submit naturally
     });
 
     // Initialize the form by showing the first step
@@ -306,3 +399,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+

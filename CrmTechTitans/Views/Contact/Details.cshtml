@@ -6,13 +6,13 @@
 }
 
 <div class="main-content">
-    <header class="page-header">
+    <header class="page-header-details">
         <h1>Contact Details</h1>
         <p class="text-muted">Detailed information about the selected contact.</p>
     </header>
 
-    <div class="member-card">
-        <div class="member-card-header">
+    <div class="member-card-details">
+        <div class="member-card-header-details">
             <div class="member-avatar">
                 @{
         if (Model.ContactPhoto?.Content != null)
@@ -46,7 +46,7 @@
                 <i class="fas fa-phone"></i>
                 <span>
                     <strong>Phone:</strong>
-                    @Html.DisplayFor(model => model.Phone)
+                    <a href="tel:@Model.Phone">@Model.Phone</a>
                 </span>
             </div>
             <div class="member-detail">

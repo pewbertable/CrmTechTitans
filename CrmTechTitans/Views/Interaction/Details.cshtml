@@ -6,13 +6,13 @@
 }
 
 <div class="main-content">
-    <header class="page-header">
+    <header class="page-header-details">
         <h1>Interaction Details</h1>
         <p class="text-muted">Detailed information about the selected interaction.</p>
     </header>
 
-    <div class="member-card">
-        <div class="member-card-header">
+    <div class="member-card-details">
+        <div class="member-card-header-details">
             <div class="member-avatar">
                 <i class="fas fa-comments"></i>
             </div>
@@ -67,10 +67,10 @@
             </div>
         </div>
         <div class="member-card-footer">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="button-1">
                 <i class="fas fa-edit"></i> Edit
             </a>
-            <a asp-action="Index" class="btn btn-secondary">
+            <a asp-action="Index" class="button-2">
                 <i class="fas fa-arrow-left"></i> Back to Interactions
             </a>
         </div>
