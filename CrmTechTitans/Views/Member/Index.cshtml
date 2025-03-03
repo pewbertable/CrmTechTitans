@@ -176,7 +176,28 @@
             </tbody>
         </table>
     </section>
+
+    <!-- Pagination Controls -->
+    <div class="row mt-4">
+        <!-- Records per page -->
+        <div class="col-md-4">
+            <label for="recordsPerPage">Records per page:</label>
+            <select id="recordsPerPage" class="form-control">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+        <!-- Pagination Controls -->
+        <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center">
+            <button id="prevPage" class="btn btn-primary me-2">Previous</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage" class="btn btn-primary ms-2">Next</button>
+        </div>
+    </div>
 </div>
+
 <!-- Excel Export Modal -->
 <div class="modal fade" id="excelExportModal" tabindex="-1" aria-labelledby="excelExportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -245,4 +266,32 @@
 @section Scripts {
     <script src="~/js/excel.js"></script>
     <script src="~/js/member.js"></script>
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+            th.sorted-asc::after {
+                content: " ▲";
+            }
+
+            th.sorted-desc::after {
+                content: " ▼";
+            }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+            .pagination button {
+                margin: 0 5px;
+            }
+
+        #pageInfo {
+            margin: 0 10px;
+            line-height: 2;
+        }
+    </style>
 }
