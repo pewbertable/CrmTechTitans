@@ -131,10 +131,8 @@ body {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    background: var(--light-bg);
     padding: 10px;
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
 }
 
 .tab-btn {
@@ -149,7 +147,7 @@ body {
 }
 
     .tab-btn:hover {
-        background: var(--highlight);
+        background: var(--accent);
         color: white;
     }
 
