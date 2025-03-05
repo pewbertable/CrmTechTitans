@@ -1,214 +1,117 @@
-﻿/* details.css - Only for details page */
+﻿/* Custom styles to enhance the Bootstrap-based member details page */
 
-
-.member-card-details {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Page header gradient background */
+.bg-primary {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
 }
 
-.member-card-header-details {
-    display: flex;
-    align-items: center;
-    padding: 17px 0 0 20px;
-    gap: 40px;
-    color: #fff;
-}
-
-
-.page-header-details {
-    text-align: center;
-}
-
-
-.details-page-header {
-    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-    padding: 2rem;
-    border-radius: 12px;
-    margin: 2rem 0;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-    .details-page-header h1 {
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
-
-    .details-page-header .text-muted {
-        color: #e0e0e0 !important;
-        font-size: 1rem;
-    }
-
-.details-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    padding: 2rem;
-    margin: 2rem 0;
-    position: relative;
-}
-
-.details-card-header {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #eee;
-}
-
-.details-avatar {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: white;
-    flex-shrink: 0;
-}
-
-.details-name {
-    font-size: 1.8rem;
-    margin: 0;
-    color: #2c3e50;
-    font-weight: 600;
-}
-
-.details-type {
-    color: #6c757d;
-    font-size: 1rem;
-    margin: 0.5rem 0 0;
-}
-
-.details-content {
-    display: grid;
-    gap: 1.2rem;
-    padding: 1rem 0;
-}
-
-.detail-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
-}
-
-    .detail-item:hover {
-        transform: translateX(3px);
-        background: #f1f3f5;
-    }
-
-    .detail-item i {
-        font-size: 1.2rem;
-        color: #3498db;
-        min-width: 30px;
-        text-align: center;
-    }
-
-    .detail-item strong {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-right: 0.5rem;
-    }
-
-.details-footer {
-    display: flex;
-    gap: 1rem;
-    padding-top: 2rem;
-    margin-top: 2rem;
-    border-top: 1px solid #eee;
-}
-
-.detail-btn-primary,
-.detail-btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-.detail-btn-primary {
-    background: #3498db;
+/* Custom dark header background */
+.bg-dark-custom {
+    background-color: #2e2e2e !important;
     color: white !important;
 }
 
-    .detail-btn-primary:hover {
-        background: #2c3e50;
-        transform: translateY(-1px);
+/* Card hover effect */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
     }
 
-.detail-btn-secondary {
-    background: #e9ecef;
+/* List items hover effect */
+.list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+    .list-group-item:hover {
+        background-color: rgba(52, 152, 219, 0.05) !important;
+    }
+
+/* Accordion styling */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(52, 152, 219, 0.1) !important;
     color: #2c3e50 !important;
-    border: 1px solid #dee2e6;
+    box-shadow: none !important;
 }
 
-    .detail-btn-secondary:hover {
-        background: #dee2e6;
-        transform: translateY(-1px);
+.accordion-button:focus {
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    transition: all 0.2s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #2c3e50;
+        border-color: #2c3e50;
+        transform: translateY(-2px);
     }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .details-page-header {
-        padding: 1.5rem;
-        margin: 1.5rem 0;
+.btn-outline-secondary {
+    transition: all 0.2s ease;
+}
+
+    .btn-outline-secondary:hover {
+        transform: translateY(-2px);
     }
 
-        .details-page-header h1 {
-            font-size: 1.8rem;
-        }
+/* Badge styling */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+}
 
-    .details-card {
-        padding: 1.5rem;
-    }
+/* Profile image styling */
+.rounded-circle {
+    border: 3px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    .details-card-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
+/* Profile image container styling */
+.profile-image-container {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    margin-bottom: 10px;
+}
 
-    .details-name {
-        font-size: 1.5rem;
-    }
-
-    .details-footer {
-        flex-direction: column;
-    }
-
-    .detail-btn-primary,
-    .detail-btn-secondary {
+    .profile-image-container img {
         width: 100%;
-        justify-content: center;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .profile-image-container .bg-secondary {
+        width: 100%;
+        height: 100%;
+    }
+
+/* Empty state styling */
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header .row {
+        text-align: center;
     }
 }
 
-@media (max-width: 480px) {
-    .detail-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        padding: 1rem;
+/* Ensure proper spacing between image and content on mobile */
+@media (max-width: 576px) {
+    .profile-image-container {
+        margin-bottom: 20px;
     }
-
-        .detail-item i {
-            font-size: 1.5rem;
-        }
 }

@@ -1,5 +1,4 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    const cardsView = document.getElementById('cards-view');
     const tableView = document.getElementById('table-view');
     const viewButtons = document.querySelectorAll('.view-btn');
     const memberNameFilter = document.getElementById('memberNameFilter');
@@ -18,8 +17,7 @@
     membershipStatusFilter.value = "GoodStanding";
 
     function setView(view) {
-        cardsView.style.display = view === 'cards' ? 'grid' : 'none';
-        tableView.style.display = view === 'table' ? 'block' : 'none';
+        tableView.style.display = 'block';
         viewButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
         localStorage.setItem('preferredView', view);
         updatePagination(); // Update pagination when switching views
@@ -35,19 +33,11 @@
         const nameFilter = memberNameFilter.value.toLowerCase();
         const statusFilter = membershipStatusFilter.value.toLowerCase();
 
-        if (cardsView.style.display === 'grid') {
-            return Array.from(document.querySelectorAll('#cards-view .member-card')).filter(card => {
-                const name = (card.dataset.name || '').toLowerCase();
-                const status = (card.dataset.status || '').toLowerCase();
-                return name.includes(nameFilter) && (statusFilter === '' || status === statusFilter);
-            });
-        } else {
-            return Array.from(document.querySelectorAll('#membersTable tbody tr')).filter(row => {
-                const name = (row.dataset.name || '').toLowerCase();
-                const status = (row.dataset.status || '').toLowerCase();
-                return name.includes(nameFilter) && (statusFilter === '' || status === statusFilter);
-            });
-        }
+        return Array.from(document.querySelectorAll('#membersTable tbody tr')).filter(row => {
+            const name = (row.dataset.name || '').toLowerCase();
+            const status = (row.dataset.status || '').toLowerCase();
+            return name.includes(nameFilter) && (statusFilter === '' || status === statusFilter);
+        });
     }
 
     function showPage(page) {
@@ -55,13 +45,8 @@
         const startIndex = (page - 1) * recordsPerPage;
         const endIndex = startIndex + recordsPerPage;
 
-        if (cardsView.style.display === 'grid') {
-            document.querySelectorAll('#cards-view .member-card').forEach(card => card.style.display = 'none');
-            visibleRows.slice(startIndex, endIndex).forEach(card => card.style.display = 'block');
-        } else {
-            document.querySelectorAll('#membersTable tbody tr').forEach(row => row.style.display = 'none');
-            visibleRows.slice(startIndex, endIndex).forEach(row => row.style.display = '');
-        }
+        document.querySelectorAll('#membersTable tbody tr').forEach(row => row.style.display = 'none');
+        visibleRows.slice(startIndex, endIndex).forEach(row => row.style.display = '');
 
         pageInfo.textContent = `Page ${page} of ${Math.ceil(visibleRows.length / recordsPerPage)}`;
         prevPageButton.disabled = page === 1;
@@ -113,7 +98,7 @@
 
     filterMembers();
 
-    const preferredView = localStorage.getItem('preferredView') || 'cards';
+    const preferredView = 'table';
     setView(preferredView);
 
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -161,6 +146,7 @@
         });
     });
 });
+
 // Sort the table by member name in ascending order on page load
 sortTable(1, "asc"); // 0 is the index for the member name column
 

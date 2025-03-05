@@ -16,15 +16,6 @@
             <button id="exportExcelBtn" class="btn btn-success" data-bs-toggle="tooltip" title="Export members to Excel">
                 <i class="fas fa-file-excel"></i> Export to Excel
             </button>
-            @* Card view temp disabled *@
-            @* <div class="btn-group" role="group" aria-label="View toggle"> *@
-            @*     <button type="button" class="btn btn-outline-secondary active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View"> *@
-            @*         <i class="fas fa-th-large"></i> *@
-            @*     </button> *@
-            @*     <button type="button" class="btn btn-outline-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View"> *@
-            @*         <i class="fas fa-table"></i> *@
-            @*     </button> *@
-            @* </div> *@
         </div>
     </header>
 
@@ -46,79 +37,7 @@
         </div>
     </section>
 
-    <section class="members-grid" id="cards-view">
-        @foreach (var item in Model)
-        {
-            <div class="member-card" data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
-                <div class="card-logo">
-                    @if (item.MemberThumbnail?.Content != null)
-                    {
-                        string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
-                        string imageSrc = string.Format("data:{0};base64,{1}", item.MemberThumbnail.MimeType, imageBase64);
-                        <img src="@imageSrc" alt="@item.MemberName Logo" class="img-fluid rounded" />
-                    }
-                    else
-                    {
-                        <i class="fas fa-building"></i>
-                    }
-                </div>
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="company-name">@item.MemberName</h2>
-                        <span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
-                            @item.MembershipStatus
-                        </span>
-                    </div>
-                    <div class="card-details">
-                        <div class="detail-item">
-                            <i class="fas fa-users"></i>
-                            <span>@item.CompanySize</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Member since @item.MemberSince.ToString("MMM yyyy")</span>
-                        </div>
-                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
-                        {
-                            <div class="detail-item">
-                                <i class="fas fa-globe"></i>
-                                <a href="@item.CompanyWebsite" target="_blank">Website</a>
-                            </div>
-                        }
-                    </div>
-                    <div class="membership-types">
-                        <h3>Membership Types:</h3>
-                        <p>
-                            @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
-                            {
-                                @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
-                            }
-                            else
-                            {
-                                <span>No Membership Type Assigned</span>
-                            }
-                        </p>
-                    </div>
-                </div>
-                <div class="card-actions">
-                    <a href="javascript:void(0);"
-                       class="btn btn-outline-danger btn-sm archive-btn"
-                       data-id="@item.ID"
-                       data-status="@item.MembershipStatus.ToString()"
-                       data-bs-toggle="tooltip"
-                       title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive this member" : "Archive this member")">
-                        <!-- Dynamically change the icon based on the status -->
-                        <i class="fas fa-archive @(item.MembershipStatus == MembershipStatus.Cancelled ? "fa-undo" : "fa-archive")"></i>
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View member details">
-                        <i class="fas fa-info-circle"></i>
-                    </a>
-                </div>
-            </div>
-        }
-    </section>
-
-    <section class="table-responsive" id="table-view" style="display: none;">
+    <section class="table-responsive" id="table-view">
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
@@ -192,9 +111,9 @@
         </div>
         <!-- Pagination Controls -->
         <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center">
-            <button id="prevPage" class="btn btn-primary me-2">Previous</button>
+            <button id="prevPage" class="btn">Previous</button>
             <span id="pageInfo"></span>
-            <button id="nextPage" class="btn btn-primary ms-2">Next</button>
+            <button id="nextPage" class="btn">Next</button>
         </div>
     </div>
 </div>
@@ -257,8 +176,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="downloadExcelBtn">Download Excel</button>
+                <button type="button" class="btn " data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn " id="downloadExcelBtn">Download Excel</button>
             </div>
         </div>
     </div>
@@ -268,7 +187,6 @@
     <script src="~/js/excel.js"></script>
     <script src="~/js/member.js"></script>
     <style>
-
         th {
             cursor: pointer;
         }
