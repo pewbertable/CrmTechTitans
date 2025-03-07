@@ -161,6 +161,7 @@
                         <td>@item.MemberSince.ToShortDateString()</td>
                         <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
                         <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View member edit page">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View member details">Details</a>
                             <a href="javascript:void(0);"
                                class="btn btn-sm archive-btn @(item.MembershipStatus == MembershipStatus.Cancelled ? "btn-success" : "btn-danger")"
