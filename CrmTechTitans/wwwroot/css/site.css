@@ -107,7 +107,6 @@ body {
 
 /* === Buttons === */
 .btn {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
@@ -121,6 +120,12 @@ body {
     color: white;
     border: none;
 }
+
+    /* This selector adds left margin whenever one .btn follows another .btn. */
+    .btn + .btn {
+        margin-left: 8px;
+    }
+
 
 /* === Table Container === */
 .table-container {

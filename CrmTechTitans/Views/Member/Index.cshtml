@@ -16,14 +16,15 @@
             <button id="exportExcelBtn" class="btn btn-success" data-bs-toggle="tooltip" title="Export members to Excel">
                 <i class="fas fa-file-excel"></i> Export to Excel
             </button>
-            <div class="btn-group" role="group" aria-label="View toggle">
-                <button type="button" class="btn btn-outline-secondary active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button type="button" class="btn btn-outline-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View">
-                    <i class="fas fa-table"></i>
-                </button>
-            </div>
+            @* Card view temp disabled *@
+            @* <div class="btn-group" role="group" aria-label="View toggle"> *@
+            @*     <button type="button" class="btn btn-outline-secondary active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View"> *@
+            @*         <i class="fas fa-th-large"></i> *@
+            @*     </button> *@
+            @*     <button type="button" class="btn btn-outline-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View"> *@
+            @*         <i class="fas fa-table"></i> *@
+            @*     </button> *@
+            @* </div> *@
         </div>
     </header>
 
@@ -245,12 +246,24 @@
                                 <label class="form-check-label" for="field-MembershipStatus">Membership Status</label>
                             </div>
                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="ContactedBy" id="field-ContactedBy">
+                                <label class="form-check-label" for="field-ContactedBy">Contacted By</label>
+                            </div>
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="SelectedFields" value="MemberSince" id="field-MemberSince">
                                 <label class="form-check-label" for="field-MemberSince">Member Since</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="SelectedFields" value="Notes" id="field-Notes">
                                 <label class="form-check-label" for="field-Notes">Notes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="Industries" id="field-Industries">
+                                <label class="form-check-label" for="field-Industries">Industries</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedFields" value="Address" id="field-Address">
+                                <label class="form-check-label" for="field-Address">Address</label>
                             </div>
                         </div>
                     </div>
@@ -268,6 +281,7 @@
     <script src="~/js/excel.js"></script>
     <script src="~/js/member.js"></script>
     <style>
+
         th {
             cursor: pointer;
         }

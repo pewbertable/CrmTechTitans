@@ -1,6 +1,4 @@
-﻿// dashboard.js
-
-// Function to initialize the members chart
+﻿// Function to initialize the members chart
 window.initializeMembersChart = function (memberCountOverTime) {
     console.log("Initializing the members chart.");
 
@@ -24,6 +22,7 @@ window.initializeMembersChart = function (memberCountOverTime) {
         window.membersChart.destroy();
     }
 
+    // Create the chart
     window.membersChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -31,14 +30,34 @@ window.initializeMembersChart = function (memberCountOverTime) {
             datasets: [{
                 label: 'Total Members Over Time',
                 data: data,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                // Slightly thicker, teal line
+                borderColor: '#00bcd4',
+                borderWidth: 2,
+                // A gradient fill from teal to transparent
+                backgroundColor: function (context) {
+                    const chart = context.chart;
+                    const { ctx, chartArea } = chart;
+                    if (!chartArea) {
+                        // Chart not yet rendered, fallback color
+                        return 'rgba(75, 192, 192, 0.2)';
+                    }
+                    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    gradient.addColorStop(0, 'rgba(0, 188, 212, 0.4)'); // top
+                    gradient.addColorStop(1, 'rgba(0, 188, 212, 0)');   // bottom
+                    return gradient;
+                },
                 fill: true,
-                tension: 0.1
+                // Make the line slightly curved
+                tension: 0.3,
+                // Bigger points for a modern look
+                pointRadius: 5,
+                pointHoverRadius: 7
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // fill the container's height
+
             scales: {
                 x: {
                     type: 'time',
@@ -52,6 +71,11 @@ window.initializeMembersChart = function (memberCountOverTime) {
                     title: {
                         display: true,
                         text: 'Date'
+                    },
+                    // Dashed & lighter grid lines
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        borderDash: [2, 2]
                     }
                 },
                 y: {
@@ -59,6 +83,10 @@ window.initializeMembersChart = function (memberCountOverTime) {
                     title: {
                         display: true,
                         text: 'Member Count'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        borderDash: [2, 2]
                     }
                 }
             },
@@ -67,6 +95,16 @@ window.initializeMembersChart = function (memberCountOverTime) {
                     callbacks: {
                         label: function (context) {
                             return `Members: ${context.parsed.y}`;
+                        }
+                    }
+                },
+                // Optionally tweak the legend text color / size
+                legend: {
+                    labels: {
+                        color: '#444',
+                        font: {
+                            size: 14,
+                            family: 'sans-serif'
                         }
                     }
                 }

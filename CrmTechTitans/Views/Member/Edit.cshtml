@@ -6,6 +6,100 @@
     ViewData["Title"] = "Edit Member";
 }
 
+<!-- BEGIN: Consistent Layout Styles -->
+<style>
+    /* Container styling */
+   .main-content {
+    /* Limit how wide the content can be */
+    max-width: 800px; 
+    /* Automatically center left & right */
+    margin: 2rem auto;
+    /* Optional: some padding if you like */
+    padding: 1rem; 
+}
+
+    /* Member Card */
+    .member-card {
+        background-color: #fff;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .member-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .member-avatar {
+        margin-right: 1rem;
+    }
+
+    /* Consistent layout for each detail row: icon on the left, form group on the right */
+    .member-detail {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    .member-detail i {
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+        padding-top: 0.4rem;
+        min-width: 1.5rem;
+        text-align: center;
+    }
+    .member-detail .form-group {
+        flex: 1; 
+    }
+
+    /* Address form and Contact form panels */
+    .address-form,
+    .contact-form {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f9f9f9;
+    }
+    .address-form .form-group,
+    .contact-form .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Buttons */
+    .button-1,
+    .button-2 {
+        display: inline-block;
+        margin: 0.5rem 0;
+    }
+    .button-1 {
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .button-2 {
+        background-color: #6c757d;
+        color: #fff;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .button-1:hover,
+    .button-2:hover {
+        opacity: 0.9;
+    }
+</style>
+<!-- END: Consistent Layout Styles -->
+
 <div class="main-content">
     <header class="page-header">
         <h1>Edit Member</h1>
@@ -15,28 +109,27 @@
     <div class="member-card">
         <div class="member-card-header">
             <div class="member-avatar">
-               @{
-            
-            var hasMemberPicture = (Model.MemberPhoto?.Content != null);
-            if (hasMemberPicture)
-            {
-                @:<div>
-                    string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
-                    string imageSrc = string.Format("data:" + Model.MemberPhoto.MimeType + ";base64,{0}", imageBase64);
-                    <img src="@imageSrc" alt="Profile Picture of @Model.MemberName" 
-                    title="Profile Picture of @Model.MemberName" class="img-fluid rounded" />
-                @:</div><hr />
-            }else
-            {
-                <i class="fas fa-user-edit"></i>
-            }
-               }
-               
+                @{
+                    var hasMemberPicture = (Model.MemberPhoto?.Content != null);
+                    if (hasMemberPicture)
+                    {
+                        @:<div>
+                            string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
+                            string imageSrc = string.Format("data:" + Model.MemberPhoto.MimeType + ";base64,{0}", imageBase64);
+                            <img src="@imageSrc" alt="Profile Picture of @Model.MemberName" 
+                                 title="Profile Picture of @Model.MemberName" class="img-fluid rounded" />
+                        @:</div><hr />
+                    }
+                    else
+                    {
+                        <i class="fas fa-user-edit"></i>
+                    }
+                }
             </div>
             <div class="member-info">
-                <h2 class="member-name">Edit Member Information</h2>
             </div>
         </div>
+
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div class="member-card-content">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -51,35 +144,45 @@
                         <span asp-validation-for="MemberName" class="text-danger"></span>
                     </div>
                 </div>
-                 <div class="member-detail">
-                    @{
-                        if (hasMemberPicture)
-                        {
-                            <div class="form-group">
-                                <div class="form-check m-3">
-                                    <input  class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
-                                    <label  class="form-check-label" for="chkRemoveMemberImage">
-                                    <strong>Check to remove Image</strong>
-                                    </label>
-                                </div>
-                            </div>
-                        }
-                    }
-                  </div>
 
-                  <div class="member-detail">
-                  <div class="form-group">
-                <label asp-for="MemberPhoto" class="control-label">Member Picture:</label>
-                <div class="input-group mb-3">
-                <input asp-for="MemberPhoto" type="file" class="form-control" name="memberPicture" id="memberPicture">
-                </div>
-                </div>
-                  </div>
+              <div class="member-detail">
+    <i class="fas fa-camera"></i>   <!-- The icon for this row -->
+    <div class="form-group">
+        @if (hasMemberPicture)
+        {
+            <!-- Display the current member avatar if it exists -->
+            <div class="mb-2">
+                @{
+                    string imageBase64 = Convert.ToBase64String(Model.MemberPhoto.Content);
+                    string imageSrc = $"data:{Model.MemberPhoto.MimeType};base64,{imageBase64}";
+                }
+                <img src="@imageSrc" alt="Profile Picture" class="img-fluid rounded" />
+            </div>
+
+            <!-- Check to remove the picture -->
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
+                <label class="form-check-label" for="chkRemoveMemberImage">
+                    <strong>Remove Image</strong>
+                </label>
+            </div>
+        }
+
+        <!-- File upload input -->
+        <label asp-for="MemberPhoto" class="control-label">Member Picture:</label>
+        <div class="input-group mb-3">
+            <input asp-for="MemberPhoto"
+                   type="file"
+                   class="form-control"
+                   name="memberPicture"
+                   id="memberPicture">
+        </div>
+        <span asp-validation-for="MemberPhoto" class="text-danger"></span>
+    </div>
+</div>
 
                 <div class="member-detail">
-                    <i class="fas fa-id-card"></i>
                     <div class="form-group">
-                        <label asp-for="SelectedMembershipTypeIDs" class="control-label">Membership Type</label>
                         <div>
                             @foreach (var type in Model.AvailableMembershipTypes)
                             {
@@ -164,7 +267,6 @@
                 <!-- Addresses Section -->
                 <div class="member-detail">
                     <i class="fas fa-map-marker-alt"></i>
-                    <h3>Addresses</h3>
                     @for (int i = 0; i < Model.Addresses.Count; i++)
                     {
                         <div class="address-form">
@@ -199,33 +301,33 @@
                             </div>
                         </div>
                     }
-                    <button type="button" id="add-address" class="button-1">Add Address</button>
-                </div>
+<button type="button" id="add-address" class="btn-add">
+    <i class="fas fa-plus"></i> Add Address
+</button>                </div>
 
                 <!-- Contacts Section -->
                 <div class="member-detail">
-                     <i class="fas fa-address-book"></i>
-                    <h3>Contacts</h3>
+                    <i class="fas fa-address-book"></i>
                     @for (int i = 0; i < Model.Contacts.Count; i++)
-                    {                     
-
+                    {
                         <div class="contact-form">
                             <div class="form-group">
                                 @{
-                            var hasContactPicture = (Model.Contacts[i].ContactPhoto?.Content != null);
-                            if (hasContactPicture)
-                            {
-                                @:<div>
-                                    string imageBase64 = Convert.ToBase64String(Model.Contacts[i].ContactPhoto.Content);
-                                    string imageSrc = string.Format("data:" + Model.Contacts[i].ContactPhoto.MimeType + ";base64,{0}", imageBase64);
-                                    <img src="@imageSrc" alt="Profile Picture of @Model.Contacts[i].FirstName" 
-                                        title="Profile Picture of @Model.Contacts[i].FirstName" class="img-fluid rounded" />
-                                @:</div><hr />
-                            }else
-                            {
-                                
-                            }
-                            }
+                                    var hasContactPicture = (Model.Contacts[i].ContactPhoto?.Content != null);
+                                    if (hasContactPicture)
+                                    {
+                                        @:<div>
+                                            string imageBase64 = Convert.ToBase64String(Model.Contacts[i].ContactPhoto.Content);
+                                            string imageSrc = string.Format("data:" + Model.Contacts[i].ContactPhoto.MimeType + ";base64,{0}", imageBase64);
+                                            <img src="@imageSrc" alt="Profile Picture of @Model.Contacts[i].FirstName" 
+                                                 title="Profile Picture of @Model.Contacts[i].FirstName" class="img-fluid rounded" />
+                                        @:</div><hr />
+                                    }
+                                    else
+                                    {
+                                        <!-- no contact image -->
+                                    }
+                                }
                             </div>
                             <div class="form-group">
                                 <label asp-for="Contacts[i].FirstName" class="control-label">First Name</label>
@@ -237,25 +339,24 @@
                                 <input asp-for="Contacts[i].LastName" class="form-control" placeholder="Enter Last Name" />
                                 <span asp-validation-for="Contacts[i].LastName" class="text-danger"></span>
                             </div>
-                           @{
+                            @{
                                 if (hasContactPicture)
                                 {
                                     <div class="form-group">
                                         <div class="form-check m-3">
-                        
                                             <input class="form-check-input" type="checkbox" id="chkRemoveContactImage" name="chkRemoveContactImage">
                                             <label class="form-check-label" for="chkRemoveContactImage">
-                                            <strong>Check to remove Image</strong>
+                                                <strong>Check to remove Image</strong>
                                             </label>
                                         </div>
                                     </div>
                                 }
                             }
                             <div class="form-group">
-                            <label asp-for="Contacts[i].ContactPhoto" class="control-label">Contact Picture:</label>
-                            <div class="input-group mb-3">
-                            <input asp-for="Contacts[i].ContactPhoto" type="file" class="form-control" name="contactPicture" id="contactPicture">
-                            </div>
+                                <label asp-for="Contacts[i].ContactPhoto" class="control-label">Contact Picture:</label>
+                                <div class="input-group mb-3">
+                                    <input asp-for="Contacts[i].ContactPhoto" type="file" class="form-control" name="contactPicture" id="contactPicture">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Contacts[i].Email" class="control-label">Email</label>
@@ -276,13 +377,13 @@
                             </div>
                         </div>
                     }
-                    <button type="button" id="add-contact" class="button-1">Add Contact</button>
-                </div>
+<button type="button" id="add-contact" class="btn-add">
+    <i class="fas fa-plus"></i> Add Contact
+</button>                </div>
 
                 <!-- Industries Section -->
                 <div class="member-detail">
                     <i class="fas fa-industry"></i>
-                    <h3>Industries</h3>
                     <div class="form-group">
                         <label>Select Industries</label>
                         <select asp-for="SelectedIndustryIds" class="form-control" multiple>
@@ -295,14 +396,16 @@
                     </div>
                 </div>
             </div>
-            <div class="member-card-footer">
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
-                <a asp-action="Index" class="button-2">
-                    <i class="fas fa-arrow-left"></i> Back to List
-                </a>
-            </div>
+
+      <div class="member-card-footer">
+    <button type="submit" class="button-2">
+        <i class="fas fa-save"></i> Save Changes
+    </button>
+    <a asp-action="Index" class="button-2">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
         </form>
     </div>
 </div>
@@ -334,17 +437,17 @@
                     <label>Contact Type</label>
                     <select name="Contacts[${document.querySelectorAll('.contact-form').length}].ContactType" class="form-control">
                         <option value="">Select Contact Type</option>
-        @foreach (var value in Enum.GetValues(typeof(ContactType)))
-        {
-                                <option value="@value">@value</option>
-        }
+                        @foreach (var value in Enum.GetValues(typeof(ContactType)))
+                        {
+                            <option value="@value">@value</option>
+                        }
                     </select>
                 </div>
             `;
             document.querySelector('#add-contact').before(contactForm);
         });
 
-         // Add Address
+        // Add Address
         document.getElementById('add-address').addEventListener('click', function () {
             const addressForm = document.createElement('div');
             addressForm.classList.add('address-form');
@@ -361,10 +464,10 @@
                     <label>Province</label>
                     <select name="Addresses[${document.querySelectorAll('.address-form').length}].Province" class="form-control">
                         <option value="">Select Province</option>
-        @foreach (var value in Enum.GetValues(typeof(Province)))
-        {
-                                <option value="@value">@value</option>
-        }
+                        @foreach (var value in Enum.GetValues(typeof(Province)))
+                        {
+                            <option value="@value">@value</option>
+                        }
                     </select>
                 </div>
                 <div class="form-group">
@@ -375,10 +478,10 @@
                     <label>Address Type</label>
                     <select name="Addresses[${document.querySelectorAll('.address-form').length}].AddressType" class="form-control">
                         <option value="">Select Address Type</option>
-        @foreach (var value in Enum.GetValues(typeof(AddressType)))
-        {
-                                <option value="@value">@value</option>
-        }
+                        @foreach (var value in Enum.GetValues(typeof(AddressType)))
+                        {
+                            <option value="@value">@value</option>
+                        }
                     </select>
                 </div>
             `;
@@ -391,7 +494,7 @@
             industryForm.classList.add('industry-form');
             industryForm.innerHTML = `
                 <div class="form-group">
-                    <label>Industry Name</label>
+                    <label>Industry Name</label> 
                     <input name="Industries[${document.querySelectorAll('.industry-form').length}].Name" class="form-control" placeholder="Enter Industry Name" />
                 </div>
                 <div class="form-group">

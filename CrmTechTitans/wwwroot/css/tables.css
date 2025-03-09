@@ -35,11 +35,15 @@ body {
     }
 
     .page-header .btn-danger {
-        font-weight: 600;
         display: flex;
         align-items: center;
         white-space: nowrap;
+        font-weight: 500; /* Keep your desired weight */
+        font-size: 0.875rem; /* Smaller text (0.875rem is ~14px) */
+        padding: 0.25rem 0.5rem; /* Less padding for a smaller button */
+        line-height: 1.2; /* Tighter line height */
     }
+
 
 /* === Filter Container Styling === */
 .filter-container {
@@ -242,6 +246,7 @@ th.sorted-desc::after {
     border-radius: 6px;
     font-size: 0.9rem;
     box-sizing: border-box;
+    background-color: #f8f9fa;
 }
 
 /* === Create Button Styling === */
@@ -510,7 +515,7 @@ th.sorted-desc::after {
 }
 
 .button-1 {
-    background-color: #dc3545; /* Red button */
+    background-color: #6c757d; /* Red button */
 }
 
     .button-1:hover {

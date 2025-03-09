@@ -147,51 +147,53 @@
                 </span>
             </div>
 
-            <!-- Contacts Section -->
-            <div class="member-detail">
-                <i class="fas fa-address-book"></i>
-                <span>
-                    <strong>Contacts:</strong>
-                    @if (Model.MemberContacts.Any())
-                    {
-                        <ul>
-                            @foreach (var memberContact in Model.MemberContacts)
-                            {
-                                if (memberContact.Contact != null)
-                                {
-                                    <li>
-                                        <strong>@memberContact.ContactType:</strong>
-                                        @memberContact.Contact.FullFormalName
-                                        @if (!string.IsNullOrEmpty(memberContact.Contact.Email))
-                                        {
-                                            <span> | <a href="mailto:@memberContact.Contact.Email">@memberContact.Contact.Email</a></span>
-                                        }
-                                        @if (!string.IsNullOrEmpty(memberContact.Contact.Phone))
-                                        {
-                                            <span> | <a href="tel:@memberContact.Contact.Phone">@memberContact.Contact.Phone</a></span>
-                                        }
-                                    </li>
-                                }
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <span>No contacts associated</span>
-                    }
-                </span>
-            </div>
-        </div>
-        <div class="member-card-footer">
-            <a asp-action="Edit" asp-route-id="@Model?.ID" class="button-1">
-                <i class="fas fa-edit"></i> Edit
-            </a>
-            <a asp-action="Index" class="button-2">
-                <i class="fas fa-arrow-left"></i> Back to Members
-            </a>
-            <a asp-action="ExportToExcel" asp-route-id="@Model?.ID" class="button-3">
-                <i class="fas fa-file-excel"></i> Export to Excel
-            </a>
-        </div>
-    </div>
+			<!-- Contacts Section -->
+			<div class="member-detail">
+				<i class="fas fa-address-book"></i>
+				<span>
+					<strong>Contacts:</strong>
+					@if (Model.MemberContacts.Any())
+					{
+						<ul>
+							@foreach (var memberContact in Model.MemberContacts)
+							{
+								if (memberContact.Contact != null)
+								{
+									<li>
+										<strong>@memberContact.ContactType:</strong>
+										@memberContact.Contact.FullFormalName
+										@if (!string.IsNullOrEmpty(memberContact.Contact.Email))
+										{
+											<span> | <a href="mailto:@memberContact.Contact.Email">@memberContact.Contact.Email</a></span>
+										}
+										@if (!string.IsNullOrEmpty(memberContact.Contact.Phone))
+										{
+											<span> | <a href="tel:@memberContact.Contact.Phone">@memberContact.Contact.Phone</a></span>
+										}
+									</li>
+								}
+							}
+						</ul>
+					}
+					else
+					{
+						<span>No contacts associated</span>
+					}
+				</span>
+			</div>
+		</div>
+
+<div class="member-card-footer">
+    <a class="button-1" href="/Member/Edit/8">
+    <i class="fas fa-edit"></i> Edit
+</a>
+
+    <a asp-action="Index" class="button-2">
+        <i class="fas fa-arrow-left"></i> Back to Members
+    </a>
+</div>
+
+
+
+	</div>
 </div>
