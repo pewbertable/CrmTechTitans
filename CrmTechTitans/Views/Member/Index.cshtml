@@ -16,15 +16,6 @@
             <button id="exportExcelBtn" class="btn btn-success" data-bs-toggle="tooltip" title="Export members to Excel">
                 <i class="fas fa-file-excel"></i> Export to Excel
             </button>
-            @* Card view temp disabled *@
-            @* <div class="btn-group" role="group" aria-label="View toggle"> *@
-            @*     <button type="button" class="btn btn-outline-secondary active" data-view="cards" data-bs-toggle="tooltip" title="Switch to Card View"> *@
-            @*         <i class="fas fa-th-large"></i> *@
-            @*     </button> *@
-            @*     <button type="button" class="btn btn-outline-secondary" data-view="table" data-bs-toggle="tooltip" title="Switch to Table View"> *@
-            @*         <i class="fas fa-table"></i> *@
-            @*     </button> *@
-            @* </div> *@
         </div>
     </header>
 
@@ -46,94 +37,16 @@
         </div>
     </section>
 
-    <section class="members-grid" id="cards-view">
-        @foreach (var item in Model)
-        {
-            <div class="member-card" data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
-                <div class="card-logo">
-                    @if (item.MemberThumbnail?.Content != null)
-                    {
-                        string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
-                        string imageSrc = string.Format("data:{0};base64,{1}", item.MemberThumbnail.MimeType, imageBase64);
-                        <img src="@imageSrc" alt="@item.MemberName Logo" class="img-fluid rounded" />
-                    }
-                    else
-                    {
-                        <i class="fas fa-building"></i>
-                    }
-                </div>
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="company-name">@item.MemberName</h2>
-                        <span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
-                            @item.MembershipStatus
-                        </span>
-                    </div>
-                    <div class="card-details">
-                        <div class="detail-item">
-                            <i class="fas fa-users"></i>
-                            <span>@item.CompanySize</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Member since @item.MemberSince.ToString("MMM yyyy")</span>
-                        </div>
-                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
-                        {
-                            <div class="detail-item">
-                                <i class="fas fa-globe"></i>
-                                <a href="@item.CompanyWebsite" target="_blank">Website</a>
-                            </div>
-                        }
-                    </div>
-                    <div class="membership-types">
-                        <h3>Membership Types:</h3>
-                        <p>
-                            @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
-                            {
-                                @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
-                            }
-                            else
-                            {
-                                <span>No Membership Type Assigned</span>
-                            }
-                        </p>
-                    </div>
-                </div>
-                <div class="card-actions">
-                    <a href="javascript:void(0);"
-                       class="btn btn-outline-danger btn-sm archive-btn"
-                       data-id="@item.ID"
-                       data-status="@item.MembershipStatus.ToString()"
-                       data-bs-toggle="tooltip"
-                       title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive this member" : "Archive this member")">
-                        <!-- Dynamically change the icon based on the status -->
-                        <i class="fas fa-archive @(item.MembershipStatus == MembershipStatus.Cancelled ? "fa-undo" : "fa-archive")"></i>
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View member details">
-                        <i class="fas fa-info-circle"></i>
-                    </a>
-                </div>
-            </div>
-        }
-    </section>
-
-    <!-- Helper text for sorting in table view - Now visible -->
-    <div class="alert alert-info mb-3" id="table-sort-info">
-        <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
-    </div>
-
-    <!-- Table view - Now visible -->
-    <section class="table-responsive" id="table-view">
+    <section class="table-responsive">
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
                     <th>Logo</th>
-                    <th onclick="sortTable(1)" class="sortable">Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)" class="sortable">Type <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)" class="sortable">Company Size <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)" class="sortable">Member Since <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)" class="sortable">Status <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(1)">Name</th>
+                    <th onclick="sortTable(2)">Type</th>
+                    <th onclick="sortTable(3)">Company Size</th>
+                    <th onclick="sortTable(4)">Member Since</th>
+                    <th onclick="sortTable(5)">Status</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -285,23 +198,147 @@
 
 @section Scripts {
     <script src="~/js/excel.js"></script>
-    <script src="~/js/member.js"></script>
     <script>
-        $(document).ready(function() {
-            // Modified to handle view toggling if needed in the future
-            $('[data-view="table"]').on('click', function() {
-                $('#cards-view').hide();
-                $('#table-view').show();
-                $('#table-sort-info').show();
+        $(document).ready(function () {
+            var currentPage = 1;
+            var recordsPerPage = parseInt($('#recordsPerPage').val());
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            $('[data-view="cards"]').on('click', function() {
-                $('#table-view').hide();
-                $('#table-sort-info').hide();
-                $('#cards-view').show();
+            // Set default filter to "Good Standing"
+            $('#membershipStatusFilter').val("GoodStanding");
+
+            // Function to get visible rows (rows not hidden by filter)
+            function getVisibleRows() {
+                var nameFilter = $('#memberNameFilter').val().toLowerCase();
+                var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
+
+                var visibleRows = $('#membersTable tbody tr').filter(function () {
+                    var name = $(this).data('name') || '';
+                    var status = $(this).data('status') || '';
+
+                    var nameMatch = nameFilter === "" || name.includes(nameFilter);
+                    var statusMatch = statusFilter === "" || status === statusFilter;
+
+                    return nameMatch && statusMatch;
+                });
+
+                return visibleRows;
+            }
+
+            // Function to show the current page
+            function showPage(page) {
+                var visibleRows = getVisibleRows();
+                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
+
+                // Ensure currentPage is within valid range
+                if (page < 1) page = 1;
+                if (page > totalPages) page = totalPages;
+
+                var startIndex = (page - 1) * recordsPerPage;
+                var endIndex = startIndex + recordsPerPage;
+
+                // Hide all rows first
+                $('#membersTable tbody tr').hide();
+
+                // Show only the rows for the current page
+                visibleRows.slice(startIndex, endIndex).show();
+
+                // Update page info
+                $('#pageInfo').text(`Page ${page} of ${totalPages} (${visibleRows.length} records)`);
+
+                // Enable/disable pagination buttons
+                $('#prevPage').prop('disabled', page === 1);
+                $('#nextPage').prop('disabled', page === totalPages || visibleRows.length === 0);
+            }
+
+            // Function to update pagination
+            function updatePagination() {
+                var visibleRows = getVisibleRows();
+                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
+
+                if (currentPage > totalPages) {
+                    currentPage = totalPages > 0 ? totalPages : 1;
+                }
+
+                showPage(currentPage);
+            }
+
+            // Event listener for records per page dropdown
+            $('#recordsPerPage').on('change', function () {
+                recordsPerPage = parseInt($(this).val());
+                currentPage = 1; // Reset to the first page
+                updatePagination();
             });
 
-            // Initial sort on page load
+            // Event listener for previous page button
+            $('#prevPage').on('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            // Event listener for next page button
+            $('#nextPage').on('click', function () {
+                var visibleRows = getVisibleRows();
+                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
+
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // Filter function
+            function filterTable() {
+                currentPage = 1; // Reset to the first page
+                updatePagination();
+            }
+
+            // Attach filter function to input events
+            $('#memberNameFilter, #membershipStatusFilter').on('input change', filterTable);
+
+            // Handle archive/unarchive functionality
+            $('.archive-btn').on('click', function () {
+                const memberId = $(this).data('id');
+                const currentStatus = $(this).data('status').toLowerCase();
+                const newStatus = (currentStatus === 'cancelled') ? 'GoodStanding' : 'Cancelled';
+                const confirmMessage = (currentStatus === 'cancelled')
+                    ? "Are you sure you want to unarchive this member?"
+                    : "Are you sure you want to archive this member?";
+
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Member/ToggleArchive',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        memberId: parseInt(memberId),
+                        newStatus: newStatus
+                    }),
+                    success: function (data) {
+                        alert(data.message);
+                        location.reload();
+                    },
+                    error: function (error) {
+                        console.error("Error:", error);
+                        alert("Failed to update member status.");
+                    }
+                });
+            });
+
+            // Initial page load
+            updatePagination();
+            
+            // Sort the table by name initially
             sortTable(1, "asc");
         });
 
@@ -326,22 +363,6 @@
 
             // Add sorting class to the clicked header
             table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Update sort icon for the clicked header
-            for (i = 1; i < 6; i++) { // Only for sortable columns (1-5)
-                if (i !== columnIndex) {
-                    var iconElement = table.rows[0].getElementsByTagName("th")[i].querySelector(".fas");
-                    if (iconElement) {
-                        iconElement.className = "fas fa-sort";
-                    }
-                }
-            }
-
-            // Update the icon for the sorted column
-            var sortedIconElement = table.rows[0].getElementsByTagName("th")[columnIndex].querySelector(".fas");
-            if (sortedIconElement) {
-                sortedIconElement.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            }
 
             // Perform sorting
             while (switching) {
@@ -377,42 +398,25 @@
                     }
                 }
             }
+            
+            // Update pagination after sorting
+            $(document).ready(function() {
+                updatePagination();
+            });
         }
     </script>
-
     <style>
-        /* Styling for sortable columns */
-        .sortable {
-            position: relative;
-            cursor: pointer;
-        }
-
-            .sortable:hover {
-                background-color: #f5f5f5;
-            }
-
-            .sortable .fas {
-                margin-left: 5px;
-                color: #aaa;
-            }
-
-        .sorted-asc .fa-sort-up,
-        .sorted-desc .fa-sort-down {
-            color: #333;
-        }
-
-        /* Original styles */
         th {
             cursor: pointer;
         }
 
-            th.sorted-asc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
+        th.sorted-asc::after {
+            content: " ▲";
+        }
 
-            th.sorted-desc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
+        th.sorted-desc::after {
+            content: " ▼";
+        }
 
         .pagination {
             display: flex;
@@ -420,9 +424,9 @@
             margin-top: 20px;
         }
 
-            .pagination button {
-                margin: 0 5px;
-            }
+        .pagination button {
+            margin: 0 5px;
+        }
 
         #pageInfo {
             margin: 0 10px;
