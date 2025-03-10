@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrmTechTitans.Data.CrmMigrations
 {
     [DbContext(typeof(CrmContext))]
-    [Migration("20250307045332_Initial")]
+    [Migration("20250310060701_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -306,6 +306,10 @@ namespace CrmTechTitans.Data.CrmMigrations
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");

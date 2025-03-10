@@ -1,4 +1,6 @@
-﻿@model CrmTechTitans.Models.Member
+﻿@using CrmTechTitans.Models.Enumerations
+@model CrmTechTitans.Models.Member
+@using CrmTechTitans.Models 
 
 @{
     ViewData["Title"] = "Member Details";
@@ -95,20 +97,39 @@
                     </a>
                 </span>
             </div>
-            <div class="member-detail">
+            @* <div class="member-detail">
                 <i class="fas fa-calendar-alt"></i>
                 <span>
                     <strong>Member Since:</strong>
                     @Model.MemberSince.ToString("yyyy-MM-dd")
                 </span>
-            </div>
-            <div class="member-detail">
-                <i class="fas fa-phone"></i>
-                <span>
-                    <strong>Last Contact Date:</strong>
-                    @(Model.LastContactDate.HasValue ? Model.LastContactDate.Value.ToString("yyyy-MM-dd") : "N/A")
-                </span>
-            </div>
+            </div> *@
+
+
+
+        <div class="member-detail">
+            <i class="fas fa-calendar-alt"></i>
+            <span>
+                <strong>
+                    @(Model.MembershipStatus == MembershipStatus.Cancelled ? "Cancellation Date" : "Member Since"):
+                </strong>
+                @Model.MemberSince.ToString("yyyy-MM-dd")
+            </span>
+        </div>
+            @if (!string.IsNullOrEmpty(Model.Reason))
+            {
+                <div class="member-detail">
+            <i class="fas fa-calendar-alt"></i>
+            <span>
+                <strong id="reasonLabel" >
+                    Reason: <span id="reasonText">@Model.Reason</span>
+                </strong>
+        
+            </span>
+        </div>
+            }
+            
+
 
             <div class="member-detail">
                 <i class="fas fa-sticky-note"></i>

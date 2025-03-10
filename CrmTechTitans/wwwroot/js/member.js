@@ -136,12 +136,24 @@
                 return;
             }
 
+            // If status is being set to 'Cancelled', prompt for a reason
+            let reason = "";
+            if (newStatus === 'Cancelled') {
+                reason = prompt("Please provide a reason for archiving this member:");
+                if (!reason || reason.trim() === "") {
+                    alert("Archiving reason is required.");
+                    return; // Stop if no reason is provided
+                }
+            }
+
             fetch(`/Member/ToggleArchive`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     memberId: parseInt(memberId),
-                    newStatus: newStatus
+                    newStatus: newStatus,
+                    reason: reason // Include the reason here
+
                 })
             })
                 .then(response => {
@@ -160,6 +172,38 @@
                 });
         });
     });
+
+
+    // Update table header based on the selected status filter
+    function updateTableHeader() {
+        const statusFilter = document.getElementById('membershipStatusFilter').value;
+        const tableHeader = document.querySelector('#membersTable thead tr');
+
+        // If the selected status is 'Cancelled', change the column heading for 'Member Since'
+        if (statusFilter === 'Cancelled') {
+            tableHeader.querySelectorAll('th')[4].textContent = 'Cancelled Date'; // Modify the 5th column header
+        } else {
+            // Otherwise, keep it as 'Member Since'
+            tableHeader.querySelectorAll('th')[4].textContent = 'Member Since';
+        }
+    }
+
+    // Add event listener to update the table header whenever the filter changes
+    membershipStatusFilter.addEventListener('change', updateTableHeader);
+
+    // Call this function initially when the page loads
+    updateTableHeader();
+
+
+    // Get the label element
+    const labelElement = document.getElementById("membership-label");
+
+    if (labelElement) {
+        const status = labelElement.getAttribute("data-status").trim().toLowerCase();
+
+        // Change the label text dynamically
+        labelElement.textContent = (status === "Cancelled") ? "Cancellation Date:" : "Member Since:";
+    }
 });
 // Sort the table by member name in ascending order on page load
 sortTable(1, "asc"); // 0 is the index for the member name column

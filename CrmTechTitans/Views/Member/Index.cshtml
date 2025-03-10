@@ -36,7 +36,7 @@
             </div>
             <div class="filter-item">
                 <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
-                <select id="membershipStatusFilter" class="form-select">
+                <select id="membershipStatusFilter" class="form-select" onchange="updateTableHeader()">
                     <option value="">All Statuses</option>
                     <option value="GoodStanding">Good Standing</option>
                     <option value="OutStanding">Out Standing</option>
@@ -117,7 +117,7 @@
             </div>
         }
     </section>
-
+ 
     <!-- Helper text for sorting in table view - Now visible -->
     <div class="alert alert-info mb-3" id="table-sort-info">
         <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
@@ -165,7 +165,9 @@
                             }
                         </td>
                         <td>@item.CompanySize</td>
-                        <td>@item.MemberSince.ToShortDateString()</td>
+                        <td class="dateColumn">
+                            @(item.MembershipStatus == MembershipStatus.Cancelled ? item.MemberSince.ToShortDateString() ?? "N/A" : item.MemberSince.ToShortDateString())
+                        </td>
                         <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
                         <td class="text-center">
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View member edit page">Edit</a>
