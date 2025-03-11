@@ -5,6 +5,7 @@
     ViewData["Title"] = "Create Member";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var hasValidationErrors = ViewBag.HasValidationErrors ?? false;
+    var currentStep = Context.Session.GetInt32("currentFormStep") ?? 0;
 }
 
 <link rel="stylesheet" href="~/css/multi-step-form.css" />
@@ -37,7 +38,7 @@
         </div>
 
         <div class="card-body p-4">
-            <form asp-action="Create" method="post" id="multiStepForm" enctype="multipart/form-data" data-has-validation-errors="@hasValidationErrors.ToString().ToLower()">
+            <form asp-action="Create" method="post" id="multiStepForm" enctype="multipart/form-data" data-has-validation-errors="@hasValidationErrors.ToString().ToLower()" data-current-step="@currentStep">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                 <p class="text-muted small mb-4"><span class="text-danger">*</span> Indicates a required field.</p>
 
@@ -60,7 +61,7 @@
                             <label asp-for="MemberPhoto" class="form-label">Company Picture</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-image"></i></span>
-                                <input asp-for="MemberPhoto" type="file" class="form-control" name="MemberPicture" id="MemberPicture" onchange="previewImage(this, 'memberPhotoPreview')" />
+                                <input asp-for="MemberPhoto" type="file" class="form-control" name="memberPicture" id="MemberPicture" onchange="previewImage(this, 'memberPhotoPreview')" />
                             </div>
                             <div class="mt-2" style="max-width: 150px;">
                                 <img id="memberPhotoPreview" class="img-fluid d-none border rounded" src="#" alt="Preview" />
@@ -98,7 +99,7 @@
                                 <label asp-for="CompanyWebsite" class="form-label">Company Website <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                    <input asp-for="CompanyWebsite" class="form-control" placeholder="Ex. https://www.companywebsite.com" />
+                                    <input asp-for="CompanyWebsite" class="form-control required" placeholder="Ex. https://www.companywebsite.com" />
                                 </div>
                                 <span class="text-danger d-none companywebsite-error">Company Website is required</span>
                                 <span asp-validation-for="CompanyWebsite" class="text-danger"></span>
@@ -108,8 +109,9 @@
                                 <label asp-for="ContactedBy" class="form-label">Contact<span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-                                    <input asp-for="ContactedBy" class="form-control" placeholder="Enter contact person" />
+                                    <input asp-for="ContactedBy" class="form-control required" placeholder="Enter contact person" />
                                 </div>
+                                <span class="text-danger d-none contactedby-error">Contact person is required</span>
                                 <span asp-validation-for="ContactedBy" class="text-danger"></span>
                             </div>
                         </div>
@@ -130,11 +132,12 @@
 
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3 mb-md-0">
-                            <label asp-for="MemberSince" class="form-label">Member Since</label>
+                            <label asp-for="MemberSince" class="form-label">Member Since <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                <input asp-for="MemberSince" class="form-control" type="date" />
+                                <input asp-for="MemberSince" class="form-control required" type="date" />
                             </div>
+                            <span class="text-danger d-none membersince-error">Member Since date is required</span>
                             <span asp-validation-for="MemberSince" class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
@@ -148,11 +151,12 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="Notes" class="form-label">Notes</label>
+                        <label asp-for="Notes" class="form-label">Notes <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                            <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Enter any additional notes"></textarea>
+                            <textarea asp-for="Notes" class="form-control required" rows="4" placeholder="Enter any additional notes"></textarea>
                         </div>
+                        <span class="text-danger d-none notes-error">Notes are required</span>
                         <span asp-validation-for="Notes" class="text-danger"></span>
                     </div>
 
@@ -220,8 +224,8 @@
                                             <span asp-validation-for="Addresses[i].PostalCode" class="text-danger"></span>
                                         </div>
                                         <div class="col-md-4">
-                                            <label asp-for="Addresses[i].AddressType" class="form-label">Address Type</label>
-                                            <select asp-for="Addresses[i].AddressType" class="form-select" asp-items="Html.GetEnumSelectList<AddressType>()">
+                                            <label asp-for="Addresses[i].AddressType" class="form-label">Address Type <span class="text-danger">*</span></label>
+                                            <select asp-for="Addresses[i].AddressType" class="form-select required-address" asp-items="Html.GetEnumSelectList<AddressType>()">
                                                 <option value="">Select Address Type</option>
                                             </select>
                                             <span asp-validation-for="Addresses[i].AddressType" class="text-danger"></span>
@@ -236,6 +240,7 @@
                         <i class="fas fa-plus me-1"></i> Add Address
                     </button>
                     <div class="address-validation-message text-danger d-none mb-3">Please complete at least one address with all required fields</div>
+                    <span asp-validation-for="Addresses" class="text-danger"></span>
 
                     <div class="d-flex justify-content-between mt-4">
                         <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-left me-1"></i> Back</button>
@@ -275,10 +280,10 @@
                                             <span asp-validation-for="Contacts[i].FirstName" class="text-danger"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label asp-for="Contacts[i].LastName" class="form-label">Last Name</label>
+                                            <label asp-for="Contacts[i].LastName" class="form-label">Last Name <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                                <input asp-for="Contacts[i].LastName" class="form-control" placeholder="Enter last name" />
+                                                <input asp-for="Contacts[i].LastName" class="form-control required-contact" placeholder="Enter last name" />
                                             </div>
                                             <span asp-validation-for="Contacts[i].LastName" class="text-danger"></span>
                                         </div>
@@ -286,10 +291,10 @@
 
                                     <div class="row mb-3">
                                         <div class="col-md-6 mb-3 mb-md-0">
-                                            <label asp-for="Contacts[i].Email" class="form-label">Email</label>
+                                            <label asp-for="Contacts[i].Email" class="form-label">Email <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                                <input asp-for="Contacts[i].Email" class="form-control" placeholder="Enter email" type="email" />
+                                                <input asp-for="Contacts[i].Email" class="form-control required-contact" placeholder="Enter email" type="email" />
                                             </div>
                                             <span asp-validation-for="Contacts[i].Email" class="text-danger"></span>
                                         </div>
@@ -308,15 +313,15 @@
                                             <label asp-for="Contacts[i].ContactPhoto" class="form-label">Contact Photo</label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-camera"></i></span>
-                                                <input asp-for="Contacts[i].ContactPhoto" type="file" class="form-control" name="ContactPicture" accept="image/*" onchange="previewContactImage(this, @i)" />
+                                                <input asp-for="Contacts[i].ContactPhoto" type="file" class="form-control" name="contactPicture" accept="image/*" onchange="previewContactImage(this, @i)" />
                                             </div>
                                             <div class="mt-2" style="max-width: 150px;">
                                                 <img class="img-fluid d-none border rounded contact-preview" id="contact-preview-@i" src="#" alt="Preview" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label asp-for="Contacts[i].ContactType" class="form-label">Contact Type</label>
-                                            <select asp-for="Contacts[i].ContactType" class="form-select" asp-items="Html.GetEnumSelectList<ContactType>()">
+                                            <label asp-for="Contacts[i].ContactType" class="form-label">Contact Type <span class="text-danger">*</span></label>
+                                            <select asp-for="Contacts[i].ContactType" class="form-select required-contact" asp-items="Html.GetEnumSelectList<ContactType>()">
                                                 <option value="">Select Contact Type</option>
                                             </select>
                                             <span asp-validation-for="Contacts[i].ContactType" class="text-danger"></span>
@@ -331,6 +336,7 @@
                         <i class="fas fa-plus me-1"></i> Add Contact
                     </button>
                     <div class="contact-validation-message text-danger d-none mb-3">Please complete at least one contact with all required fields</div>
+                    <span asp-validation-for="Contacts" class="text-danger"></span>
 
                     <div class="card mb-4">
                         <div class="card-header bg-light">
@@ -346,6 +352,7 @@
                                 </select>
                                 <small class="form-text text-muted">Hold Ctrl (or Cmd on Mac) to select multiple industries</small>
                                 <div class="industry-validation-message text-danger d-none mt-2">Please select at least one industry</div>
+                                <span asp-validation-for="SelectedIndustryIds" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -374,9 +381,10 @@
             const hasErrors = form.getAttribute("data-has-validation-errors") === "true";
             
             if (hasErrors) {
-                // If there are validation errors, retrieve the last active step from session storage
-                const lastStep = parseInt(sessionStorage.getItem("currentFormStep") || "0");
-                // This will be handled by the multi-step-form.js script
+                // If there are validation errors, retrieve the current step from the form data attribute
+                const currentStep = parseInt(form.getAttribute("data-current-step") || "0");
+                // Store it in session storage for the multi-step-form.js script to use
+                sessionStorage.setItem("currentFormStep", currentStep);
             }
         });
     </script>
