@@ -25,6 +25,7 @@
                 <label for="memberNameFilter" class="form-label">Search by Member Name</label>
                 <input type="text" id="memberNameFilter" class="form-control" placeholder="Enter member name">
             </div>
+
             <div class="filter-item">
                 <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
                 <select id="membershipStatusFilter" class="form-select">
@@ -38,6 +39,10 @@
     </section>
 
     <section class="table-responsive">
+        <div class="alert alert-info d-flex align-items-center py-2" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Click on column headers to sort the table.
+        </div>
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
@@ -111,10 +116,10 @@
             </select>
         </div>
         <!-- Pagination Controls -->
-        <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center">
-            <button id="prevPage" class="btn btn-primary me-2">Previous</button>
-            <span id="pageInfo"></span>
-            <button id="nextPage" class="btn btn-primary ms-2">Next</button>
+        <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center gap-3">
+            <button id="prevPage" class="btn btn-primary pagination-btn">Previous</button>
+            <span id="pageInfo" class="pagination-info">Page 1 of 4 (16 records)</span>
+            <button id="nextPage" class="btn btn-primary pagination-btn">Next</button>
         </div>
     </div>
 </div>
@@ -337,7 +342,7 @@
 
             // Initial page load
             updatePagination();
-            
+
             // Sort the table by name initially
             sortTable(1, "asc");
         });
@@ -398,7 +403,7 @@
                     }
                 }
             }
-            
+
             // Update pagination after sorting
             $(document).ready(function() {
                 updatePagination();
@@ -410,13 +415,13 @@
             cursor: pointer;
         }
 
-        th.sorted-asc::after {
-            content: " ▲";
-        }
+            th.sorted-asc::after {
+                content: " ▲";
+            }
 
-        th.sorted-desc::after {
-            content: " ▼";
-        }
+            th.sorted-desc::after {
+                content: " ▼";
+            }
 
         .pagination {
             display: flex;
@@ -424,13 +429,40 @@
             margin-top: 20px;
         }
 
-        .pagination button {
-            margin: 0 5px;
-        }
+            .pagination button {
+                margin: 0 5px;
+            }
 
         #pageInfo {
             margin: 0 10px;
             line-height: 2;
+        }
+
+        /* Pagination button styling */
+        .pagination-btn {
+            min-width: 100px;
+            width: 100px;
+            height: 38px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.375rem 0.75rem;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: #6c757d;
+            padding: 0 10px;
+        }
+
+        /* Custom alert styling to match the design */
+        .alert-info {
+            background-color: #e8f4ff;
+            border: none;
+            color: #2c5282;
+            font-size: 14px;
+            border-radius: 4px;
         }
     </style>
 }
