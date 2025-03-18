@@ -239,10 +239,28 @@
                 </a>
             </div>
             
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="nav-section">
+                    <div class="nav-section-title">ADMINISTRATION</div>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" ? "active" : "")"
+                       asp-area="" asp-controller="UserManagement" asp-action="Index">
+                        <i class="fas fa-user-shield"></i> User Management
+                    </a>
+                </div>
+            }
+            
             <div class="sidebar-footer">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-user-circle me-2"></i>
-                    <span>Administrator</span>
+                    <span>@User.Identity?.Name</span>
+                </div>
+                <div class="mt-2">
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="btn btn-sm btn-outline-light w-100">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -258,14 +276,17 @@
     <footer class="border-top footer text-muted"></footer>
 
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Load Chart.js first -->
     <script src="https://cdn.jsdelivr.net/npm/date-fns"></script> <!-- Required by the adapter -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script> <!-- Then the date adapter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    
+    <!-- Toast Notifications -->
+    <partial name="_Notification" />
 
     <!-- Navigation Script -->
     <script>

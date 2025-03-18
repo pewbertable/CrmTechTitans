@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Interaction>
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "All Interactions";
@@ -12,9 +13,12 @@
         <header class="page-header">
             <h1>All Interactions</h1>
             <div class="d-flex align-items-center gap-3">
-                <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new interaction to the system">
-                    <i class="fas fa-user-plus"></i> Create New Interaction
-                </a>
+                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                {
+                    <a asp-action="Create" class="btn btn-danger" data-bs-toggle="tooltip" title="Add a new interaction to the system">
+                        <i class="fas fa-user-plus"></i> Create New Interaction
+                    </a>
+                }
             </div>
         </header>
 
@@ -55,12 +59,12 @@
                             <td>@item.Date.ToString("yyyy-MM-dd")</td>
                             <td>@item.Contact?.FullFormalName</td>
                             <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
-                                    Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details">
-                                    Details
-                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Details</a>
+                                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                }
                             </td>
                         </tr>
                     }

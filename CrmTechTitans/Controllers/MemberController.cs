@@ -5,6 +5,7 @@ using CrmTechTitans.Models.JoinTables;
 using CrmTechTitans.Models.ViewModels;
 using CrmTechTitans.Utilities;
 using CrmTechTitans.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace CrmTechTitans.Controllers
 {
+    [Authorize]
     public class MemberController : Controller
     {
         private readonly CrmContext _context;
@@ -73,6 +75,7 @@ namespace CrmTechTitans.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public IActionResult ToggleArchive([FromBody] MembershipStatusUpdateVM model)
         {
             if (model == null || string.IsNullOrWhiteSpace(model.NewStatus))
@@ -102,6 +105,7 @@ namespace CrmTechTitans.Controllers
 
 
         // GET: Member/Create
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public IActionResult Create()
         {
             var model = new MemberCreateViewModel
@@ -132,6 +136,7 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Create(MemberCreateViewModel model, IFormFile? memberPicture, IFormFile? contactPicture)
         {
             // Validate required collections
@@ -351,6 +356,7 @@ namespace CrmTechTitans.Controllers
         }
 
         //GET Edit
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -435,7 +441,8 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model, string? chkRemoveMemberImage, string? chkRemoveContactImage, IFormFile? memberPicture, IFormFile? contactPicture)
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
+        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model, string? chkRemoveMemberImage, IFormFile? memberPicture)
         {
             if (id != model.ID)
             {
@@ -450,16 +457,8 @@ namespace CrmTechTitans.Controllers
                     var member = await _context.Members
                         .Include(m => m.MemberPhoto)
                         .Include(m => m.MemberThumbnail)
-                        .Include(m => m.MemberContacts)
-                        .ThenInclude(mc => mc.Contact)
-                        .ThenInclude(c => c.ContactPhoto)
-                        .Include(m => m.MemberContacts)
-                        .ThenInclude(mc => mc.Contact)
-                        .ThenInclude(c => c.ContactThumbnail)
-                        .Include(m => m.MemberAddresses)
-                        .ThenInclude(ma => ma.Address)
-                        .Include(m => m.IndustryMembers)
                         .Include(m => m.MemberMembershipTypes)
+                        .Include(m => m.IndustryMembers)
                         .FirstOrDefaultAsync(m => m.ID == id);
 
                     if (member == null)
@@ -494,179 +493,6 @@ namespace CrmTechTitans.Controllers
                         if (model.MemberThumbnail != null) member.MemberThumbnail = model.MemberThumbnail;
                     }
 
-                    // Update Addresses
-                    // Create a list to track addresses to keep
-                    var addressesToKeep = new List<int>();
-                    
-                    foreach (var addressModel in model.Addresses)
-                    {
-                        // Skip empty addresses
-                        if (string.IsNullOrWhiteSpace(addressModel.Street) && 
-                            string.IsNullOrWhiteSpace(addressModel.City))
-                        {
-                            continue;
-                        }
-                        
-                        if (addressModel.ID > 0)
-                        {
-                            // This is an existing address
-                            var existingAddress = member.MemberAddresses
-                                .FirstOrDefault(a => a.Address != null && a.Address.ID == addressModel.ID);
-
-                            if (existingAddress != null)
-                            {
-                                // Update existing address
-                                existingAddress.Address.Street = addressModel.Street;
-                                existingAddress.Address.City = addressModel.City;
-                                existingAddress.Address.Province = addressModel.Province;
-                                existingAddress.Address.PostalCode = addressModel.PostalCode;
-                                existingAddress.Address.AddressType = addressModel.AddressType;
-                                
-                                // Add to the list of addresses to keep
-                                addressesToKeep.Add(addressModel.ID);
-                            }
-                        }
-                        else
-                        {
-                            // This is a new address
-                            var newAddress = new Address
-                            {
-                                Street = addressModel.Street,
-                                City = addressModel.City,
-                                Province = addressModel.Province,
-                                PostalCode = addressModel.PostalCode,
-                                AddressType = addressModel.AddressType
-                            };
-                            
-                            member.MemberAddresses.Add(new MemberAddress
-                            {
-                                Address = newAddress
-                            });
-                        }
-                    }
-                    
-                    // Remove addresses that are no longer in the model
-                    var addressesToRemove = member.MemberAddresses
-                        .Where(ma => ma.Address != null && !addressesToKeep.Contains(ma.Address.ID))
-                        .ToList();
-                        
-                    foreach (var addressToRemove in addressesToRemove)
-                    {
-                        member.MemberAddresses.Remove(addressToRemove);
-                        if (addressToRemove.Address != null)
-                        {
-                            _context.Addresses.Remove(addressToRemove.Address);
-                        }
-                    }
-
-                    // Update Contacts
-                    // Create a list to track contacts to keep
-                    var contactsToKeep = new List<int>();
-                    
-                    foreach (var contactModel in model.Contacts)
-                    {
-                        // Skip empty contacts
-                        if (string.IsNullOrWhiteSpace(contactModel.FirstName) && 
-                            string.IsNullOrWhiteSpace(contactModel.Phone))
-                        {
-                            continue;
-                        }
-                        
-                        if (contactModel.ID > 0)
-                        {
-                            // This is an existing contact
-                            var existingContact = member.MemberContacts
-                                .FirstOrDefault(c => c.Contact != null && c.Contact.ID == contactModel.ID);
-
-                            if (existingContact != null)
-                            {
-                                // Check for duplicate contact info excluding the current contact
-                                if (ContactExists(contactModel.Email, contactModel.Phone, contactModel.ID))
-                                {
-                                    ModelState.AddModelError("", "A contact with the same email or phone number already exists.");
-                                    return View(model);
-                                }
-
-                                // Update existing contact
-                                existingContact.Contact.FirstName = contactModel.FirstName;
-                                existingContact.Contact.LastName = contactModel.LastName;
-                                existingContact.Contact.Email = contactModel.Email;
-                                existingContact.Contact.Phone = contactModel.Phone;
-                                existingContact.Contact.ContactType = contactModel.ContactType;
-                                
-                                // Add to the list of contacts to keep
-                                contactsToKeep.Add(contactModel.ID);
-                                
-                                // Handle contact photo if needed
-                                if (chkRemoveContactImage != null)
-                                {
-                                    if (existingContact.Contact.ContactPhoto != null)
-                                        _context.ContactPhotos.Remove(existingContact.Contact.ContactPhoto);
-                                    if (existingContact.Contact.ContactThumbnail != null)
-                                        _context.ContactThumbnails.Remove(existingContact.Contact.ContactThumbnail);
-                                    existingContact.Contact.ContactPhoto = null;
-                                    existingContact.Contact.ContactThumbnail = null;
-                                }
-                                else if (contactPicture != null)
-                                {
-                                    await AddContactPicture(contactModel, contactPicture);
-                                    if (contactModel.ContactPhoto != null) existingContact.Contact.ContactPhoto = contactModel.ContactPhoto;
-                                    if (contactModel.ContactThumbnail != null) existingContact.Contact.ContactThumbnail = contactModel.ContactThumbnail;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // This is a new contact
-                            // Check for duplicate contact info for new contacts
-                            if (ContactExists(contactModel.Email, contactModel.Phone))
-                            {
-                                ModelState.AddModelError("", "A contact with the same email or phone number already exists.");
-                                return View(model);
-                            }
-
-                            // Add new contact
-                            var newContact = new Contact
-                            {
-                                FirstName = contactModel.FirstName,
-                                LastName = contactModel.LastName,
-                                Email = contactModel.Email,
-                                Phone = contactModel.Phone,
-                                ContactType = contactModel.ContactType
-                            };
-                            
-                            // Handle contact photo if needed
-                            await AddContactPicture(contactModel, contactPicture);
-                            if (contactModel.ContactPhoto != null) newContact.ContactPhoto = contactModel.ContactPhoto;
-                            if (contactModel.ContactThumbnail != null) newContact.ContactThumbnail = contactModel.ContactThumbnail;
-                            
-                            member.MemberContacts.Add(new MemberContact
-                            {
-                                Contact = newContact
-                            });
-                        }
-                    }
-                    
-                    // Remove contacts that are no longer in the model
-                    var contactsToRemove = member.MemberContacts
-                        .Where(mc => mc.Contact != null && !contactsToKeep.Contains(mc.Contact.ID))
-                        .ToList();
-                        
-                    foreach (var contactToRemove in contactsToRemove)
-                    {
-                        member.MemberContacts.Remove(contactToRemove);
-                        if (contactToRemove.Contact != null)
-                        {
-                            // Remove contact photos if they exist
-                            if (contactToRemove.Contact.ContactPhoto != null)
-                                _context.ContactPhotos.Remove(contactToRemove.Contact.ContactPhoto);
-                            if (contactToRemove.Contact.ContactThumbnail != null)
-                                _context.ContactThumbnails.Remove(contactToRemove.Contact.ContactThumbnail);
-                                
-                            _context.Contacts.Remove(contactToRemove.Contact);
-                        }
-                    }
-
                     // Update Industries - clear and re-add
                     member.IndustryMembers.Clear();
                     foreach (var industryId in model.SelectedIndustryIds)
@@ -688,7 +514,7 @@ namespace CrmTechTitans.Controllers
                     _context.Update(member);
                     await _context.SaveChangesAsync();
 
-                    TempData["success"] = "Member edited successfully";
+                    TempData["success"] = "Member edited successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -711,7 +537,7 @@ namespace CrmTechTitans.Controllers
             }
             
             // If we get here, something failed, redisplay form
-            // Repopulate available industries
+            // Repopulate available industries and membership types
             model.AvailableIndustries = _context.Industries
                 .Select(industry => new IndustryViewModel
                 {
@@ -720,7 +546,6 @@ namespace CrmTechTitans.Controllers
                     NAICS = industry.NAICS
                 }).ToList();
 
-            // Reload membership types
             model.AvailableMembershipTypes = _context.MembershipTypes
                 .Select(m => new MembershipTypeViewModel
                 {
@@ -731,6 +556,7 @@ namespace CrmTechTitans.Controllers
             return View(model);
         }
         // GET: Member/Delete/5
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -751,6 +577,7 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Members
@@ -766,6 +593,10 @@ namespace CrmTechTitans.Controllers
 
         private bool ContactExists(string email, string phone, int? excludeContactId = null)
         {
+            // If both email and phone are empty, there's nothing to check
+            if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(phone))
+                return false;
+
             var query = _context.Contacts.AsQueryable();
 
             if (excludeContactId.HasValue)
@@ -773,7 +604,10 @@ namespace CrmTechTitans.Controllers
                 query = query.Where(c => c.ID != excludeContactId.Value);
             }
 
-            return query.Any(c => c.Email == email || c.Phone == phone);
+            // Check for duplicates if either email OR phone match (when they're not empty)
+            return query.Any(c => 
+                (!string.IsNullOrEmpty(email) && c.Email == email) || 
+                (!string.IsNullOrEmpty(phone) && c.Phone == phone));
         }
 
         private bool MemberExists(int id)

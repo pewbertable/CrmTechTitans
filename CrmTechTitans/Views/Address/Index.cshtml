@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Address>
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "All Addresses";
@@ -9,8 +10,14 @@
 
 <div class="crm-container">
     <div class="main-content">
-        <header class="page-header">
+        <header class="page-header d-flex justify-content-between align-items-center mb-4">
             <h1>All Municipalities</h1>
+            @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+            {
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i> Create New Municipality
+                </a>
+            }
         </header>
 
         <!-- Helper text for sorting -->
@@ -58,8 +65,12 @@
                             <td>@item.City</td>
                             <td>@item.Province</td>
                             <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
                                 <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details">Details</a>
+                                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">Delete</a>
+                                }
                             </td>
                         </tr>
                     }
