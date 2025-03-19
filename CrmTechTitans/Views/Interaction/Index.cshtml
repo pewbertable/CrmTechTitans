@@ -39,51 +39,42 @@
             Click on column headers to sort the table.
         </div>
 
-        <!-- Search Input -->
-        <div class="filter-container">
-            <label for="memberNameFilter" class="filter-label">Filter interactions by member name:</label>
-            <input type="text" id="memberNameFilter" class="form-control search-input" placeholder="Search by Member Name..." onkeyup="filterTable()">
-        </div>
-        <p></p>
-        <section class="members-table-container">
-            <table class="table custom-table" id="interactionTable">
-                <thead>
+        <table class="table custom-table" id="interactionTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)" class="sortable">Associated Members <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(1)" class="sortable">Interaction <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)" class="sortable">Date <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3)" class="sortable">Contact <i class="fas fa-sort"></i></th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
                     <tr>
-                        <th onclick="sortTable(0)" class="sortable">Associated Members <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable(1)" class="sortable">Interaction <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable(2)" class="sortable">Date <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable(3)" class="sortable">Contact <i class="fas fa-sort"></i></th>
-                        <th class="text-center">Actions</th>
+                        <td class="member-name">
+                            @(item.InteractionMembers.Any()
+                                ? string.Join(", ", item.InteractionMembers
+                                .Where(im => im.Member != null)
+                                .Select(im => im.Member.MemberName))
+                                : "No Member Associated")
+                        </td>
+                        <td>@item.InteractionDetails</td>
+                        <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                        <td>@item.Contact?.FullFormalName</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit interaction details">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View interaction details">Details</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="member-name">
-                                @(item.InteractionMembers.Any()
-                                    ? string.Join(", ", item.InteractionMembers
-                                    .Where(im => im.Member != null)
-                                    .Select(im => im.Member.MemberName))
-                                    : "No Member Associated")
-                            </td>
-                            <td>@item.InteractionDetails</td>
-                            <td>@item.Date.ToString("yyyy-MM-dd")</td>
-                            <td>@item.Contact?.FullFormalName</td>
-                            <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-edit">
-                                    Edit
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-details">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
+    </section>
 
-        </section>
+    <!-- Pagination Controls -->
+    <div class="row mt-4">
         <!-- Records per page -->
         <div class="col-md-4">
             <label for="recordsPerPage">Records per page:</label>

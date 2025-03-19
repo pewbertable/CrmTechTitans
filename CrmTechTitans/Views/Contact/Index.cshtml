@@ -83,9 +83,13 @@
                             </td>
                             <td>@item.Email</td>
                             <td>@item.Phone</td>
-                            <td class="text-center action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-edit" data-bs-toggle="tooltip" title="Edit contact details">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-details" data-bs-toggle="tooltip" title="View full contact details">Details</a>
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View contact details">Details</a>
+                                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit contact">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete contact">Delete</a>
+                                }
                             </td>
                         </tr>
                     }
