@@ -7,6 +7,7 @@ using CrmTechTitans.Utilities;
 using CrmTechTitans.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -78,30 +79,47 @@ namespace CrmTechTitans.Controllers
         [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public IActionResult ToggleArchive([FromBody] MembershipStatusUpdateVM model)
         {
+            // Check if the model or new status is invalid
             if (model == null || string.IsNullOrWhiteSpace(model.NewStatus))
             {
                 return BadRequest(new { message = "Invalid request data." });
             }
 
+            // Find the member in the database
             var member = _context.Members.Find(model.MemberId);
             if (member == null)
             {
                 return NotFound(new { message = "Member not found." });
             }
 
-            Console.WriteLine($"Received MemberId: {model.MemberId}, NewStatus: {model.NewStatus}");
-
+            // Attempt to parse the new status to the MembershipStatus enum
             if (!Enum.TryParse(model.NewStatus, true, out MembershipStatus newStatus))
             {
                 return BadRequest(new { message = "Invalid membership status." });
             }
 
-            // Update and save status
+            if (newStatus == MembershipStatus.Cancelled)
+            {
+                member.MemberSince = DateTime.Today; // Store the current date
+            }
+
+            // Update member's status and reason
             member.MembershipStatus = newStatus;
+
+            // Set the reason if provided (check if Reason is provided in the model)
+            if (!string.IsNullOrWhiteSpace(model.reason))
+            {
+                member.Reason = model.reason;  // Update the reason field with the reason provided
+            }
+
+            // Save changes to the database
             _context.SaveChanges();
 
+            // Return success message
             return Ok(new { message = $"Member status updated to {newStatus}" });
         }
+
+
 
 
         // GET: Member/Create
@@ -277,7 +295,8 @@ namespace CrmTechTitans.Controllers
                     // Save to Database
                     _context.Members.Add(member);
                     await _context.SaveChangesAsync();
-                    
+                                    TempData["message"] = "Member Added successfully";
+
                     TempData["success"] = "Member created successfully!";
                     return RedirectToAction(nameof(Index));
                 }

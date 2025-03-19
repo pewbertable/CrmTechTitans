@@ -71,7 +71,8 @@ namespace CrmTechTitans.Data.CrmMigrations
                     MemberSince = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LastContactDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Notes = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    MembershipStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    MembershipStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    Reason = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -32,7 +32,7 @@
 
             <div class="filter-item">
                 <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
-                <select id="membershipStatusFilter" class="form-select">
+                <select id="membershipStatusFilter" class="form-select" onchange="updateTableHeader()">
                     <option value="">All Statuses</option>
                     <option value="GoodStanding">Good Standing</option>
                     <option value="OutStanding">Out Standing</option>
@@ -42,11 +42,85 @@
         </div>
     </section>
 
-    <section class="table-responsive">
-        <div class="alert alert-info d-flex align-items-center py-2" role="alert">
-            <i class="fas fa-info-circle me-2"></i>
-            Click on column headers to sort the table.
-        </div>
+    <section class="members-grid" id="cards-view">
+        @foreach (var item in Model)
+        {
+            <div class="member-card" data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
+                <div class="card-logo">
+                    @if (item.MemberThumbnail?.Content != null)
+                    {
+                        string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
+                        string imageSrc = string.Format("data:{0};base64,{1}", item.MemberThumbnail.MimeType, imageBase64);
+                        <img src="@imageSrc" alt="@item.MemberName Logo" class="img-fluid rounded" />
+                    }
+                    else
+                    {
+                        <i class="fas fa-building"></i>
+                    }
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h2 class="company-name">@item.MemberName</h2>
+                        <span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
+                            @item.MembershipStatus
+                        </span>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <i class="fas fa-users"></i>
+                            <span>@item.CompanySize</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Member since @item.MemberSince.ToString("MMM yyyy")</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
+                        {
+                            <div class="detail-item">
+                                <i class="fas fa-globe"></i>
+                                <a href="@item.CompanyWebsite" target="_blank">Website</a>
+                            </div>
+                        }
+                    </div>
+                    <div class="membership-types">
+                        <h3>Membership Types:</h3>
+                        <p>
+                            @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
+                            {
+                                @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
+                            }
+                            else
+                            {
+                                <span>No Membership Type Assigned</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <a href="javascript:void(0);"
+                       class="btn btn-outline-danger btn-sm archive-btn"
+                       data-id="@item.ID"
+                       data-status="@item.MembershipStatus.ToString()"
+                       data-bs-toggle="tooltip"
+                       title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive this member" : "Archive this member")">
+                        <!-- Dynamically change the icon based on the status -->
+                        <i class="fas fa-archive @(item.MembershipStatus == MembershipStatus.Cancelled ? "fa-undo" : "fa-archive")"></i>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View member details">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+            </div>
+        }
+    </section>
+ 
+    <!-- Helper text for sorting in table view - Now visible -->
+    <div class="alert alert-info mb-3" id="table-sort-info">
+        <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
+    </div>
+
+    <!-- Table view - Now visible -->
+    <section class="table-responsive" id="table-view">
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
@@ -91,7 +165,9 @@
                             }
                         </td>
                         <td>@item.CompanySize</td>
-                        <td>@item.MemberSince.ToShortDateString()</td>
+                        <td class="dateColumn">
+                            @(item.MembershipStatus == MembershipStatus.Cancelled ? item.MemberSince.ToShortDateString() ?? "N/A" : item.MemberSince.ToShortDateString())
+                        </td>
                         <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
                         <td class="text-center">
                             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
