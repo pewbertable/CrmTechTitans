@@ -478,11 +478,36 @@ namespace CrmTechTitans.Controllers
                         .Include(m => m.MemberThumbnail)
                         .Include(m => m.MemberMembershipTypes)
                         .Include(m => m.IndustryMembers)
+                        .Include(m => m.MemberContacts) // Ensure contacts are loaded
+                        .ThenInclude(mc => mc.Contact)
                         .FirstOrDefaultAsync(m => m.ID == id);
 
                     if (member == null)
                     {
                         return NotFound();
+                    }
+
+                    // Check for duplicate contacts before updating
+                    var existingContacts = _context.Contacts.ToList(); // Get all contacts from DB
+
+                    foreach (var contactModel in model.Contacts)
+                    {
+                        if (string.IsNullOrWhiteSpace(contactModel.FirstName) &&
+                            string.IsNullOrWhiteSpace(contactModel.Phone))
+                        {
+                            continue;
+                        }
+
+                        // Check if the contact already exists (same email or phone)
+                        bool contactExists = existingContacts.Any(c =>
+                            (!string.IsNullOrEmpty(contactModel.Email) && c.Email == contactModel.Email) ||
+                            (!string.IsNullOrEmpty(contactModel.Phone) && c.Phone == contactModel.Phone));
+
+                        if (contactExists)
+                        {
+                            TempData["error"] = $"Duplicate contact detected: {contactModel.Email} / {contactModel.Phone}";
+                            continue; // Skip adding the duplicate contact
+                        }
                     }
 
                     // Update Member properties
@@ -495,38 +520,27 @@ namespace CrmTechTitans.Controllers
                     member.Notes = model.Notes;
                     member.MembershipStatus = model.MembershipStatus;
 
-                    // Handle Image Updates
-                    if (chkRemoveMemberImage != null)
+                    // Update Contacts - clear and re-add valid ones
+                    member.MemberContacts.Clear();
+                    foreach (var contactModel in model.Contacts)
                     {
-                        if (member.MemberPhoto != null)
-                            _context.MemberPhotos.Remove(member.MemberPhoto);
-                        if (member.MemberThumbnail != null)
-                            _context.MemberThumbnails.Remove(member.MemberThumbnail);
-                        member.MemberPhoto = null;
-                        member.MemberThumbnail = null;
-                    }
-                    else
-                    {
-                        await AddMemberPicture(model, memberPicture);
-                        if (model.MemberPhoto != null) member.MemberPhoto = model.MemberPhoto;
-                        if (model.MemberThumbnail != null) member.MemberThumbnail = model.MemberThumbnail;
-                    }
-
-                    // Update Industries - clear and re-add
-                    member.IndustryMembers.Clear();
-                    foreach (var industryId in model.SelectedIndustryIds)
-                    {
-                        member.IndustryMembers.Add(new MemberIndustry { IndustryID = industryId });
-                    }
-
-                    // Update Membership Types - clear and re-add
-                    member.MemberMembershipTypes.Clear();
-                    foreach (var membershipTypeId in model.SelectedMembershipTypeIDs)
-                    {
-                        member.MemberMembershipTypes.Add(new MemberMembershipType
+                        if (string.IsNullOrWhiteSpace(contactModel.FirstName) &&
+                            string.IsNullOrWhiteSpace(contactModel.Phone))
                         {
-                            MembershipTypeID = membershipTypeId
-                        });
+                            continue;
+                        }
+
+                        var contact = new Contact
+                        {
+                            FirstName = contactModel.FirstName,
+                            LastName = contactModel.LastName,
+                            Email = contactModel.Email,
+                            Phone = contactModel.Phone,
+                            ContactType = contactModel.ContactType,
+                            ContactPhoto = contactModel.ContactPhoto,
+                            ContactThumbnail = contactModel.ContactThumbnail
+                        };
+                        member.MemberContacts.Add(new MemberContact { Contact = contact });
                     }
 
                     // Save changes
@@ -554,9 +568,8 @@ namespace CrmTechTitans.Controllers
                     Console.WriteLine($"Error updating member: {ex.Message}");
                 }
             }
-            
-            // If we get here, something failed, redisplay form
-            // Repopulate available industries and membership types
+
+            // If validation fails, return the form with validation messages
             model.AvailableIndustries = _context.Industries
                 .Select(industry => new IndustryViewModel
                 {
@@ -571,9 +584,12 @@ namespace CrmTechTitans.Controllers
                     ID = m.ID,
                     Name = m.Name
                 }).ToList();
-                
+
             return View(model);
         }
+
+
+
         // GET: Member/Delete/5
         [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Delete(int? id)
@@ -624,10 +640,11 @@ namespace CrmTechTitans.Controllers
             }
 
             // Check for duplicates if either email OR phone match (when they're not empty)
-            return query.Any(c => 
-                (!string.IsNullOrEmpty(email) && c.Email == email) || 
+            return query.Any(c =>
+                (!string.IsNullOrEmpty(email) && c.Email == email) ||
                 (!string.IsNullOrEmpty(phone) && c.Phone == phone));
         }
+
 
         private bool MemberExists(int id)
         {
