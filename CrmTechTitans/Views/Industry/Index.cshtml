@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Industry>
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "All Industries";
@@ -11,9 +12,12 @@
     <header class="page-header d-flex justify-content-between align-items-center mb-4">
         <h1>All Industries</h1>
         <div class="d-flex align-items-center gap-3">
-            <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new Industry to the system">
-                <i class="fas fa-plus-circle"></i> Create New Industry
-            </a>
+                    @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                    {
+                <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new Industry to the system">
+                    <i class="fas fa-plus-circle"></i> Create New Industry
+                </a>
+                    }
         </div>
     </header>
 

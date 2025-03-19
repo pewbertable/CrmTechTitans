@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Address>
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "All Addresses";
@@ -7,10 +8,22 @@
 
 <partial name="_Notification" />
 
-<div class="container-fluid">
-    <header class="page-header d-flex justify-content-between align-items-center mb-4">
-        <h1>All Municipalities</h1>
-    </header>
+<div class="crm-container">
+    <div class="main-content">
+        <header class="page-header d-flex justify-content-between align-items-center mb-4">
+            <h1>All Municipalities</h1>
+            @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+            {
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i> Create New Municipality
+                </a>
+            }
+        </header>
+
+        <!-- Helper text for sorting -->
+        <div class="alert alert-info mb-3">
+            <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
+        </div>
 
     <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">

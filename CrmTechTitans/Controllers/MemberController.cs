@@ -5,6 +5,7 @@ using CrmTechTitans.Models.JoinTables;
 using CrmTechTitans.Models.ViewModels;
 using CrmTechTitans.Utilities;
 using CrmTechTitans.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace CrmTechTitans.Controllers
 {
+    [Authorize]
     public class MemberController : Controller
     {
         private readonly CrmContext _context;
@@ -73,6 +75,7 @@ namespace CrmTechTitans.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public IActionResult ToggleArchive([FromBody] MembershipStatusUpdateVM model)
         {
             if (model == null || string.IsNullOrWhiteSpace(model.NewStatus))
@@ -102,6 +105,7 @@ namespace CrmTechTitans.Controllers
 
 
         // GET: Member/Create
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public IActionResult Create()
         {
             var model = new MemberCreateViewModel
@@ -132,8 +136,61 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Create(MemberCreateViewModel model, IFormFile? memberPicture, IFormFile? contactPicture)
         {
+            // Validate required collections
+            if (model.SelectedMembershipTypeIDs == null || !model.SelectedMembershipTypeIDs.Any())
+            {
+                ModelState.AddModelError("SelectedMembershipTypeIDs", "At least one membership type is required");
+            }
+
+            if (model.SelectedIndustryIds == null || !model.SelectedIndustryIds.Any())
+            {
+                ModelState.AddModelError("SelectedIndustryIds", "At least one industry is required");
+            }
+
+            // Validate addresses
+            bool hasValidAddress = false;
+            if (model.Addresses != null && model.Addresses.Any())
+            {
+                foreach (var address in model.Addresses)
+                {
+                    if (!string.IsNullOrWhiteSpace(address.Street) && 
+                        !string.IsNullOrWhiteSpace(address.City) && 
+                        address.Province != 0)
+                    {
+                        hasValidAddress = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!hasValidAddress)
+            {
+                ModelState.AddModelError("Addresses", "At least one complete address is required");
+            }
+
+            // Validate contacts
+            bool hasValidContact = false;
+            if (model.Contacts != null && model.Contacts.Any())
+            {
+                foreach (var contact in model.Contacts)
+                {
+                    if (!string.IsNullOrWhiteSpace(contact.FirstName) && 
+                        !string.IsNullOrWhiteSpace(contact.Phone))
+                    {
+                        hasValidContact = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!hasValidContact)
+            {
+                ModelState.AddModelError("Contacts", "At least one contact with name and phone is required");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -156,14 +213,22 @@ namespace CrmTechTitans.Controllers
                     // Add Addresses
                     foreach (var addressModel in model.Addresses)
                     {
+                        // Skip empty addresses
+                        if (string.IsNullOrWhiteSpace(addressModel.Street) && 
+                            string.IsNullOrWhiteSpace(addressModel.City))
+                        {
+                            continue;
+                        }
+
                         var address = new Address
                         {
                             Street = addressModel.Street,
                             City = addressModel.City,
                             Province = addressModel.Province,
-                            PostalCode = addressModel.PostalCode
+                            PostalCode = addressModel.PostalCode,
+                            AddressType = addressModel.AddressType
                         };
-                        member.MemberAddresses.Add(new MemberAddress { Address = address, AddressType = addressModel.AddressType });
+                        member.MemberAddresses.Add(new MemberAddress { Address = address });
                     }
 
                     // Assign multiple membership types
@@ -178,6 +243,13 @@ namespace CrmTechTitans.Controllers
                     // Add Contacts
                     foreach (var contactModel in model.Contacts)
                     {
+                        // Skip empty contacts
+                        if (string.IsNullOrWhiteSpace(contactModel.FirstName) && 
+                            string.IsNullOrWhiteSpace(contactModel.Phone))
+                        {
+                            continue;
+                        }
+
                         await AddContactPicture(contactModel, contactPicture);
                         var contact = new Contact
                         {
@@ -185,10 +257,11 @@ namespace CrmTechTitans.Controllers
                             LastName = contactModel.LastName,
                             Email = contactModel.Email,
                             Phone = contactModel.Phone,
+                            ContactType = contactModel.ContactType,
                             ContactPhoto = contactModel.ContactPhoto,
                             ContactThumbnail = contactModel.ContactThumbnail
                         };
-                        member.MemberContacts.Add(new MemberContact { Contact = contact, ContactType = contactModel.ContactType });
+                        member.MemberContacts.Add(new MemberContact { Contact = contact });
                     }
 
                     // Add Selected Industries
@@ -248,10 +321,42 @@ namespace CrmTechTitans.Controllers
             // Add a flag to indicate validation errors
             ViewBag.HasValidationErrors = true;
             
+            // Store the current step in TempData to help the client-side script restore the correct step
+            int currentStep = 0;
+            
+            // Determine which step has validation errors
+            if (ModelState["MemberName"]?.Errors.Count > 0 || 
+                ModelState["CompanySize"]?.Errors.Count > 0 || 
+                ModelState["CompanyWebsite"]?.Errors.Count > 0 || 
+                ModelState["ContactedBy"]?.Errors.Count > 0 ||
+                ModelState["SelectedMembershipTypeIDs"]?.Errors.Count > 0)
+            {
+                currentStep = 0; // Step 1 has errors
+            }
+            else if (ModelState["MemberSince"]?.Errors.Count > 0 || 
+                     ModelState["LastContactDate"]?.Errors.Count > 0 || 
+                     ModelState["Notes"]?.Errors.Count > 0)
+            {
+                currentStep = 1; // Step 2 has errors
+            }
+            else if (ModelState["Addresses"]?.Errors.Count > 0)
+            {
+                currentStep = 2; // Step 3 has errors
+            }
+            else if (ModelState["Contacts"]?.Errors.Count > 0 || 
+                     ModelState["SelectedIndustryIds"]?.Errors.Count > 0)
+            {
+                currentStep = 3; // Step 4 has errors
+            }
+            
+            // Store the current step in session
+            HttpContext.Session.SetInt32("currentFormStep", currentStep);
+            
             return View(model);
         }
 
         //GET Edit
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -336,7 +441,8 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model, string? chkRemoveMemberImage, string? chkRemoveContactImage, IFormFile? memberPicture, IFormFile? contactPicture)
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
+        public async Task<IActionResult> Edit(int id, MemberCreateViewModel model, string? chkRemoveMemberImage, IFormFile? memberPicture)
         {
             if (id != model.ID)
             {
@@ -350,11 +456,9 @@ namespace CrmTechTitans.Controllers
                     // Fetch the existing member from the database
                     var member = await _context.Members
                         .Include(m => m.MemberPhoto)
-                        .Include(m => m.MemberContacts)
-                        .ThenInclude(mc => mc.Contact)
-                        .Include(m => m.MemberAddresses)
-                        .Include(m => m.IndustryMembers)
+                        .Include(m => m.MemberThumbnail)
                         .Include(m => m.MemberMembershipTypes)
+                        .Include(m => m.IndustryMembers)
                         .FirstOrDefaultAsync(m => m.ID == id);
 
                     if (member == null)
@@ -389,111 +493,70 @@ namespace CrmTechTitans.Controllers
                         if (model.MemberThumbnail != null) member.MemberThumbnail = model.MemberThumbnail;
                     }
 
-                    // Update Addresses
-                    foreach (var addressModel in model.Addresses)
+                    // Update Industries - clear and re-add
+                    member.IndustryMembers.Clear();
+                    foreach (var industryId in model.SelectedIndustryIds)
                     {
-                        if (addressModel.ID > 0)
-                        {
-                            var existingAddress = member.MemberAddresses
-                                .FirstOrDefault(a => a.Address != null && a.Address.ID == addressModel.ID);
-
-                            if (existingAddress != null)
-                            {
-                                existingAddress.Address.Street = addressModel.Street;
-                                existingAddress.Address.City = addressModel.City;
-                                existingAddress.Address.Province = addressModel.Province;
-                                existingAddress.Address.PostalCode = addressModel.PostalCode;
-                                existingAddress.AddressType = addressModel.AddressType;
-                            }
-                            else
-                            {
-                                member.MemberAddresses.Add(new MemberAddress
-                                {
-                                    Address = new Address
-                                    {
-                                        Street = addressModel.Street,
-                                        City = addressModel.City,
-                                        Province = addressModel.Province,
-                                        PostalCode = addressModel.PostalCode
-                                    },
-                                    AddressType = addressModel.AddressType
-                                });
-                            }
-                        }
+                        member.IndustryMembers.Add(new MemberIndustry { IndustryID = industryId });
                     }
 
-                    // Update Contacts
-                    foreach (var contactModel in model.Contacts)
+                    // Update Membership Types - clear and re-add
+                    member.MemberMembershipTypes.Clear();
+                    foreach (var membershipTypeId in model.SelectedMembershipTypeIDs)
                     {
-                        var existingContact = member.MemberContacts.FirstOrDefault(c => c.Contact.ID == contactModel.ID);
-                        if (existingContact != null)
-                        {
-                            // Check for duplicate contact info excluding the current contact
-                            if (ContactExists(contactModel.Email, contactModel.Phone, contactModel.ID))
-                            {
-                                ModelState.AddModelError("", "A contact with the same email or phone number already exists.");
-                                return View(model);
-                            }
-
-                            existingContact.Contact.FirstName = contactModel.FirstName;
-                            existingContact.Contact.LastName = contactModel.LastName;
-                            existingContact.Contact.Email = contactModel.Email;
-                            existingContact.Contact.Phone = contactModel.Phone;
-                            existingContact.ContactType = contactModel.ContactType;
-                        }
-                        else
-                        {
-                            // Check for duplicate contact info for new contacts
-                            if (ContactExists(contactModel.Email, contactModel.Phone))
-                            {
-                                ModelState.AddModelError("", "A contact with the same email or phone number already exists.");
-                                return View(model);
-                            }
-
-                            member.MemberContacts.Add(new MemberContact
-                            {
-                                Contact = new Contact
-                                {
-                                    FirstName = contactModel.FirstName,
-                                    LastName = contactModel.LastName,
-                                    Email = contactModel.Email,
-                                    Phone = contactModel.Phone
-                                },
-                                ContactType = contactModel.ContactType
-                            });
-                        }
-                    }
-
-                    // Update Industries
-                    member.IndustryMembers = model.SelectedIndustryIds
-                        .Select(industryId => new MemberIndustry { IndustryID = industryId })
-                        .ToList();
-
-                    // Update Membership Types
-                    member.MemberMembershipTypes = model.SelectedMembershipTypeIDs
-                        .Select(membershipTypeId => new MemberMembershipType
+                        member.MemberMembershipTypes.Add(new MemberMembershipType
                         {
                             MembershipTypeID = membershipTypeId
-                        })
-                        .ToList();
+                        });
+                    }
 
                     // Save changes
                     _context.Update(member);
                     await _context.SaveChangesAsync();
 
-                    TempData["message"] = "Member edited successfully";
+                    TempData["success"] = "Member edited successfully!";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    TempData["errMessage"] = "An error occurred. Failed to edit the member.";
-                    return NotFound();
+                    if (!MemberExists(model.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        TempData["error"] = "An error occurred. Failed to edit the member.";
+                        Console.WriteLine($"Error updating member: {ex.Message}");
+                    }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    TempData["error"] = "An error occurred. Failed to edit the member.";
+                    Console.WriteLine($"Error updating member: {ex.Message}");
+                }
             }
+            
+            // If we get here, something failed, redisplay form
+            // Repopulate available industries and membership types
+            model.AvailableIndustries = _context.Industries
+                .Select(industry => new IndustryViewModel
+                {
+                    ID = industry.ID,
+                    Name = industry.Name,
+                    NAICS = industry.NAICS
+                }).ToList();
 
+            model.AvailableMembershipTypes = _context.MembershipTypes
+                .Select(m => new MembershipTypeViewModel
+                {
+                    ID = m.ID,
+                    Name = m.Name
+                }).ToList();
+                
             return View(model);
         }
         // GET: Member/Delete/5
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -514,6 +577,7 @@ namespace CrmTechTitans.Controllers
         // POST: Member/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await _context.Members
@@ -529,6 +593,10 @@ namespace CrmTechTitans.Controllers
 
         private bool ContactExists(string email, string phone, int? excludeContactId = null)
         {
+            // If both email and phone are empty, there's nothing to check
+            if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(phone))
+                return false;
+
             var query = _context.Contacts.AsQueryable();
 
             if (excludeContactId.HasValue)
@@ -536,7 +604,10 @@ namespace CrmTechTitans.Controllers
                 query = query.Where(c => c.ID != excludeContactId.Value);
             }
 
-            return query.Any(c => c.Email == email || c.Phone == phone);
+            // Check for duplicates if either email OR phone match (when they're not empty)
+            return query.Any(c => 
+                (!string.IsNullOrEmpty(email) && c.Email == email) || 
+                (!string.IsNullOrEmpty(phone) && c.Phone == phone));
         }
 
         private bool MemberExists(int id)

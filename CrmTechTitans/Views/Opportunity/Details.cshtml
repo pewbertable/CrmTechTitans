@@ -1,4 +1,5 @@
 ﻿@model CrmTechTitans.Models.Opportunity
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "Opportunity Details";
@@ -30,9 +31,12 @@
                     <h3 class="text-center mb-3">@Model.Title</h3>
                     
                     <div class="d-grid gap-2">
-                        <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">
-                            <i class="fas fa-edit me-2"></i>Edit
-                        </a>
+                        @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit
+                            </a>
+                        }
                         <a asp-action="Index" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Back to List
                         </a>
@@ -121,4 +125,16 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="mt-4 d-flex justify-content-between">
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i> Back to List
+    </a>
+    @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">
+            <i class="fas fa-edit me-2"></i> Edit Opportunity
+        </a>
+    }
 </div>

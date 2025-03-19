@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-
+// Get identity options from appsettings.json
+var identityOptions = builder.Configuration.GetSection("IdentityOptions");
+var requireConfirmedAccount = identityOptions.GetValue<bool>("SignIn:RequireConfirmedAccount", true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
@@ -16,12 +18,43 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<CrmContext>(options =>
     options.UseSqlite(connectionString));
 
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+    {
+        options.SignIn.RequireConfirmedAccount = requireConfirmedAccount;
+        
+        // Configure password requirements from appsettings.json
+        if (identityOptions.GetSection("Password") != null)
+        {
+            options.Password.RequireDigit = identityOptions.GetValue<bool>("Password:RequireDigit", true);
+            options.Password.RequireLowercase = identityOptions.GetValue<bool>("Password:RequireLowercase", true);
+            options.Password.RequireUppercase = identityOptions.GetValue<bool>("Password:RequireUppercase", true);
+            options.Password.RequireNonAlphanumeric = identityOptions.GetValue<bool>("Password:RequireNonAlphanumeric", true);
+            options.Password.RequiredLength = identityOptions.GetValue<int>("Password:RequiredLength", 6);
+        }
+    })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Add authorization to require login for all pages by default
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
 builder.Services.AddControllersWithViews();
+
+// Add session services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -42,20 +75,45 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Use session middleware
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-//Prepare the database:
+// Create database and apply migrations before seeding
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
-    CrmInitializer.Initialize(serviceProvider: services);
+    try
+    {
+        // Ensure Identity database exists and has been migrated
+        var identityContext = services.GetRequiredService<ApplicationDbContext>();
+        identityContext.Database.EnsureCreated();
+        
+        // Ensure CRM database exists and has been migrated
+        var crmContext = services.GetRequiredService<CrmContext>();
+        crmContext.Database.EnsureCreated();
+        
+        // Initialize CRM data
+        CrmInitializer.Initialize(serviceProvider: services);
+        
+        // Initialize Identity roles and users
+        await IdentityInitializer.InitializeAsync(services);
+        
+        Console.WriteLine("Database initialization completed successfully.");
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+        Console.WriteLine("Error during database initialization: " + ex.Message);
+    }
 }
-
 
 app.Run();
