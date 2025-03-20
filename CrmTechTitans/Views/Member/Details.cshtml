@@ -282,15 +282,20 @@
 
             <!-- Buttons at the bottom of the page -->
             <div class="d-flex justify-content-between mt-4">
-                <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2">
+                <a asp-action="Index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i> Back to List
                 </a>
-                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
-                {
-                    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary px-4 py-2">
-                        <i class="fas fa-edit me-2"></i> Edit
+                <div>
+                    <a asp-action="ExportMemberDetails" asp-route-id="@Model.ID" class="btn btn-success">
+                        <i class="fas fa-file-excel me-2"></i> Export to Excel
                     </a>
-                }
+                    @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary ms-2">
+                            <i class="fas fa-edit me-2"></i> Edit
+                        </a>
+                    }
+                </div>
             </div>
         </div>
     </div>

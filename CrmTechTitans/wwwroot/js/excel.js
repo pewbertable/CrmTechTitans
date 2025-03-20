@@ -3,6 +3,8 @@
     const excelExportModal = new bootstrap.Modal(document.getElementById('excelExportModal'));
     const selectAllCheckbox = document.getElementById('selectAllMembers');
     const memberCheckboxes = document.querySelectorAll('.member-checkbox');
+    const selectAllFieldsCheckbox = document.getElementById('selectAllFields');
+    const fieldCheckboxes = document.querySelectorAll('.field-checkbox');
     const downloadForm = document.getElementById('downloadForm');
     const downloadExcelBtn = document.getElementById('downloadExcelBtn');
 
@@ -11,14 +13,14 @@
         excelExportModal.show();
     });
 
-    // Handle "Select All" checkbox
+    // Handle "Select All Members" checkbox
     selectAllCheckbox.addEventListener('change', function () {
         memberCheckboxes.forEach(checkbox => {
             checkbox.checked = this.checked;
         });
     });
 
-    // Update "Select All" checkbox when individual checkboxes change
+    // Update "Select All Members" checkbox when individual member checkboxes change
     memberCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateSelectAllCheckbox);
     });
@@ -27,12 +29,31 @@
         selectAllCheckbox.checked = Array.from(memberCheckboxes).every(checkbox => checkbox.checked);
     }
 
+    // Handle "Select All Fields" checkbox
+    selectAllFieldsCheckbox.addEventListener('change', function () {
+        fieldCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    // Update "Select All Fields" checkbox when individual field checkboxes change
+    fieldCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectAllFieldsCheckbox);
+    });
+
+    function updateSelectAllFieldsCheckbox() {
+        selectAllFieldsCheckbox.checked = Array.from(fieldCheckboxes).every(checkbox => checkbox.checked);
+    }
+
+    // Initial state for "Select All Fields" checkbox
+    updateSelectAllFieldsCheckbox();
+
     // Handle form submission
     downloadExcelBtn.addEventListener('click', function () {
         const selectedMembers = document.querySelectorAll('.member-checkbox:checked');
-        const selectedFields = document.querySelectorAll('input[name="SelectedFields"]:checked');
+        const selectedFields = document.querySelectorAll('.field-checkbox:checked');
 
-        if (selectedMembers.length === 0) {
+        if (selectedMembers.length === 0 && !selectAllCheckbox.checked) {
             alert('Please select at least one member to download.');
             return;
         }

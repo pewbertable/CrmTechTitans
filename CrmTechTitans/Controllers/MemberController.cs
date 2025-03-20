@@ -850,8 +850,28 @@ namespace CrmTechTitans.Controllers
                                     member.IndustryMembers.Select(im => im.Industry.NAICS)); // List industries
                                 break;
                             case "Address":
-                                workSheet.Cells[row, column].Value = member.MemberAddresses
-                                    .FirstOrDefault()?.Address?.Summary ?? "N/A"; // Fetch address
+                                var address = member.MemberAddresses.FirstOrDefault()?.Address;
+                                if (address != null)
+                                {
+                                    workSheet.Cells[row, column].Value = address.Street;
+                                }
+                                else
+                                {
+                                    workSheet.Cells[row, column].Value = "N/A";
+                                }
+                                break;
+                            case "City":
+                                var addressCity = member.MemberAddresses.FirstOrDefault()?.Address;
+                                workSheet.Cells[row, column].Value = addressCity != null ? addressCity.City : "N/A";
+                                break;
+                            case "Province":
+                                var addressProvince = member.MemberAddresses.FirstOrDefault()?.Address;
+                                workSheet.Cells[row, column].Value = addressProvince != null ? addressProvince.Province.ToString() : "N/A";
+                                break;
+                            case "PostalCode":
+                                var addressPostal = member.MemberAddresses.FirstOrDefault()?.Address;
+                                workSheet.Cells[row, column].Value = addressPostal != null && !string.IsNullOrEmpty(addressPostal.PostalCode) 
+                                    ? addressPostal.PostalCode : "N/A";
                                 break;
                         }
                         column++;
@@ -869,15 +889,109 @@ namespace CrmTechTitans.Controllers
                     title.Style.Font.Bold = true;
                     title.Style.Font.Size = 18;
                     title.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    title.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    title.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(48, 84, 150));
+                    title.Style.Font.Color.SetColor(System.Drawing.Color.White);
                 }
 
                 // Fix "Created Date" placement (move it below title)
                 DateTime utcDate = DateTime.UtcNow;
                 TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
                 DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                workSheet.Cells[2, 1].Value = "Created: " + localDate.ToShortTimeString() + " on " + localDate.ToShortDateString();
-                workSheet.Cells[2, 1].Style.Font.Bold = true;
-                workSheet.Cells[2, 1].Style.Font.Size = 12;
+                workSheet.Cells[2, 1].Value = "Created: " + localDate.ToString("MMMM d, yyyy h:mm tt");
+                using (ExcelRange dateRange = workSheet.Cells[2, 1, 2, options.SelectedFields.Count])
+                {
+                    dateRange.Merge = true;
+                    dateRange.Style.Font.Bold = true;
+                    dateRange.Style.Font.Size = 11;
+                    dateRange.Style.Font.Italic = true;
+                    dateRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    dateRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    dateRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Style the headers
+                using (ExcelRange headers = workSheet.Cells[3, 1, 3, options.SelectedFields.Count])
+                {
+                    headers.Style.Font.Bold = true;
+                    headers.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    headers.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(220, 230, 242));
+                    headers.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    headers.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    headers.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    headers.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    headers.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                // Format the data range
+                int lastRow = 3 + members.Count;
+                int lastCol = options.SelectedFields.Count;
+                
+                if (members.Count > 0)
+                {
+                    // Apply alternating row colors in the data area
+                    for (int dataRow = 4; dataRow <= lastRow; dataRow++)
+                    {
+                        using (ExcelRange rowRange = workSheet.Cells[dataRow, 1, dataRow, lastCol])
+                        {
+                            // Apply light gray to even rows
+                            if (dataRow % 2 == 0)
+                            {
+                                rowRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                rowRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(242, 242, 242));
+                            }
+                            
+                            // Apply borders to all data cells
+                            rowRange.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            rowRange.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            rowRange.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            rowRange.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            
+                            // Vertical alignment
+                            rowRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        }
+                    }
+                    
+                    // Format specific data types and cell alignment
+                    for (column = 1; column <= lastCol; column++)
+                    {
+                        string fieldName = options.SelectedFields[column - 1];
+                        
+                        // Set column-specific formatting
+                        if (fieldName == "MemberSince" || fieldName.Contains("Date"))
+                        {
+                            // Format dates consistently
+                            workSheet.Column(column).Style.Numberformat.Format = "yyyy-mm-dd";
+                            workSheet.Column(column).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        }
+                        else if (fieldName == "Website")
+                        {
+                            // Format URLs
+                            using (ExcelRange urlRange = workSheet.Cells[4, column, lastRow, column])
+                            {
+                                urlRange.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
+                                urlRange.Style.Font.UnderLine = true;
+                            }
+                        }
+                        else if (fieldName == "Notes")
+                        {
+                            // Format multi-line text fields
+                            workSheet.Column(column).Style.WrapText = true;
+                            workSheet.Column(column).Width = 40; // Fixed width for notes
+                        }
+                        else if (fieldName == "MembershipStatus")
+                        {
+                            // Center status values
+                            workSheet.Column(column).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        }
+                    }
+                }
+                
+                // Add freeze panes to keep headers visible when scrolling
+                workSheet.View.FreezePanes(4, 1);
+                
+                // Adjust column widths but ensure minimum and maximum widths
+                workSheet.Cells.AutoFitColumns(15, 80);
 
                 try
                 {
@@ -893,6 +1007,269 @@ namespace CrmTechTitans.Controllers
             }
         }
 
-    }
+        // GET: Member/ExportMemberDetails/5
+        [HttpGet]
+        public async Task<IActionResult> ExportMemberDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var member = await _context.Members
+                .Include(m => m.MemberContacts)
+                    .ThenInclude(mc => mc.Contact)
+                .Include(m => m.IndustryMembers)
+                    .ThenInclude(im => im.Industry)
+                .Include(m => m.MemberAddresses)
+                    .ThenInclude(ma => ma.Address)
+                .Include(m => m.MemberMembershipTypes)
+                    .ThenInclude(mmt => mmt.MembershipType)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+            // Set the license context
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (ExcelPackage excel = new ExcelPackage())
+            {
+                // Create the main worksheet for general information
+                var mainSheet = excel.Workbook.Worksheets.Add($"{member.MemberName} - Details");
+                
+                // Set title
+                mainSheet.Cells[1, 1].Value = $"{member.MemberName} - Member Details";
+                using (ExcelRange title = mainSheet.Cells[1, 1, 1, 5])
+                {
+                    title.Merge = true;
+                    title.Style.Font.Bold = true;
+                    title.Style.Font.Size = 18;
+                    title.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                // Add timestamp
+                DateTime utcDate = DateTime.UtcNow;
+                TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                mainSheet.Cells[2, 1].Value = "Exported: " + localDate.ToString("MMMM d, yyyy h:mm tt");
+                using (ExcelRange dateRange = mainSheet.Cells[2, 1, 2, 5])
+                {
+                    dateRange.Merge = true;
+                    dateRange.Style.Font.Italic = true;
+                    dateRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+
+                // Add member information
+                int row = 4; // Start from row 4
+
+                // Section header - Company Information
+                mainSheet.Cells[row, 1].Value = "Company Information";
+                using (ExcelRange sectionHeader = mainSheet.Cells[row, 1, row, 2])
+                {
+                    sectionHeader.Merge = true;
+                    sectionHeader.Style.Font.Bold = true;
+                    sectionHeader.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sectionHeader.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+                row++;
+
+                // Member Name
+                mainSheet.Cells[row, 1].Value = "Member Name:";
+                mainSheet.Cells[row, 2].Value = member.MemberName;
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Company Size
+                mainSheet.Cells[row, 1].Value = "Company Size:";
+                mainSheet.Cells[row, 2].Value = member.CompanySize.ToString();
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Website
+                mainSheet.Cells[row, 1].Value = "Website:";
+                mainSheet.Cells[row, 2].Value = member.CompanyWebsite;
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Industries
+                mainSheet.Cells[row, 1].Value = "Industries:";
+                mainSheet.Cells[row, 2].Value = string.Join(", ", member.IndustryMembers.Select(im => im.Industry.Name));
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row += 2; // Add an extra row for spacing
+
+                // Section header - Membership Information
+                mainSheet.Cells[row, 1].Value = "Membership Information";
+                using (ExcelRange sectionHeader = mainSheet.Cells[row, 1, row, 2])
+                {
+                    sectionHeader.Merge = true;
+                    sectionHeader.Style.Font.Bold = true;
+                    sectionHeader.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sectionHeader.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+                row++;
+
+                // Membership Types
+                mainSheet.Cells[row, 1].Value = "Membership Types:";
+                mainSheet.Cells[row, 2].Value = string.Join(", ", member.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name));
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Membership Status
+                mainSheet.Cells[row, 1].Value = "Status:";
+                mainSheet.Cells[row, 2].Value = member.MembershipStatus.ToString();
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Member Since
+                mainSheet.Cells[row, 1].Value = "Member Since:";
+                mainSheet.Cells[row, 2].Value = member.MemberSince.ToString("MMMM d, yyyy");
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Last Contact Date
+                mainSheet.Cells[row, 1].Value = "Last Contact Date:";
+                mainSheet.Cells[row, 2].Value = member.LastContactDate?.ToString("MMMM d, yyyy") ?? "Not contacted yet";
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row++;
+
+                // Contacted By
+                mainSheet.Cells[row, 1].Value = "Contacted By:";
+                mainSheet.Cells[row, 2].Value = member.ContactedBy ?? "N/A";
+                mainSheet.Cells[row, 1].Style.Font.Bold = true;
+                row += 2; // Add an extra row for spacing
+
+                // Section header - Notes
+                mainSheet.Cells[row, 1].Value = "Notes";
+                using (ExcelRange sectionHeader = mainSheet.Cells[row, 1, row, 2])
+                {
+                    sectionHeader.Merge = true;
+                    sectionHeader.Style.Font.Bold = true;
+                    sectionHeader.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    sectionHeader.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+                row++;
+
+                // Notes content
+                mainSheet.Cells[row, 1].Value = member.Notes ?? "No notes available";
+                using (ExcelRange notesRange = mainSheet.Cells[row, 1, row, 5])
+                {
+                    notesRange.Merge = true;
+                    notesRange.Style.WrapText = true;
+                }
+                row += 2; // Add an extra row for spacing
+
+                // Create a separate worksheet for contacts
+                if (member.MemberContacts.Any())
+                {
+                    var contactsSheet = excel.Workbook.Worksheets.Add("Contacts");
+                    
+                    // Add title
+                    contactsSheet.Cells[1, 1].Value = "Member Contacts";
+                    using (ExcelRange title = contactsSheet.Cells[1, 1, 1, 5])
+                    {
+                        title.Merge = true;
+                        title.Style.Font.Bold = true;
+                        title.Style.Font.Size = 16;
+                        title.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+                    
+                    // Add headers
+                    int contactRow = 3;
+                    contactsSheet.Cells[contactRow, 1].Value = "Type";
+                    contactsSheet.Cells[contactRow, 2].Value = "Name";
+                    contactsSheet.Cells[contactRow, 3].Value = "Email";
+                    contactsSheet.Cells[contactRow, 4].Value = "Phone";
+                    
+                    // Style headers
+                    for (int i = 1; i <= 4; i++)
+                    {
+                        contactsSheet.Cells[contactRow, i].Style.Font.Bold = true;
+                        contactsSheet.Cells[contactRow, i].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        contactsSheet.Cells[contactRow, i].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                    }
+                    
+                    contactRow++;
+                    
+                    // Add contacts
+                    foreach (var memberContact in member.MemberContacts)
+                    {
+                        var contact = memberContact.Contact;
+                        contactsSheet.Cells[contactRow, 1].Value = memberContact.ContactType.ToString();
+                        contactsSheet.Cells[contactRow, 2].Value = $"{contact.FirstName} {contact.LastName}";
+                        contactsSheet.Cells[contactRow, 3].Value = contact.Email;
+                        contactsSheet.Cells[contactRow, 4].Value = contact.Phone;
+                        contactRow++;
+                    }
+                    
+                    contactsSheet.Cells.AutoFitColumns();
+                }
+
+                // Create a separate worksheet for addresses
+                if (member.MemberAddresses.Any())
+                {
+                    var addressesSheet = excel.Workbook.Worksheets.Add("Addresses");
+                    
+                    // Add title
+                    addressesSheet.Cells[1, 1].Value = "Member Addresses";
+                    using (ExcelRange title = addressesSheet.Cells[1, 1, 1, 5])
+                    {
+                        title.Merge = true;
+                        title.Style.Font.Bold = true;
+                        title.Style.Font.Size = 16;
+                        title.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+                    
+                    // Add headers
+                    int addressRow = 3;
+                    addressesSheet.Cells[addressRow, 1].Value = "Type";
+                    addressesSheet.Cells[addressRow, 2].Value = "Street";
+                    addressesSheet.Cells[addressRow, 3].Value = "City";
+                    addressesSheet.Cells[addressRow, 4].Value = "Province";
+                    addressesSheet.Cells[addressRow, 5].Value = "Postal Code";
+                    
+                    // Style headers
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        addressesSheet.Cells[addressRow, i].Style.Font.Bold = true;
+                        addressesSheet.Cells[addressRow, i].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        addressesSheet.Cells[addressRow, i].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                    }
+                    
+                    addressRow++;
+                    
+                    // Add addresses
+                    foreach (var memberAddress in member.MemberAddresses)
+                    {
+                        var address = memberAddress.Address;
+                        addressesSheet.Cells[addressRow, 1].Value = memberAddress.AddressType.ToString();
+                        addressesSheet.Cells[addressRow, 2].Value = address.Street;
+                        addressesSheet.Cells[addressRow, 3].Value = address.City;
+                        addressesSheet.Cells[addressRow, 4].Value = address.Province.ToString();
+                        addressesSheet.Cells[addressRow, 5].Value = address.PostalCode;
+                        addressRow++;
+                    }
+                    
+                    addressesSheet.Cells.AutoFitColumns();
+                }
+
+                // Auto-fit columns in main sheet
+                mainSheet.Cells.AutoFitColumns();
+
+                try
+                {
+                    Byte[] fileBytes = excel.GetAsByteArray();
+                    string filename = $"{member.MemberName}_Details.xlsx";
+                    string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    return File(fileBytes, mimeType, filename);
+                }
+                catch (Exception)
+                {
+                    return BadRequest("Could not generate the file.");
+                }
+            }
+        }
+    }
 }
