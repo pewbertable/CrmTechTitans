@@ -20,7 +20,8 @@ namespace CrmTechTitans.Data.CrmMigrations
                     Street = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
                     City = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Province = table.Column<int>(type: "INTEGER", nullable: false),
-                    PostalCode = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true)
+                    PostalCode = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
+                    AddressType = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -37,7 +38,8 @@ namespace CrmTechTitans.Data.CrmMigrations
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
-                    Linkedin = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
+                    Linkedin = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ContactType = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -71,7 +73,8 @@ namespace CrmTechTitans.Data.CrmMigrations
                     MemberSince = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LastContactDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Notes = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    MembershipStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    MembershipStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    Reason = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -2,6 +2,7 @@ using CrmTechTitans.Data;
 using CrmTechTitans.Models;
 using CrmTechTitans.Models.Enumerations;
 using CrmTechTitans.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
