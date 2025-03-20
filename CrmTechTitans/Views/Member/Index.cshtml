@@ -11,6 +11,14 @@
     <header class="page-header d-flex justify-content-between align-items-center mb-4">
         <h1>All Members</h1>
         <div class="d-flex align-items-center gap-3">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary active" id="cards-view-btn" data-bs-toggle="tooltip" title="View as cards">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button type="button" class="btn btn-outline-primary" id="table-view-btn" data-bs-toggle="tooltip" title="View as table">
+                    <i class="fas fa-table"></i>
+                </button>
+            </div>
             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
             {
                 <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new member to the system">
@@ -32,7 +40,7 @@
 
             <div class="filter-item">
                 <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
-                <select id="membershipStatusFilter" class="form-select" onchange="updateTableHeader()">
+                <select id="membershipStatusFilter" class="form-select">
                     <option value="">All Statuses</option>
                     <option value="GoodStanding">Good Standing</option>
                     <option value="OutStanding">Out Standing</option>
@@ -297,6 +305,7 @@
         $(document).ready(function () {
             var currentPage = 1;
             var recordsPerPage = parseInt($('#recordsPerPage').val());
+            var currentView = 'cards'; // Default view
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -304,25 +313,47 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            // Set default filter to "Good Standing"
-            $('#membershipStatusFilter').val("GoodStanding");
+            // View toggle functionality
+            $('#cards-view-btn').on('click', function() {
+                $(this).addClass('active');
+                $('#table-view-btn').removeClass('active');
+                $('#cards-view').show();
+                $('#table-view').hide();
+                currentView = 'cards';
+                updatePagination();
+            });
+
+            $('#table-view-btn').on('click', function() {
+                $(this).addClass('active');
+                $('#cards-view-btn').removeClass('active');
+                $('#table-view').show();
+                $('#cards-view').hide();
+                currentView = 'table';
+                updatePagination();
+            });
 
             // Function to get visible rows (rows not hidden by filter)
             function getVisibleRows() {
                 var nameFilter = $('#memberNameFilter').val().toLowerCase();
                 var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
 
-                var visibleRows = $('#membersTable tbody tr').filter(function () {
-                    var name = $(this).data('name') || '';
-                    var status = $(this).data('status') || '';
-
-                    var nameMatch = nameFilter === "" || name.includes(nameFilter);
-                    var statusMatch = statusFilter === "" || status === statusFilter;
-
-                    return nameMatch && statusMatch;
-                });
-
-                return visibleRows;
+                if (currentView === 'cards') {
+                    return $('.member-card').filter(function () {
+                        var nameText = $(this).data('name');
+                        var statusText = $(this).data('status');
+                        var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                        var statusMatch = statusFilter === "" || statusText === statusFilter;
+                        return nameMatch && statusMatch;
+                    });
+                } else {
+                    return $('#membersTable tbody tr').filter(function () {
+                        var nameText = $(this).data('name');
+                        var statusText = $(this).data('status');
+                        var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                        var statusMatch = statusFilter === "" || statusText === statusFilter;
+                        return nameMatch && statusMatch;
+                    });
+                }
             }
 
             // Function to show the current page
@@ -337,11 +368,17 @@
                 var startIndex = (page - 1) * recordsPerPage;
                 var endIndex = startIndex + recordsPerPage;
 
-                // Hide all rows first
-                $('#membersTable tbody tr').hide();
-
-                // Show only the rows for the current page
-                visibleRows.slice(startIndex, endIndex).show();
+                if (currentView === 'cards') {
+                    // Hide all cards first
+                    $('.member-card').hide();
+                    // Show only the cards for the current page
+                    visibleRows.slice(startIndex, endIndex).show();
+                } else {
+                    // Hide all rows first
+                    $('#membersTable tbody tr').hide();
+                    // Show only the rows for the current page
+                    visibleRows.slice(startIndex, endIndex).show();
+                }
 
                 // Update page info
                 $('#pageInfo').text(`Page ${page} of ${totalPages} (${visibleRows.length} records)`);
@@ -433,7 +470,7 @@
             // Initial page load
             updatePagination();
 
-            // Sort the table by name initially
+            // Initial sort on page load
             sortTable(1, "asc");
         });
 

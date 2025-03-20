@@ -380,6 +380,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Load Chart.js first -->
@@ -461,6 +462,54 @@
                 }
             });
         });
+    </script>
+
+    <!-- Table Sorting Script -->
+    <script>
+        function sortTable(columnIndex, direction) {
+            const table = document.querySelector('table');
+            if (!table) return;
+
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const header = table.querySelector('thead tr');
+            if (!header) return;
+
+            // Update sort direction indicators
+            header.querySelectorAll('th').forEach((th, index) => {
+                const icon = th.querySelector('i');
+                if (icon) {
+                    icon.className = 'fas fa-sort';
+                    if (index === columnIndex) {
+                        icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                    }
+                }
+            });
+
+            // Sort rows
+            rows.sort((a, b) => {
+                const aValue = a.cells[columnIndex].textContent.trim();
+                const bValue = b.cells[columnIndex].textContent.trim();
+
+                // Try to convert to numbers if possible
+                const aNum = parseFloat(aValue);
+                const bNum = parseFloat(bValue);
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return direction === 'asc' ? aNum - bNum : bNum - aNum;
+                }
+
+                // If not numbers, compare as strings
+                return direction === 'asc' 
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+            });
+
+            // Clear and re-append sorted rows
+            rows.forEach(row => tbody.appendChild(row));
+        }
     </script>
 
 </body>
