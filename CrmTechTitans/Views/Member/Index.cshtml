@@ -50,7 +50,7 @@
         </div>
     </section>
 
-    <section class="members-grid" id="cards-view">
+    <section class="members-grid" id="cards-view" style="display: none;">
         @foreach (var item in Model)
         {
             <div class="member-card" data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
@@ -317,6 +317,8 @@
 
 @section Scripts {
     <script src="~/js/excel.js"></script>
+    <script src="~/js/member.js"></script>
+
     <script>
         $(document).ready(function () {
             var currentPage = 1;
