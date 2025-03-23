@@ -7,7 +7,17 @@
 }
 
 <div class="container py-3">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="Index" class="text-decoration-none">Contacts</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Details</li>
+        </ol>
+    </nav>
     <div class="card shadow-sm mb-4">
+
         <div class="card-header text-white p-3" style="background-color: #6c757d;">
             <div class="d-flex align-items-center">
                 <div class="me-3 rounded-circle p-2" style="background-color: rgba(108, 117, 125, 0.25);">
@@ -156,7 +166,7 @@
                 </a>
                 @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
                 {
-                    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary">
+                    <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-fromDetails="true" class="btn btn-primary">
                         <i class="fas fa-edit me-1"></i> Edit Contact
                     </a>
                 }

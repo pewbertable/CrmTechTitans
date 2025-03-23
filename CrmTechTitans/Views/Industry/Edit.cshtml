@@ -8,6 +8,23 @@
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" class="text-decoration-none">Industry</a>
+                    </li>
+
+                    @if (Context.Request.Query["fromDetails"] == "true")
+                    {
+                        <li class="breadcrumb-item">
+                            <a asp-action="Details" asp-route-id="@Model.ID" class="text-decoration-none">Details</a>
+                        </li>
+                    }
+
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
             <!-- Page Header -->
             <div class="mb-4">
                 <h1 class="h3 mb-2">Edit Industry</h1>

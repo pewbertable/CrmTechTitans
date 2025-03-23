@@ -9,6 +9,23 @@
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-xl-10 col-xxl-8">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" class="text-decoration-none">Member</a>
+                    </li>
+
+                    @if (Context.Request.Query["fromDetails"] == "true")
+                    {
+                        <li class="breadcrumb-item">
+                            <a asp-action="Details" asp-route-id="@Model.ID" class="text-decoration-none">Details</a>
+                        </li>
+                    }
+
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
             <!-- Page Header -->
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <div>

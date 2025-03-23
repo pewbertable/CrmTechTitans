@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = "All Members";
 }
-<partial name="_Notification" />
+
 
 <div class="container-fluid">
     <header class="page-header d-flex justify-content-between align-items-center mb-4">
@@ -40,7 +40,7 @@
 
             <div class="filter-item">
                 <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
-                <select id="membershipStatusFilter" class="form-select">
+                <select id="membershipStatusFilter" class="form-select" onchange="updateTableHeader()">
                     <option value="">All Statuses</option>
                     <option value="GoodStanding">Good Standing</option>
                     <option value="OutStanding">Out Standing</option>

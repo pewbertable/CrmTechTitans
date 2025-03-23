@@ -8,6 +8,15 @@
 }
 
 <div class="container py-3">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="Index" class="text-decoration-none">Member</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Details</li>
+        </ol>
+    </nav>
     <div class="card shadow-sm mb-4">
         <div class="card-header text-white p-3" style="background-color: #6c757d;">
             <div class="d-flex align-items-center">
@@ -145,9 +154,23 @@
                                             <i class="fas fa-calendar-alt text-secondary"></i>
                                         </div>
                                         <div class="flex-grow-1">
-                                            <strong>Member Since</strong>
+                                            <strong>
+                      @(Model.MembershipStatus == MembershipStatus.Cancelled ? "Cancellation Date" : "Member Since"):
+                  </strong>
                                             <p class="mb-0 mt-1">@Model.MemberSince.ToString("MMMM d, yyyy")</p>
                                         </div>
+                                        @if (!string.IsNullOrEmpty(Model.Reason))
+              {
+                  <div class="flex-grow-1">
+             
+          
+                  <strong id="reasonLabel" >
+                      Reason: <p class="mb-0 mt-1" id="reasonText">@Model.Reason</p>
+                  </strong>
+          
+              
+          </div>
+              }
                                     </div>
                                 </li>
                                 <li class="list-group-item px-0">
@@ -291,7 +314,7 @@
                     </a>
                     @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
                     {
-                        <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-primary ms-2">
+                        <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-fromDetails="true" class="btn btn-primary ms-2">
                             <i class="fas fa-edit me-2"></i> Edit
                         </a>
                     }

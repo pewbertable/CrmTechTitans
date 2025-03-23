@@ -295,9 +295,8 @@ namespace CrmTechTitans.Controllers
                     // Save to Database
                     _context.Members.Add(member);
                     await _context.SaveChangesAsync();
-                                    TempData["message"] = "Member Added successfully";
+                    TempData["message"] = "Member Created successfully";
 
-                    TempData["success"] = "Member created successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
