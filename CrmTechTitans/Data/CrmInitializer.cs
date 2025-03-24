@@ -140,7 +140,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Tech Solutions Inc.",
                                 ContactedBy = "John Doe",
-                                CompanySize = CompanySize.Large,
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
                                 CompanyWebsite = "https://www.techsolutions.com",
                                 MemberSince = new DateTime(2018, 5, 12),
                                 LastContactDate = new DateTime(2024, 1, 10),
@@ -151,7 +151,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Energy Corp",
                                 ContactedBy = "Jane Smith",
-                                CompanySize = CompanySize.Enterprise,
+                                CompanySize = CompanySize.ThousandPlus,
                                 CompanyWebsite = "https://www.energycorp.com",
                                 MemberSince = new DateTime(2015, 8, 25),
                                 LastContactDate = new DateTime(2023, 11, 20),
@@ -162,7 +162,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Green Innovations Ltd.",
                                 ContactedBy = "Albert Green",
-                                CompanySize = CompanySize.Medium,
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
                                 CompanyWebsite = "https://www.greeninnovations.com",
                                 MemberSince = new DateTime(2017, 3, 10),
                                 LastContactDate = new DateTime(2024, 1, 5),
@@ -173,7 +173,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "City Logistics",
                                 ContactedBy = "Maria Johnson",
-                                CompanySize = CompanySize.Small,
+                                CompanySize = CompanySize.ElevenToFifty,
                                 CompanyWebsite = "https://www.citylogistics.com",
                                 MemberSince = new DateTime(2020, 7, 18),
                                 LastContactDate = new DateTime(2023, 12, 22),
@@ -184,7 +184,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "HealthCare Plus",
                                 ContactedBy = "Emily Wright",
-                                CompanySize = CompanySize.Enterprise,
+                                CompanySize = CompanySize.ThousandPlus,
                                 CompanyWebsite = "https://www.healthcareplus.com",
                                 MemberSince = new DateTime(2012, 2, 6),
                                 LastContactDate = new DateTime(2023, 10, 30),
@@ -195,7 +195,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Tech Electronics",
                                 ContactedBy = "James Carter",
-                                CompanySize = CompanySize.Large,
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
                                 CompanyWebsite = "https://www.techelectronics.com",
                                 MemberSince = new DateTime(2016, 9, 14),
                                 LastContactDate = new DateTime(2024, 1, 12),
@@ -206,7 +206,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Auto Parts Co.",
                                 ContactedBy = "Daniel Lee",
-                                CompanySize = CompanySize.Medium,
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
                                 CompanyWebsite = "https://www.autopartsco.com",
                                 MemberSince = new DateTime(2019, 6, 22),
                                 LastContactDate = new DateTime(2024, 1, 8),
@@ -217,7 +217,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Foodies Market",
                                 ContactedBy = "Linda Miller",
-                                CompanySize = CompanySize.Small,
+                                CompanySize = CompanySize.ElevenToFifty,
                                 CompanyWebsite = "https://www.foodiesmarket.com",
                                 MemberSince = new DateTime(2021, 4, 4),
                                 LastContactDate = new DateTime(2023, 12, 15),
@@ -228,7 +228,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Global Transport Ltd.",
                                 ContactedBy = "Nina Roberts",
-                                CompanySize = CompanySize.Enterprise,
+                                CompanySize = CompanySize.ThousandPlus,
                                 CompanyWebsite = "https://www.globaltransport.com",
                                 MemberSince = new DateTime(2014, 10, 19),
                                 LastContactDate = new DateTime(2023, 11, 30),
@@ -239,7 +239,7 @@ namespace CrmTechTitans.Data
                             {
                                 MemberName = "Universal Tech Hub",
                                 ContactedBy = "Oliver Thomas",
-                                CompanySize = CompanySize.Large,
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
                                 CompanyWebsite = "https://www.universaltechhub.com",
                                 MemberSince = new DateTime(2013, 1, 9),
                                 LastContactDate = new DateTime(2023, 12, 10),
@@ -247,225 +247,269 @@ namespace CrmTechTitans.Data
                                 MembershipStatus = MembershipStatus.GoodStanding
                             },
                             new Member
-{
-    MemberName = "Green Energy Solutions",
-    ContactedBy = "Michael Green",
-    CompanySize = CompanySize.Large,
-    CompanyWebsite = "https://www.greenenergysolutions.com",
-    MemberSince = new DateTime(2015, 3, 18),
-    LastContactDate = new DateTime(2023, 11, 25),
-    Notes = "Pioneers in renewable energy technologies.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Bright Future Education",
-    ContactedBy = "Sarah Johnson",
-    CompanySize = CompanySize.Medium,
-    CompanyWebsite = "https://www.brightfutureedu.com",
-    MemberSince = new DateTime(2018, 7, 9),
-    LastContactDate = new DateTime(2024, 1, 10),
-    Notes = "Providing innovative educational tools and resources.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Oceanic Travels",
-    ContactedBy = "David Brown",
-    CompanySize = CompanySize.Small,
-    CompanyWebsite = "https://www.oceanictravels.com",
-    MemberSince = new DateTime(2020, 5, 12),
-    LastContactDate = new DateTime(2023, 12, 20),
-    Notes = "Specializing in luxury sea travel experiences.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "NextGen Robotics",
-    ContactedBy = "Alex Smith",
-    CompanySize = CompanySize.Enterprise,
-    CompanyWebsite = "https://www.nextgenrobotics.com",
-    MemberSince = new DateTime(2014, 8, 22),
-    LastContactDate = new DateTime(2024, 1, 5),
-    Notes = "Innovators in robotics and automation.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Urban Fashion Hub",
-    ContactedBy = "Jessica White",
-    CompanySize = CompanySize.Medium,
-    CompanyWebsite = "https://www.urbanfashionhub.com",
-    MemberSince = new DateTime(2017, 11, 30),
-    LastContactDate = new DateTime(2023, 12, 18),
-    Notes = "Trendsetters in urban and streetwear fashion.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Sky High Drones",
-    ContactedBy = "Ryan Adams",
-    CompanySize = CompanySize.Small,
-    CompanyWebsite = "https://www.skyhighdrones.com",
-    MemberSince = new DateTime(2022, 2, 14),
-    LastContactDate = new DateTime(2024, 1, 15),
-    Notes = "Experts in commercial and recreational drone technology.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Pure Water Tech",
-    ContactedBy = "Olivia Martinez",
-    CompanySize = CompanySize.Large,
-    CompanyWebsite = "https://www.purewatertech.com",
-    MemberSince = new DateTime(2013, 6, 5),
-    LastContactDate = new DateTime(2023, 11, 30),
-    Notes = "Leaders in water purification and filtration systems.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Global Logistics Inc.",
-    ContactedBy = "Ethan Wilson",
-    CompanySize = CompanySize.Enterprise,
-    CompanyWebsite = "https://www.globallogisticsinc.com",
-    MemberSince = new DateTime(2011, 4, 19),
-    LastContactDate = new DateTime(2024, 1, 20),
-    Notes = "Comprehensive logistics and supply chain solutions.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Creative Minds Agency",
-    ContactedBy = "Sophia Garcia",
-    CompanySize = CompanySize.Medium,
-    CompanyWebsite = "https://www.creativemindsagency.com",
-    MemberSince = new DateTime(2019, 9, 25),
-    LastContactDate = new DateTime(2023, 12, 10),
-    Notes = "Full-service marketing and creative agency.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Eco Home Builders",
-    ContactedBy = "Noah Clark",
-    CompanySize = CompanySize.Small,
-    CompanyWebsite = "https://www.ecohomebuilders.com",
-    MemberSince = new DateTime(2021, 3, 8),
-    LastContactDate = new DateTime(2024, 1, 18),
-    Notes = "Sustainable and eco-friendly home construction.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Tech Innovate",
-    ContactedBy = "Ava Rodriguez",
-    CompanySize = CompanySize.Large,
-    CompanyWebsite = "https://www.techinnovate.com",
-    MemberSince = new DateTime(2016, 12, 1),
-    LastContactDate = new DateTime(2023, 11, 28),
-    Notes = "Driving innovation in software and hardware solutions.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Summit Adventures",
-    ContactedBy = "Liam Hernandez",
-    CompanySize = CompanySize.Medium,
-    CompanyWebsite = "https://www.summitadventures.com",
-    MemberSince = new DateTime(2018, 4, 17),
-    LastContactDate = new DateTime(2024, 1, 14),
-    Notes = "Organizing extreme and adventure travel experiences.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Fresh Bites Catering",
-    ContactedBy = "Isabella Martinez",
-    CompanySize = CompanySize.Small,
-    CompanyWebsite = "https://www.freshbitescatering.com",
-    MemberSince = new DateTime(2020, 7, 22),
-    LastContactDate = new DateTime(2023, 12, 25),
-    Notes = "Gourmet catering services for all occasions.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Bright Star Media",
-    ContactedBy = "Mason Taylor",
-    CompanySize = CompanySize.Enterprise,
-    CompanyWebsite = "https://www.brightstarmedia.com",
-    MemberSince = new DateTime(2012, 10, 11),
-    LastContactDate = new DateTime(2024, 1, 22),
-    Notes = "Leading media production and broadcasting company.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "SafeGuard Insurance",
-    ContactedBy = "Charlotte Lewis",
-    CompanySize = CompanySize.Large,
-    CompanyWebsite = "https://www.safeguardinsurance.com",
-    MemberSince = new DateTime(2014, 5, 29),
-    LastContactDate = new DateTime(2023, 11, 20),
-    Notes = "Comprehensive insurance solutions for businesses and individuals.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Prime Fitness",
-    ContactedBy = "William Walker",
-    CompanySize = CompanySize.Medium,
-    CompanyWebsite = "https://www.primefitness.com",
-    MemberSince = new DateTime(2017, 8, 14),
-    LastContactDate = new DateTime(2024, 1, 16),
-    Notes = "State-of-the-art fitness centers and wellness programs.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "Golden Harvest Foods",
-    ContactedBy = "Amelia Young",
-    CompanySize = CompanySize.Small,
-    CompanyWebsite = "https://www.goldenharvestfoods.com",
-    MemberSince = new DateTime(2019, 2, 3),
-    LastContactDate = new DateTime(2023, 12, 12),
-    Notes = "Producers of high-quality, organic food products.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "Apex Automotive",
-    ContactedBy = "Benjamin Allen",
-    CompanySize = CompanySize.Enterprise,
-    CompanyWebsite = "https://www.apexautomotive.com",
-    MemberSince = new DateTime(2013, 1, 15),
-    LastContactDate = new DateTime(2024, 1, 24),
-    Notes = "Manufacturers of high-performance automotive parts.",
-    MembershipStatus = MembershipStatus.OutStanding
-},
-new Member
-{
-    MemberName = "ClearView Analytics",
-    ContactedBy = "Mia King",
-    CompanySize = CompanySize.Large,
-    CompanyWebsite = "https://www.clearviewanalytics.com",
-    MemberSince = new DateTime(2015, 7, 7),
-    LastContactDate = new DateTime(2023, 11, 15),
-    Notes = "Advanced data analytics and business intelligence solutions.",
-    MembershipStatus = MembershipStatus.GoodStanding
-},
-new Member
-{
-    MemberName = "BlueWave Technologies",
-    ContactedBy = "Ethan Scott",
-    CompanySize = CompanySize.Medium,
-    CompanyWebsite = "https://www.bluewavetech.com",
-    MemberSince = new DateTime(2018, 10, 9),
-    LastContactDate = new DateTime(2024, 1, 19),
-    Notes = "Innovative solutions in IoT and smart devices.",
-    MembershipStatus = MembershipStatus.OutStanding
-}
+                            {
+                                MemberName = "Green Energy Solutions",
+                                ContactedBy = "Michael Green",
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
+                                CompanyWebsite = "https://www.greenenergysolutions.com",
+                                MemberSince = new DateTime(2015, 3, 18),
+                                LastContactDate = new DateTime(2023, 11, 25),
+                                Notes = "Pioneers in renewable energy technologies.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Bright Future Education",
+                                ContactedBy = "Sarah Johnson",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.brightfutureedu.com",
+                                MemberSince = new DateTime(2018, 7, 9),
+                                LastContactDate = new DateTime(2024, 1, 10),
+                                Notes = "Providing innovative educational tools and resources.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Oceanic Travels",
+                                ContactedBy = "David Brown",
+                                CompanySize = CompanySize.ElevenToFifty,
+                                CompanyWebsite = "https://www.oceanictravels.com",
+                                MemberSince = new DateTime(2020, 5, 12),
+                                LastContactDate = new DateTime(2023, 12, 20),
+                                Notes = "Specializing in luxury sea travel experiences.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "NextGen Robotics",
+                                ContactedBy = "Alex Smith",
+                                CompanySize = CompanySize.ThousandPlus,
+                                CompanyWebsite = "https://www.nextgenrobotics.com",
+                                MemberSince = new DateTime(2014, 8, 22),
+                                LastContactDate = new DateTime(2024, 1, 5),
+                                Notes = "Innovators in robotics and automation.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Urban Fashion Hub",
+                                ContactedBy = "Jessica White",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.urbanfashionhub.com",
+                                MemberSince = new DateTime(2017, 11, 30),
+                                LastContactDate = new DateTime(2023, 12, 18),
+                                Notes = "Trendsetters in urban and streetwear fashion.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Sky High Drones",
+                                ContactedBy = "Ryan Adams",
+                                CompanySize = CompanySize.ElevenToFifty,
+                                CompanyWebsite = "https://www.skyhighdrones.com",
+                                MemberSince = new DateTime(2022, 2, 14),
+                                LastContactDate = new DateTime(2024, 1, 15),
+                                Notes = "Experts in commercial and recreational drone technology.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Pure Water Tech",
+                                ContactedBy = "Olivia Martinez",
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
+                                CompanyWebsite = "https://www.purewatertech.com",
+                                MemberSince = new DateTime(2013, 6, 5),
+                                LastContactDate = new DateTime(2023, 11, 30),
+                                Notes = "Leaders in water purification and filtration systems.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Global Logistics Inc.",
+                                ContactedBy = "Ethan Wilson",
+                                CompanySize = CompanySize.ThousandPlus,
+                                CompanyWebsite = "https://www.globallogisticsinc.com",
+                                MemberSince = new DateTime(2011, 4, 19),
+                                LastContactDate = new DateTime(2024, 1, 20),
+                                Notes = "Comprehensive logistics and supply chain solutions.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Creative Minds Agency",
+                                ContactedBy = "Sophia Garcia",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.creativemindsagency.com",
+                                MemberSince = new DateTime(2019, 9, 25),
+                                LastContactDate = new DateTime(2023, 12, 10),
+                                Notes = "Full-service marketing and creative agency.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Eco Home Builders",
+                                ContactedBy = "Noah Clark",
+                                CompanySize = CompanySize.ElevenToFifty,
+                                CompanyWebsite = "https://www.ecohomebuilders.com",
+                                MemberSince = new DateTime(2021, 3, 8),
+                                LastContactDate = new DateTime(2024, 1, 18),
+                                Notes = "Sustainable and eco-friendly home construction.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Tech Innovate",
+                                ContactedBy = "Ava Rodriguez",
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
+                                CompanyWebsite = "https://www.techinnovate.com",
+                                MemberSince = new DateTime(2016, 12, 1),
+                                LastContactDate = new DateTime(2023, 11, 28),
+                                Notes = "Driving innovation in software and hardware solutions.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Summit Adventures",
+                                ContactedBy = "Liam Hernandez",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.summitadventures.com",
+                                MemberSince = new DateTime(2018, 4, 17),
+                                LastContactDate = new DateTime(2024, 1, 14),
+                                Notes = "Organizing extreme and adventure travel experiences.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Fresh Bites Catering",
+                                ContactedBy = "Isabella Martinez",
+                                CompanySize = CompanySize.ElevenToFifty,
+                                CompanyWebsite = "https://www.freshbitescatering.com",
+                                MemberSince = new DateTime(2020, 7, 22),
+                                LastContactDate = new DateTime(2023, 12, 25),
+                                Notes = "Gourmet catering services for all occasions.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Bright Star Media",
+                                ContactedBy = "Mason Taylor",
+                                CompanySize = CompanySize.ThousandPlus,
+                                CompanyWebsite = "https://www.brightstarmedia.com",
+                                MemberSince = new DateTime(2012, 10, 11),
+                                LastContactDate = new DateTime(2024, 1, 22),
+                                Notes = "Leading media production and broadcasting company.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "SafeGuard Insurance",
+                                ContactedBy = "Charlotte Lewis",
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
+                                CompanyWebsite = "https://www.safeguardinsurance.com",
+                                MemberSince = new DateTime(2014, 5, 29),
+                                LastContactDate = new DateTime(2023, 11, 20),
+                                Notes = "Comprehensive insurance solutions for businesses and individuals.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Prime Fitness",
+                                ContactedBy = "William Walker",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.primefitness.com",
+                                MemberSince = new DateTime(2017, 8, 14),
+                                LastContactDate = new DateTime(2024, 1, 16),
+                                Notes = "State-of-the-art fitness centers and wellness programs.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Golden Harvest Foods",
+                                ContactedBy = "Amelia Young",
+                                CompanySize = CompanySize.ElevenToFifty,
+                                CompanyWebsite = "https://www.goldenharvestfoods.com",
+                                MemberSince = new DateTime(2019, 2, 3),
+                                LastContactDate = new DateTime(2023, 12, 12),
+                                Notes = "Producers of high-quality, organic food products.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Apex Automotive",
+                                ContactedBy = "Benjamin Allen",
+                                CompanySize = CompanySize.ThousandPlus,
+                                CompanyWebsite = "https://www.apexautomotive.com",
+                                MemberSince = new DateTime(2013, 1, 15),
+                                LastContactDate = new DateTime(2024, 1, 24),
+                                Notes = "Manufacturers of high-performance automotive parts.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "ClearView Analytics",
+                                ContactedBy = "Mia King",
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
+                                CompanyWebsite = "https://www.clearviewanalytics.com",
+                                MemberSince = new DateTime(2015, 7, 7),
+                                LastContactDate = new DateTime(2023, 11, 15),
+                                Notes = "Advanced data analytics and business intelligence solutions.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "BlueWave Technologies",
+                                ContactedBy = "Ethan Scott",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.bluewavetech.com",
+                                MemberSince = new DateTime(2018, 10, 9),
+                                LastContactDate = new DateTime(2024, 1, 19),
+                                Notes = "Innovative solutions in IoT and smart devices.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Harmony Music School",
+                                ContactedBy = "Elijah Harris",
+                                CompanySize = CompanySize.FiftyOneToTwoHundred,
+                                CompanyWebsite = "https://www.harmonymusicschool.com",
+                                MemberSince = new DateTime(2019, 11, 22),
+                                LastContactDate = new DateTime(2023, 12, 15),
+                                Notes = "Music education and instrument sales.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Coastal Shipping Lines",
+                                ContactedBy = "Lily Thomas",
+                                CompanySize = CompanySize.ElevenToFifty,
+                                CompanyWebsite = "https://www.coastalshippinglines.com",
+                                MemberSince = new DateTime(2020, 4, 9),
+                                LastContactDate = new DateTime(2024, 1, 8),
+                                Notes = "Regional shipping and logistics company.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Digital Marketing Pro",
+                                ContactedBy = "Ryan Cooper",
+                                CompanySize = CompanySize.ThousandPlus,
+                                CompanyWebsite = "https://www.digitalmarketingpro.com",
+                                MemberSince = new DateTime(2013, 9, 30),
+                                LastContactDate = new DateTime(2023, 12, 22),
+                                Notes = "Full-service digital marketing agency.",
+                                MembershipStatus = MembershipStatus.GoodStanding
+                            },
+                            new Member
+                            {
+                                MemberName = "Quality Construction Group",
+                                ContactedBy = "Jackson Hill",
+                                CompanySize = CompanySize.TwoHundredOneToThousand,
+                                CompanyWebsite = "https://www.qualityconstructiongroup.com",
+                                MemberSince = new DateTime(2014, 10, 15),
+                                LastContactDate = new DateTime(2024, 1, 12),
+                                Notes = "Commercial and residential construction services.",
+                                MembershipStatus = MembershipStatus.OutStanding
+                            }
                         };
 
                         context.Members.AddRange(members);
@@ -504,6 +548,10 @@ new Member
                         memberMembershipTypes.AddRange(AssignMembershipTypes(members[27], "Government Education", "Other")); // Apex Automotive
                         memberMembershipTypes.AddRange(AssignMembershipTypes(members[28], "Associate", "Local")); // ClearView Analytics
                         memberMembershipTypes.AddRange(AssignMembershipTypes(members[29], "Chamber", "Industrial")); // BlueWave Technologies
+                        memberMembershipTypes.AddRange(AssignMembershipTypes(members[30], "Government Education", "Other")); // Harmony Music School
+                        memberMembershipTypes.AddRange(AssignMembershipTypes(members[31], "Local")); // Coastal Shipping Lines
+                        memberMembershipTypes.AddRange(AssignMembershipTypes(members[32], "Chamber")); // Digital Marketing Pro
+                        memberMembershipTypes.AddRange(AssignMembershipTypes(members[33], "Government Education")); // Quality Construction Group
 
                         // Add the many-to-many relationships
                         context.MemberMembershipTypes.AddRange(memberMembershipTypes);
@@ -543,7 +591,11 @@ new Member
                             new MemberIndustry { IndustryID = 58, MemberID = 27 }, // Golden Harvest Foods
                             new MemberIndustry { IndustryID = 19, MemberID = 28 }, // Apex Automotive
                             new MemberIndustry { IndustryID = 20, MemberID = 29 }, // ClearView Analytics
-                            new MemberIndustry { IndustryID = 21, MemberID = 30 } // BlueWave Technologies
+                            new MemberIndustry { IndustryID = 21, MemberID = 30 }, // BlueWave Technologies
+                            new MemberIndustry { IndustryID = 33, MemberID = 31 }, // Harmony Music School
+                            new MemberIndustry { IndustryID = 44, MemberID = 32 }, // Coastal Shipping Lines
+                            new MemberIndustry { IndustryID = 56, MemberID = 33 }, // Digital Marketing Pro
+                            new MemberIndustry { IndustryID = 67, MemberID = 34 }  // Quality Construction Group
                         );
                         context.SaveChanges();
                     }
