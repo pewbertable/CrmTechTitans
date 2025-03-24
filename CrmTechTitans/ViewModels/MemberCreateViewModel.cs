@@ -30,7 +30,6 @@ namespace CrmTechTitans.Models.ViewModels
         public CompanySize CompanySize { get; set; }
 
         [Display(Name = "Company Website")]
-        [Url(ErrorMessage = "Invalid URL format")]
         [Required(ErrorMessage = "Company Website is required")]
         [StringLength(255, ErrorMessage = "Website cannot exceed 255 characters")]
         public string CompanyWebsite { get; set; }
@@ -42,7 +41,7 @@ namespace CrmTechTitans.Models.ViewModels
 
         [Display(Name = "Last Contact Date")]
         [DataType(DataType.Date)]
-        public DateTime? LastContactDate { get; set; }
+        public DateTime? LastContactDate { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "Notes")]
         [Required(ErrorMessage = "Notes are required")]

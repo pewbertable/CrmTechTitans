@@ -513,11 +513,11 @@ const autoFillStep = (step) => {
                 membershipCheckbox.checked = true;
             }
             
-            // Set company size
-            document.querySelector("select[name='CompanySize']").value = "1"; // Small
+            // Set company size - updated to use new numerical range values
+            document.querySelector("select[name='CompanySize']").value = "1"; // OneToTen (1-10)
             
-            // Set company website
-            document.querySelector("input[name='CompanyWebsite']").value = "https://techsolutions.example.com";
+            // Set company website - removed https:// requirement
+            document.querySelector("input[name='CompanyWebsite']").value = "techsolutions.example.com";
             
             // Set contacted by
             document.querySelector("input[name='ContactedBy']").value = "John Smith";

@@ -25,7 +25,7 @@
                 </div>
                 <div>
                     <h1 class="h3 mb-1">Contact Details</h1>
-                    <p class="mb-0">Detailed information about the selected contact.</p>
+                  
                 </div>
             </div>
         </div>
@@ -161,9 +161,19 @@
             </div>
 
             <div class="d-flex gap-2 mt-4">
-                <a asp-action="Index" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Contacts
-                </a>
+                @if (Context.Request.Query.ContainsKey("memberId"))
+                {
+                    int memberId = int.Parse(Context.Request.Query["memberId"]);
+                    <a asp-controller="Member" asp-action="Details" asp-route-id="@memberId" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Member
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Contacts
+                    </a>
+                }
                 @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
                 {
                     <a asp-action="Edit" asp-route-id="@Model.ID" asp-route-fromDetails="true" class="btn btn-primary">
