@@ -25,7 +25,6 @@ namespace CrmTechTitans.Models
         public CompanySize CompanySize { get; set; } // Changed to enum
 
         [Display(Name = "Website")]
-        [Url]
         [StringLength(255)]
         public string? CompanyWebsite { get; set; }
 

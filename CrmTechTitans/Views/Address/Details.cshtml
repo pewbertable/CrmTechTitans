@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a asp-action="Index" class="text-decoration-none">Addrerss</a>
+                <a asp-action="Index" class="text-decoration-none">Address</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Details</li>
         </ol>
@@ -22,7 +22,7 @@
                 </div>
                 <div>
                     <h1 class="h3 mb-1">Address Details</h1>
-                    <p class="mb-0">Detailed information about the selected address.</p>
+                    
                 </div>
             </div>
         </div>
@@ -140,9 +140,19 @@
                         <i class="fas fa-edit me-1"></i> Edit Address
                     </a>
                 }
-                <a asp-action="Index" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Addresses
-                </a>
+                @if (Context.Request.Query.ContainsKey("memberId"))
+                {
+                    int memberId = int.Parse(Context.Request.Query["memberId"]);
+                    <a asp-controller="Member" asp-action="Details" asp-route-id="@memberId" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Member
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Addresses
+                    </a>
+                }
             </div>
         </div>
     </div>

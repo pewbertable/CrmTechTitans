@@ -29,6 +29,13 @@
                 <input type="text" id="memberNameFilter" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member's full or partial name">
             </div>
         </div>
+        
+        <!-- Filtered By Indicator -->
+        <div id="filterStatus" class="text-end mt-3" style="display: none;">
+            <span class="text-secondary fs-6">
+                <i class="fas fa-filter me-1"></i> Filtered by: <span id="activeFilters">No filters</span>
+            </span>
+        </div>
     </section>
 
     <!-- Interactions Table -->
@@ -196,6 +203,34 @@
 
             // Initial sort on page load
             sortTable(2, "asc");
+
+            // Update filter status indicators whenever filters change
+            function updateFilterStatus() {
+                var activeFilters = [];
+                
+                // Check if member name filter is active
+                var memberNameFilter = $('#memberNameFilter').val();
+                if (memberNameFilter && memberNameFilter.trim() !== '') {
+                    activeFilters.push('Member Name: "' + memberNameFilter + '"');
+                }
+                
+                // Update the filter status display
+                if (activeFilters.length > 0) {
+                    $('#activeFilters').text(activeFilters.join(', '));
+                    $('#filterStatus').show();
+                } else {
+                    $('#activeFilters').text('No filters');
+                    $('#filterStatus').hide();
+                }
+            }
+            
+            // Call updateFilterStatus whenever filters change
+            $('#memberNameFilter').on('input', function() {
+                updateFilterStatus();
+            });
+            
+            // Initialize filter status on page load
+            updateFilterStatus();
         });
 
         // Sorting function
