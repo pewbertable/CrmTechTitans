@@ -36,6 +36,13 @@
                 @Html.DropDownList("NAICSCode", ViewBag.NAICSCodeList as SelectList, "-- Select NAICS Code --", new { @class = "form-select" })
             </div>
         </div>
+        
+        <!-- Filtered By Indicator -->
+        <div id="filterStatus" class="text-end mt-3" style="display: none;">
+            <span class="text-secondary fs-6">
+                <i class="fas fa-filter me-1"></i> Filtered by: <span id="activeFilters">No filters</span>
+            </span>
+        </div>
     </section>
 
     <!-- Industries Table -->
@@ -195,6 +202,44 @@
 
             // Attach filter function to input events
             $('#SearchString, #NAICSCode').on('input change', filterTable);
+            
+            // Update filter status indicators whenever filters change
+            function updateFilterStatus() {
+                var activeFilters = [];
+                
+                // Check if industry name filter is active
+                var nameFilter = $('#SearchString').val();
+                if (nameFilter && nameFilter.trim() !== '') {
+                    activeFilters.push('Industry Name: "' + nameFilter + '"');
+                }
+                
+                // Check if NAICS Code filter is active
+                var naicsFilter = $('#NAICSCode').val();
+                if (naicsFilter && naicsFilter !== '') {
+                    activeFilters.push('NAICS Code: "' + $('#NAICSCode option:selected').text() + '"');
+                }
+                
+                // Update the filter status display
+                if (activeFilters.length > 0) {
+                    $('#activeFilters').text(activeFilters.join(', '));
+                    $('#filterStatus').show();
+                } else {
+                    $('#activeFilters').text('No filters');
+                    $('#filterStatus').hide();
+                }
+            }
+            
+            // Call updateFilterStatus whenever filters change
+            $('#SearchString').on('input', function() {
+                updateFilterStatus();
+            });
+            
+            $('#NAICSCode').on('change', function() {
+                updateFilterStatus();
+            });
+            
+            // Initialize filter status on page load
+            updateFilterStatus();
 
             // Initial page load
             updatePagination();
