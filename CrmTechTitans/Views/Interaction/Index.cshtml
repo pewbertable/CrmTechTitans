@@ -51,7 +51,7 @@
                 <tr>
                     <th class="sortable">Interaction <i class="fas fa-sort"></i></th>
                     <th class="sortable">Members <i class="fas fa-sort"></i></th>
-                    <th class="sortable">Contact Type <i class="fas fa-sort"></i></th>
+                    
                     <th class="sortable">Date <i class="fas fa-sort"></i></th>
                     <th class="text-center actions-column">Actions</th>
                 </tr>
@@ -64,7 +64,6 @@
                         <td data-bs-toggle="tooltip" title="@(item.InteractionMembers.Any() ? string.Join(", ", item.InteractionMembers.Where(im => im.Member != null).Select(im => im.Member.MemberName)) : "No Member Associated")">
                             @(item.InteractionMembers.Any() ? string.Join(", ", item.InteractionMembers.Where(im => im.Member != null).Select(im => im.Member.MemberName)) : "No Member Associated")
                         </td>
-                        <td>@item.Contact?.ContactType</td>
                         <td>@item.Date.ToString("yyyy-MM-dd")</td>
                         <td class="text-center actions-column">
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit interaction details">Edit</a>

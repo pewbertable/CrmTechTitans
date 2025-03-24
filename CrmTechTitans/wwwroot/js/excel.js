@@ -8,6 +8,17 @@
     const downloadForm = document.getElementById('downloadForm');
     const downloadExcelBtn = document.getElementById('downloadExcelBtn');
 
+    // Check if we should automatically open the export dialog (from dashboard reports card)
+    if (localStorage.getItem('openExcelExport') === 'true') {
+        // Clear the flag first to prevent it from triggering again on refresh
+        localStorage.removeItem('openExcelExport');
+        
+        // Use setTimeout to ensure the modal opens after the page is fully loaded
+        setTimeout(() => {
+            excelExportModal.show();
+        }, 500);
+    }
+
     // Show modal when "Export to Excel" button is clicked
     exportExcelBtn.addEventListener('click', function () {
         excelExportModal.show();

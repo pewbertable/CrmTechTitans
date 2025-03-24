@@ -2,6 +2,7 @@
 using CrmTechTitans.Models.Enumerations;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CrmTechTitans.Utilities;
 
 namespace CrmTechTitans.Models
 {
@@ -33,6 +34,9 @@ namespace CrmTechTitans.Models
         [MaxLength(10)]
         [Required(ErrorMessage = "Phone number is required")]
         public string? Phone { get; set; }
+
+        [Display(Name = "Formatted Phone")]
+        public string FormattedPhone => Phone?.FormatPhoneNumber() ?? string.Empty;
 
         [Display(Name = "Linkedin")]
         [StringLength(100, ErrorMessage = "Linkedin can't be longer than 100 characters")]
