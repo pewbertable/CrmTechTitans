@@ -555,14 +555,20 @@ namespace CrmTechTitans.Controllers
 
                 try
                 {
-                    // Fetch the existing member from the database
+                    // Fetch the existing member from the database with all related entities
                     var member = await _context.Members
                         .Include(m => m.MemberPhoto)
                         .Include(m => m.MemberThumbnail)
                         .Include(m => m.MemberMembershipTypes)
                         .Include(m => m.IndustryMembers)
-                        .Include(m => m.MemberContacts) // Ensure contacts are loaded
-                        .ThenInclude(mc => mc.Contact)
+                        .Include(m => m.MemberContacts)
+                            .ThenInclude(mc => mc.Contact)
+                                .ThenInclude(c => c.ContactPhoto)
+                        .Include(m => m.MemberContacts)
+                            .ThenInclude(mc => mc.Contact)
+                                .ThenInclude(c => c.ContactThumbnail)
+                        .Include(m => m.MemberAddresses)
+                            .ThenInclude(ma => ma.Address)
                         .FirstOrDefaultAsync(m => m.ID == id);
 
                     if (member == null)
@@ -570,26 +576,57 @@ namespace CrmTechTitans.Controllers
                         return NotFound();
                     }
 
-                    // Check for duplicate contacts before updating
-                    var existingContacts = _context.Contacts.ToList(); // Get all contacts from DB
-
-                    foreach (var contactModel in model.Contacts)
+                    // Process member picture
+                    if (chkRemoveMemberImage == "on")
                     {
-                        if (string.IsNullOrWhiteSpace(contactModel.FirstName) &&
-                            string.IsNullOrWhiteSpace(contactModel.Phone))
+                        // Remove existing photo and thumbnail
+                        if (member.MemberPhoto != null)
                         {
-                            continue;
+                            _context.MemberPhotos.Remove(member.MemberPhoto);
+                            member.MemberPhoto = null;
                         }
-
-                        // Check if the contact already exists (same email or phone)
-                        bool contactExists = existingContacts.Any(c =>
-                            (!string.IsNullOrEmpty(contactModel.Email) && c.Email == contactModel.Email) ||
-                            (!string.IsNullOrEmpty(contactModel.Phone) && c.Phone == contactModel.Phone));
-
-                        if (contactExists)
+                        if (member.MemberThumbnail != null) 
                         {
-                            TempData["error"] = $"Duplicate contact detected: {contactModel.Email} / {contactModel.Phone}";
-                            continue; // Skip adding the duplicate contact
+                            _context.MemberThumbnails.Remove(member.MemberThumbnail);
+                            member.MemberThumbnail = null;
+                        }
+                    }
+                    else if (memberPicture != null)
+                    {
+                        // Update photo with new upload
+                        await AddMemberPicture(model, memberPicture);
+                        // Update member with new photo references
+                        if (model.MemberPhoto != null)
+                        {
+                            if (member.MemberPhoto == null)
+                            {
+                                member.MemberPhoto = new MemberPhoto
+                                {
+                                    Content = model.MemberPhoto.Content,
+                                    MimeType = model.MemberPhoto.MimeType
+                                };
+                            }
+                            else
+                            {
+                                member.MemberPhoto.Content = model.MemberPhoto.Content;
+                                member.MemberPhoto.MimeType = model.MemberPhoto.MimeType;
+                            }
+                        }
+                        if (model.MemberThumbnail != null)
+                        {
+                            if (member.MemberThumbnail == null)
+                            {
+                                member.MemberThumbnail = new MemberThumbnail
+                                {
+                                    Content = model.MemberThumbnail.Content,
+                                    MimeType = model.MemberThumbnail.MimeType
+                                };
+                            }
+                            else
+                            {
+                                member.MemberThumbnail.Content = model.MemberThumbnail.Content;
+                                member.MemberThumbnail.MimeType = model.MemberThumbnail.MimeType;
+                            }
                         }
                     }
 
@@ -603,35 +640,35 @@ namespace CrmTechTitans.Controllers
                     member.Notes = model.Notes;
                     member.MembershipStatus = model.MembershipStatus;
 
-                    // Update Contacts - clear and re-add valid ones
-                    member.MemberContacts.Clear();
-                    foreach (var contactModel in model.Contacts)
+                    // Update Industry memberships - clear existing and add selected ones
+                    member.IndustryMembers.Clear();
+                    foreach (var industryId in model.SelectedIndustryIds)
                     {
-                        if (string.IsNullOrWhiteSpace(contactModel.FirstName) &&
-                            string.IsNullOrWhiteSpace(contactModel.Phone))
-                        {
-                            continue;
-                        }
-
-                        var contact = new Contact
-                        {
-                            FirstName = contactModel.FirstName,
-                            LastName = contactModel.LastName,
-                            Email = contactModel.Email,
-                            Phone = contactModel.Phone,
-                            ContactType = contactModel.ContactType,
-                            ContactPhoto = contactModel.ContactPhoto,
-                            ContactThumbnail = contactModel.ContactThumbnail
-                        };
-                        member.MemberContacts.Add(new MemberContact { Contact = contact });
+                        member.IndustryMembers.Add(new MemberIndustry { 
+                            MemberID = member.ID,
+                            IndustryID = industryId
+                        });
                     }
 
+                    // Update Membership Types - clear existing and add selected ones
+                    member.MemberMembershipTypes.Clear();
+                    foreach (var membershipTypeId in model.SelectedMembershipTypeIDs)
+                    {
+                        member.MemberMembershipTypes.Add(new MemberMembershipType { 
+                            MemberID = member.ID,
+                            MembershipTypeID = membershipTypeId
+                        });
+                    }
+
+                    // Update only if we have existing contacts to manage
+                    // We're NOT clearing contacts here since they're managed separately through the Contacts controller
+                    // The Edit view only shows existing contacts but doesn't allow creating new ones directly
+                    
                     // Save changes
                     _context.Update(member);
                     await _context.SaveChangesAsync();
 
                     TempData["success"] = "Member edited successfully!";
-                    TempData["message"] = "Member edited successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -1354,6 +1391,6 @@ namespace CrmTechTitans.Controllers
                     return BadRequest("Could not generate the file.");
                 }
             }
-        }
-    }
+        }
+    }
 }
