@@ -76,7 +76,7 @@
                     <div class="card-details">
                         <div class="detail-item">
                             <i class="fas fa-users"></i>
-                            <span>@item.CompanySize</span>
+                            <span>@Html.DisplayFor(modelItem => item.CompanySize)</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-calendar-alt"></i>
@@ -172,7 +172,7 @@
                                 <span>No Membership Type Assigned</span>
                             }
                         </td>
-                        <td>@item.CompanySize</td>
+                        <td>@Html.DisplayFor(modelItem => item.CompanySize)</td>
                         <td class="dateColumn">
                             @(item.MembershipStatus == MembershipStatus.Cancelled ? item.MemberSince.ToShortDateString() ?? "N/A" : item.MemberSince.ToShortDateString())
                         </td>
