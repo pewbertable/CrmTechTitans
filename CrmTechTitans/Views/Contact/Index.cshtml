@@ -8,113 +8,121 @@
 
 <partial name="_Notification" />
 
-<div class="crm-container">
-    <div class="main-content">
-        <header class="page-header d-flex justify-content-between align-items-center mb-4">
-            <h1>All Contacts</h1>
-            <div class="d-flex align-items-center gap-3">
-                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+<div class="container-fluid">
+    <header class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1>All Contacts</h1>
+        <div class="d-flex align-items-center gap-3">
+            @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+            {
+                <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new Contact to the system">
+                    <i class="fas fa-user-plus"></i> Create New Contact
+                </a>
+            }
+        </div>
+    </header>
+
+    <!-- Filter Section -->
+    <section class="filter-container bg-light p-3 rounded mb-4">
+        <div class="filter-row d-flex align-items-end gap-3">
+            <!-- Filter by Name -->
+            <div class="filter-item">
+                <label for="nameFilter" class="form-label">Search by Name</label>
+                <input type="text" id="nameFilter" class="form-control" placeholder="Enter contact name" data-bs-toggle="tooltip" title="Enter a contact's full or partial name">
+            </div>
+
+            <!-- Filter by Email -->
+            <div class="filter-item">
+                <label for="emailFilter" class="form-label">Search by Email</label>
+                <input type="text" id="emailFilter" class="form-control" placeholder="Enter email" data-bs-toggle="tooltip" title="Enter a contact's email address to filter">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacts Table -->
+    <section class="table-responsive">
+        <!-- Helper text for sorting -->
+        <div class="alert alert-info d-flex align-items-center py-2" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Click on column headers to sort the table.
+        </div>
+
+        <table class="table custom-table" id="contactsTable">
+            <thead>
+                <tr>
+                    <th class="sortable">Photo <i class="fas fa-sort"></i></th> 
+                    <th class="sortable">Full Name <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Company <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Email <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Phone <i class="fas fa-sort"></i></th>
+                    <th class="text-center actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
-                    <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new Contact to the system">
-                        <i class="fas fa-user-plus"></i> Create New Contact
-                    </a>
-                }
-            </div>
-        </header>
-
-        <!-- Filter Section -->
-        <section class="filter-container bg-light p-3 rounded mb-4">
-            <div class="filter-row d-flex align-items-end gap-3">
-                <!-- Filter by Name -->
-                <div class="filter-item">
-                    <label for="nameFilter" class="form-label">Search by Name</label>
-                    <input type="text" id="nameFilter" class="form-control" placeholder="Enter contact name" data-bs-toggle="tooltip" title="Enter a contact's full or partial name">
-                </div>
-
-                <!-- Filter by Email -->
-                <div class="filter-item">
-                    <label for="emailFilter" class="form-label">Search by Email</label>
-                    <input type="text" id="emailFilter" class="form-control" placeholder="Enter email" data-bs-toggle="tooltip" title="Enter a contact's email address to filter">
-                </div>
-            </div>
-        </section>
-
-        <!-- Contacts Table -->
-        <section class="table-responsive">
-            <!-- Helper text for sorting -->
-            <div class="alert alert-info d-flex align-items-center py-2" role="alert">
-                <i class="fas fa-info-circle me-2"></i>
-                Click on column headers to sort the table.
-            </div>
-
-            <table class="table custom-table" id="contactsTable">
-                <thead>
                     <tr>
-                        <th>Photo</th>
-                        <th onclick="sortTable(1)" class="sortable">Full Name <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable(2)" class="sortable">Company <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable(3)" class="sortable">Email <i class="fas fa-sort"></i></th>
-                        <th onclick="sortTable(4)" class="sortable">Phone <i class="fas fa-sort"></i></th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @{
-                                    if (item.ContactThumbnail?.Content != null)
-                                    {
-                                        string imageBase64 = Convert.ToBase64String(item.ContactThumbnail.Content);
-                                        string imageSrc = string.Format("data:" + item.ContactThumbnail.MimeType + ";base64,{0}", imageBase64);
-                                        <img src="@imageSrc" alt="Profile Picture of @item?.FullFormalName"
-                                             title="Profile Picture of @item?.FullFormalName" class="img-fluid rounded" style="max-width: 50px;" />
-                                    }
-                                }
-                            </td>
-                            <td>@item.FullFormalName</td>
-                            <td>
-                                @(item.MemberContacts.Any()
-                                    ? string.Join(", ", item.MemberContacts
-                                    .Where(mc => mc.Member != null)
-                                    .Select(mc => mc.Member.MemberName))
-                                    : "No Company Associated")
-                            </td>
-                            <td>@item.Email</td>
-                            <td>@item.Phone</td>
-                            <td class="text-center">
-                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View contact details">Details</a>
-                                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                        <td>
+                            <div class="logo-container">
+                                @if (item.ContactThumbnail?.Content != null)
                                 {
-                                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit contact">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete contact">Delete</a>
+                                    string imageBase64 = Convert.ToBase64String(item.ContactThumbnail.Content);
+                                    string imageSrc = string.Format("data:" + item.ContactThumbnail.MimeType + ";base64,{0}", imageBase64);
+                                    <img src="@imageSrc" alt="Profile Picture of @item?.FullFormalName"
+                                         title="Profile Picture of @item?.FullFormalName" class="member-logo" />
                                 }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
+                                else
+                                {
+                                    <div class="placeholder-logo">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                        <td data-bs-toggle="tooltip" title="@item.FullFormalName">@item.FullFormalName</td>
+                        <td data-bs-toggle="tooltip" title="@(item.MemberContacts.Any()
+                                ? string.Join(", ", item.MemberContacts
+                                .Where(mc => mc.Member != null)
+                                .Select(mc => mc.Member.MemberName))
+                                : "No Company Associated")">
+                            @(item.MemberContacts.Any()
+                                ? string.Join(", ", item.MemberContacts
+                                .Where(mc => mc.Member != null)
+                                .Select(mc => mc.Member.MemberName))
+                                : "No Company Associated")
+                        </td>
+                        <td data-bs-toggle="tooltip" title="@item.Email">@item.Email</td>
+                        <td data-bs-toggle="tooltip" title="@item.Phone">@item.Phone</td>
+                        <td class="text-center actions-column">
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View contact details">Details</a>
+                            @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit contact">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete contact">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 
+    <!-- Pagination Controls -->
+    <div class="row mt-4">
+        <!-- Records per page -->
+        <div class="col-md-4">
+            <label for="recordsPerPage">Records per page:</label>
+            <select id="recordsPerPage" class="form-control">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
         <!-- Pagination Controls -->
-        <div class="row mt-4">
-            <!-- Records per page -->
-            <div class="col-md-4">
-                <label for="recordsPerPage">Records per page:</label>
-                <select id="recordsPerPage" class="form-control">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                </select>
-            </div>
-            <!-- Pagination Controls -->
-            <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center gap-3">
-                <button id="prevPage" class="btn btn-primary pagination-btn">Previous</button>
-                <span id="pageInfo" class="pagination-info">Page 1 of 1 (0 records)</span>
-                <button id="nextPage" class="btn btn-primary pagination-btn">Next</button>
-            </div>
+        <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center gap-3">
+            <button id="prevPage" class="btn btn-primary pagination-btn">Previous</button>
+            <span id="pageInfo" class="pagination-info">Page 1 of 1 (0 records)</span>
+            <button id="nextPage" class="btn btn-primary pagination-btn">Next</button>
         </div>
     </div>
 </div>
@@ -176,7 +184,7 @@
             }
 
             // Function to update pagination
-            function updatePagination() {
+            window.updatePagination = function() {
                 var visibleRows = getVisibleRows();
                 var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
 
@@ -224,125 +232,13 @@
 
             // Initial page load
             updatePagination();
-
-            // Initial sort on page load
-            sortTable(1, "asc");
+            
+            // Listen for sort-complete event to update display
+            document.addEventListener('sort-complete', updatePagination);
         });
-
-        // Sorting function
-        function sortTable(columnIndex, initialDirection = "asc") {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("contactsTable");
-            switching = true;
-            dir = initialDirection; // Default sorting direction
-
-            // Determine the current sorting direction
-            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
-                dir = "desc";
-            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
-                dir = "asc";
-            }
-
-            // Remove sorting classes from all headers
-            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
-                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
-            }
-
-            // Add sorting class to the clicked header
-            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Update sort icon for all headers
-            for (i = 1; i < 5; i++) { // Only for sortable columns (1-4)
-                if (i !== columnIndex) {
-                    var iconElement = table.rows[0].getElementsByTagName("th")[i].querySelector(".fas");
-                    if (iconElement) {
-                        iconElement.className = "fas fa-sort";
-                    }
-                }
-            }
-
-            // Update the icon for the sorted column
-            var sortedIconElement = table.rows[0].getElementsByTagName("th")[columnIndex].querySelector(".fas");
-            if (sortedIconElement) {
-                sortedIconElement.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            }
-
-            // Perform sorting
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("td")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-
-                    if (dir === "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-
-            // Update pagination after sorting
-            $(document).ready(function() {
-                updatePagination();
-            });
-        }
     </script>
 
     <style>
-        /* Styling for sortable columns */
-        .sortable {
-            position: relative;
-            cursor: pointer;
-        }
-
-            .sortable:hover {
-                background-color: #f5f5f5;
-            }
-
-            .sortable .fas {
-                margin-left: 5px;
-                color: #aaa;
-            }
-
-        .sorted-asc .fa-sort-up,
-        .sorted-desc .fa-sort-down {
-            color: #333;
-        }
-
-        /* Table header styling */
-        th {
-            cursor: pointer;
-        }
-
-            th.sorted-asc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
-
-            th.sorted-desc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
-
         /* Pagination button styling */
         .pagination-btn {
             min-width: 100px;

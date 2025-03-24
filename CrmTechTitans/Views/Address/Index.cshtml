@@ -8,22 +8,18 @@
 
 <partial name="_Notification" />
 
-<div class="crm-container">
-    <div class="main-content">
-        <header class="page-header d-flex justify-content-between align-items-center mb-4">
-            <h1>All Municipalities</h1>
+<div class="container-fluid">
+    <header class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1>All Municipalities</h1>
+        <div class="d-flex align-items-center gap-3">
             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
             {
                 <a asp-action="Create" class="btn btn-primary">
                     <i class="fas fa-plus-circle me-2"></i> Create New Municipality
                 </a>
             }
-        </header>
-
-        <!-- Helper text for sorting -->
-        <div class="alert alert-info mb-3">
-            <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
         </div>
+    </header>
 
     <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">
@@ -37,7 +33,7 @@
             <!-- Filter by Province -->
             <div class="filter-item">
                 <label for="provinceFilter" class="form-label">Search by Province</label>
-                <input type="text" id="provinceFilter" class="form-control" placeholder="Enter province name">
+                <input type="text" id="provinceFilter" class="form-control" placeholder="Enter province">
             </div>
         </div>
     </section>
@@ -53,26 +49,22 @@
         <table class="table custom-table" id="addressTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)" class="sortable">Members <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(1)" class="sortable">Municipality <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)" class="sortable">Province <i class="fas fa-sort"></i></th>
-                    <th class="text-center">Actions</th>
+                    <th class="sortable">Members <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Municipality <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Province <i class="fas fa-sort"></i></th>
+                    <th class="text-center actions-column">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>
-                            @(item.MemberAddresses.Any()
-                                ? string.Join(", ", item.MemberAddresses
-                                .Where(ma => ma.Member != null)
-                                .Select(ma => ma.Member.MemberName))
-                                : "No Member Associated")
+                        <td data-bs-toggle="tooltip" title="@(item.MemberAddresses.Any() ? string.Join(", ", item.MemberAddresses.Where(ma => ma.Member != null).Select(ma => ma.Member.MemberName)) : "None")">
+                            @(item.MemberAddresses.Any() ? string.Join(", ", item.MemberAddresses.Where(ma => ma.Member != null).Select(ma => ma.Member.MemberName)) : "None")
                         </td>
-                        <td>@item.City</td>
+                        <td data-bs-toggle="tooltip" title="@item.City">@item.City</td>
                         <td>@item.Province</td>
-                        <td class="text-center">
+                        <td class="text-center actions-column">
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit municipality details">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View municipality details">Details</a>
                         </td>
@@ -160,7 +152,7 @@
             }
 
             // Function to update pagination
-            function updatePagination() {
+            window.updatePagination = function() {
                 var visibleRows = getVisibleRows();
                 var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
 
@@ -208,125 +200,13 @@
 
             // Initial page load
             updatePagination();
-
-            // Initial sort on page load
-            sortTable(1, "asc");
+            
+            // Listen for sort-complete event to update display
+            document.addEventListener('sort-complete', updatePagination);
         });
-
-        // Sorting function
-        function sortTable(columnIndex, initialDirection = "asc") {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("addressTable");
-            switching = true;
-            dir = initialDirection; // Default sorting direction
-
-            // Determine the current sorting direction
-            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
-                dir = "desc";
-            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
-                dir = "asc";
-            }
-
-            // Remove sorting classes from all headers
-            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
-                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
-            }
-
-            // Add sorting class to the clicked header
-            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Update sort icon for all headers
-            for (i = 0; i < 3; i++) { // Only for sortable columns (0-2)
-                if (i !== columnIndex) {
-                    var iconElement = table.rows[0].getElementsByTagName("th")[i].querySelector(".fas");
-                    if (iconElement) {
-                        iconElement.className = "fas fa-sort";
-                    }
-                }
-            }
-
-            // Update the icon for the sorted column
-            var sortedIconElement = table.rows[0].getElementsByTagName("th")[columnIndex].querySelector(".fas");
-            if (sortedIconElement) {
-                sortedIconElement.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            }
-
-            // Perform sorting
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("td")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-
-                    if (dir === "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-
-            // Update pagination after sorting
-            $(document).ready(function() {
-                updatePagination();
-            });
-        }
     </script>
 
     <style>
-        /* Styling for sortable columns */
-        .sortable {
-            position: relative;
-            cursor: pointer;
-        }
-
-            .sortable:hover {
-                background-color: #f5f5f5;
-            }
-
-            .sortable .fas {
-                margin-left: 5px;
-                color: #aaa;
-            }
-
-        .sorted-asc .fa-sort-up,
-        .sorted-desc .fa-sort-down {
-            color: #333;
-        }
-
-        /* Table header styling */
-        th {
-            cursor: pointer;
-        }
-
-            th.sorted-asc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
-
-            th.sorted-desc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
-
         /* Pagination button styling */
         .pagination-btn {
             min-width: 100px;

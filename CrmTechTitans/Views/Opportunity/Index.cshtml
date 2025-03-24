@@ -8,45 +8,41 @@
 
 <partial name="_Notification" />
 
-<div class="crm-container">
-    <div class="main-content">
-        <header class="page-header">
-            <h1>All Opportunities</h1>
-            <div class="d-flex align-items-center gap-3">
-                @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
-                {
-                    <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new Opportunity to the system">
-                        <i class="fas fa-plus"></i> Create New Opportunity
-                    </a>
-                }
-            </div>
-        </header>
-
-        <!-- Helper text for sorting -->
-        <div class="alert alert-info mb-3">
-            <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
+<div class="container-fluid">
+    <header class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1>All Opportunities</h1>
+        <div class="d-flex align-items-center gap-3">
+            @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
+            {
+                <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new Opportunity to the system">
+                    <i class="fas fa-plus"></i> Create New Opportunity
+                </a>
+            }
         </div>
+    </header>
+
+    <!-- Helper text for sorting -->
+    <div class="alert alert-info mb-3">
+        <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
+    </div>
 
     <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">
         <div class="filter-row d-flex align-items-end gap-3">
-            <!-- Filter by Status -->
             <div class="filter-item">
                 <label for="statusFilter" class="form-label">Filter by Status</label>
-                <select id="statusFilter" class="form-select">
-                    <option value="">All</option>
+                <select id="statusFilter" class="form-control">
+                    <option value="">All Statuses</option>
                     @foreach (var status in Enum.GetValues(typeof(Status)))
                     {
                         <option value="@status">@status</option>
                     }
                 </select>
             </div>
-
-            <!-- Filter by Priority -->
             <div class="filter-item">
                 <label for="priorityFilter" class="form-label">Filter by Priority</label>
-                <select id="priorityFilter" class="form-select">
-                    <option value="">All</option>
+                <select id="priorityFilter" class="form-control">
+                    <option value="">All Priorities</option>
                     @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
                     {
                         <option value="@priority">@priority</option>
@@ -67,20 +63,34 @@
         <table class="table custom-table" id="opportunitiesTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)" class="sortable">Title <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(1)" class="sortable">Status <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)" class="sortable">Priority <i class="fas fa-sort"></i></th>
-                    <th class="text-center">Actions</th>
+                    <th class="sortable">Title <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Member <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Priority <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Status <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Close Date <i class="fas fa-sort"></i></th>
+                    <th class="text-center actions-column">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Title</td>
+                        <td data-bs-toggle="tooltip" title="@item.Title">@item.Title</td>
+                        <td data-bs-toggle="tooltip" title="@(item.MemberOpportunities.Any() ? 
+                            string.Join(", ", item.MemberOpportunities
+                                .Where(mo => mo.Member != null)
+                                .Select(mo => mo.Member.MemberName)) : 
+                            "No Member Associated")">
+                            @(item.MemberOpportunities.Any() ? 
+                            string.Join(", ", item.MemberOpportunities
+                                .Where(mo => mo.Member != null)
+                                .Select(mo => mo.Member.MemberName)) : 
+                            "No Member Associated")
+                        </td>
+                        <td>@(item.Priority)</td>
                         <td>@item.Status</td>
-                        <td>@item.Priority</td>
-                        <td class="text-center">
+                        <td>@(DateTime.Now.AddDays(30).ToString("yyyy-MM-dd"))</td>
+                        <td class="text-center actions-column">
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View opportunity details">Details</a>
                             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
                             {
@@ -133,11 +143,11 @@
                 var priorityFilter = $('#priorityFilter').val().toLowerCase();
 
                 var visibleRows = $('#opportunitiesTable tbody tr').filter(function () {
-                    var statusText = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var statusText = $(this).find('td:nth-child(4)').text().toLowerCase();
                     var priorityText = $(this).find('td:nth-child(3)').text().toLowerCase();
 
-                    var statusMatch = statusFilter === "" || statusText === statusFilter;
-                    var priorityMatch = priorityFilter === "" || priorityText === priorityFilter;
+                    var statusMatch = statusFilter === "" || statusText.includes(statusFilter);
+                    var priorityMatch = priorityFilter === "" || priorityText.includes(priorityFilter);
 
                     return statusMatch && priorityMatch;
                 });
@@ -172,7 +182,7 @@
             }
 
             // Function to update pagination
-            function updatePagination() {
+            window.updatePagination = function() {
                 var visibleRows = getVisibleRows();
                 var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
 
@@ -220,125 +230,13 @@
 
             // Initial page load
             updatePagination();
-
-            // Initial sort on page load
-            sortTable(0, "asc");
+            
+            // Listen for sort-complete event to update display
+            document.addEventListener('sort-complete', updatePagination);
         });
-
-        // Sorting function
-        function sortTable(columnIndex, initialDirection = "asc") {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("opportunitiesTable");
-            switching = true;
-            dir = initialDirection; // Default sorting direction
-
-            // Determine the current sorting direction
-            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
-                dir = "desc";
-            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
-                dir = "asc";
-            }
-
-            // Remove sorting classes from all headers
-            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
-                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
-            }
-
-            // Add sorting class to the clicked header
-            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Update sort icon for all headers
-            for (i = 0; i < 3; i++) { // Only for sortable columns (0-2)
-                if (i !== columnIndex) {
-                    var iconElement = table.rows[0].getElementsByTagName("th")[i].querySelector(".fas");
-                    if (iconElement) {
-                        iconElement.className = "fas fa-sort";
-                    }
-                }
-            }
-
-            // Update the icon for the sorted column
-            var sortedIconElement = table.rows[0].getElementsByTagName("th")[columnIndex].querySelector(".fas");
-            if (sortedIconElement) {
-                sortedIconElement.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            }
-
-            // Perform sorting
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("td")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-
-                    if (dir === "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-
-            // Update pagination after sorting
-            $(document).ready(function() {
-                updatePagination();
-            });
-        }
     </script>
 
     <style>
-        /* Styling for sortable columns */
-        .sortable {
-            position: relative;
-            cursor: pointer;
-        }
-
-            .sortable:hover {
-                background-color: #f5f5f5;
-            }
-
-            .sortable .fas {
-                margin-left: 5px;
-                color: #aaa;
-            }
-
-        .sorted-asc .fa-sort-up,
-        .sorted-desc .fa-sort-down {
-            color: #333;
-        }
-
-        /* Table header styling */
-        th {
-            cursor: pointer;
-        }
-
-            th.sorted-asc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
-
-            th.sorted-desc::after {
-                content: ""; /* Removed as we're using Font Awesome icons now */
-            }
-
         /* Pagination button styling */
         .pagination-btn {
             min-width: 100px;

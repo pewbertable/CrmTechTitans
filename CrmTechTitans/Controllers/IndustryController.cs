@@ -31,7 +31,9 @@ namespace CrmTechTitans.Controllers
             int numberFilters = 0;
 
             // Start querying Industries
-            var industries = _context.Industries.AsNoTracking();
+            var industries = _context.Industries
+                .Include(i => i.IndustryMembers)
+                .AsNoTracking();
 
             // Filter by Industry Name
             if (!String.IsNullOrEmpty(SearchString))

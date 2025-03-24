@@ -46,21 +46,23 @@
             Click on column headers to sort the table.
         </div>
 
-        <table class="table custom-table" id="industriesTable">
+        <table class="table custom-table" id="industryTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)" class="sortable">Industry Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(1)" class="sortable">NAICS Code <i class="fas fa-sort"></i></th>
-                    <th class="text-center">Actions</th>
+                    <th class="sortable">Industry <i class="fas fa-sort"></i></th>
+                    <th class="sortable">NAICS Code <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Associated Members <i class="fas fa-sort"></i></th>
+                    <th class="text-center actions-column">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Name</td>
+                        <td data-bs-toggle="tooltip" title="@item.Name">@item.Name</td>
                         <td>@item.NAICS</td>
-                        <td class="text-center">
+                        <td>@item.IndustryMembers.Count</td>
+                        <td class="text-center actions-column">
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit industry details">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View industry details">Details</a>
                         </td>
@@ -108,9 +110,9 @@
                 var nameFilter = $('#SearchString').val().toLowerCase();
                 var naicsFilter = $('#NAICSCode').val();
 
-                var visibleRows = $('#industriesTable tbody tr').filter(function () {
-                    var nameText = $(this).find('td:nth-child(1)').text().toLowerCase();
-                    var naicsText = $(this).find('td:nth-child(2)').text();
+                var visibleRows = $('#industryTable tbody tr').filter(function () {
+                    var nameText = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    var naicsText = $(this).find('td:nth-child(3)').text();
 
                     var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
                     var naicsMatch = naicsFilter === "" || naicsText === naicsFilter;
@@ -134,7 +136,7 @@
                 var endIndex = startIndex + recordsPerPage;
 
                 // Hide all rows first
-                $('#industriesTable tbody tr').hide();
+                $('#industryTable tbody tr').hide();
 
                 // Show only the rows for the current page
                 visibleRows.slice(startIndex, endIndex).show();
@@ -148,7 +150,7 @@
             }
 
             // Function to update pagination
-            function updatePagination() {
+            window.updatePagination = function() {
                 var visibleRows = getVisibleRows();
                 var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
 
@@ -196,89 +198,10 @@
 
             // Initial page load
             updatePagination();
-
-            // Initial sort on page load
-            sortTable(0, "asc");
+            
+            // Listen for sort-complete event to update display
+            document.addEventListener('sort-complete', updatePagination);
         });
-
-        // Sorting function
-        function sortTable(columnIndex, initialDirection = "asc") {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("industriesTable");
-            switching = true;
-            dir = initialDirection; // Default sorting direction
-
-            // Determine the current sorting direction
-            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
-                dir = "desc";
-            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
-                dir = "asc";
-            }
-
-            // Remove sorting classes from all headers
-            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
-                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
-            }
-
-            // Add sorting class to the clicked header
-            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Update sort icon for all headers
-            for (i = 0; i < 2; i++) { // Only for sortable columns (0-1)
-                if (i !== columnIndex) {
-                    var iconElement = table.rows[0].getElementsByTagName("th")[i].querySelector(".fas");
-                    if (iconElement) {
-                        iconElement.className = "fas fa-sort";
-                    }
-                }
-            }
-
-            // Update the icon for the sorted column
-            var sortedIconElement = table.rows[0].getElementsByTagName("th")[columnIndex].querySelector(".fas");
-            if (sortedIconElement) {
-                sortedIconElement.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            }
-
-            // Perform sorting
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("td")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-
-                    if (dir === "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-
-            // Update pagination after sorting
-            $(document).ready(function() {
-                updatePagination();
-            });
-        }
     </script>
 
     <style>

@@ -11,14 +11,6 @@
     <header class="page-header d-flex justify-content-between align-items-center mb-4">
         <h1>All Members</h1>
         <div class="d-flex align-items-center gap-3">
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary active" id="cards-view-btn" data-bs-toggle="tooltip" title="View as cards">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button type="button" class="btn btn-outline-primary" id="table-view-btn" data-bs-toggle="tooltip" title="View as table">
-                    <i class="fas fa-table"></i>
-                </button>
-            </div>
             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
             {
                 <a asp-action="Create" class="btn btn-primary" data-bs-toggle="tooltip" title="Add a new member to the system">
@@ -49,96 +41,25 @@
             </div>
         </div>
     </section>
-
-    <section class="members-grid" id="cards-view" style="display: none;">
-        @foreach (var item in Model)
-        {
-            <div class="member-card" data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
-                <div class="card-logo">
-                    @if (item.MemberThumbnail?.Content != null)
-                    {
-                        string imageBase64 = Convert.ToBase64String(item.MemberThumbnail.Content);
-                        string imageSrc = string.Format("data:{0};base64,{1}", item.MemberThumbnail.MimeType, imageBase64);
-                        <img src="@imageSrc" alt="@item.MemberName Logo" class="img-fluid rounded" />
-                    }
-                    else
-                    {
-                        <i class="fas fa-building"></i>
-                    }
-                </div>
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="company-name">@item.MemberName</h2>
-                        <span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">
-                            @item.MembershipStatus
-                        </span>
-                    </div>
-                    <div class="card-details">
-                        <div class="detail-item">
-                            <i class="fas fa-users"></i>
-                            <span>@Html.DisplayFor(modelItem => item.CompanySize)</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Member since @item.MemberSince.ToString("MMM yyyy")</span>
-                        </div>
-                        @if (!string.IsNullOrEmpty(item.CompanyWebsite))
-                        {
-                            <div class="detail-item">
-                                <i class="fas fa-globe"></i>
-                                <a href="@item.CompanyWebsite" target="_blank">Website</a>
-                            </div>
-                        }
-                    </div>
-                    <div class="membership-types">
-                        <h3>Membership Types:</h3>
-                        <p>
-                            @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
-                            {
-                                @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
-                            }
-                            else
-                            {
-                                <span>No Membership Type Assigned</span>
-                            }
-                        </p>
-                    </div>
-                </div>
-                <div class="card-actions">
-                    <a href="javascript:void(0);"
-                       class="btn btn-outline-danger btn-sm archive-btn"
-                       data-id="@item.ID"
-                       data-status="@item.MembershipStatus.ToString()"
-                       data-bs-toggle="tooltip"
-                       title="@(item.MembershipStatus == MembershipStatus.Cancelled ? "Unarchive this member" : "Archive this member")">
-                        <!-- Dynamically change the icon based on the status -->
-                        <i class="fas fa-archive @(item.MembershipStatus == MembershipStatus.Cancelled ? "fa-undo" : "fa-archive")"></i>
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View member details">
-                        <i class="fas fa-info-circle"></i>
-                    </a>
-                </div>
-            </div>
-        }
-    </section>
  
-    <!-- Helper text for sorting in table view - Now visible -->
-    <div class="alert alert-info mb-3" id="table-sort-info">
-        <i class="fas fa-info-circle"></i> Click on column headers to sort the table.
+    <!-- Helper text for sorting in table view -->
+    <div class="alert alert-info d-flex align-items-center py-2 mb-3" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        Click on column headers to sort the table.
     </div>
 
-    <!-- Table view - Now visible -->
-    <section class="table-responsive" id="table-view">
+    <!-- Table view -->
+    <section class="table-responsive">
         <table class="table custom-table" id="membersTable">
             <thead>
                 <tr>
-                    <th>Logo</th>
-                    <th onclick="sortTable(1)">Name</th>
-                    <th onclick="sortTable(2)">Type</th>
-                    <th onclick="sortTable(3)">Company Size</th>
-                    <th onclick="sortTable(4)">Member Since</th>
-                    <th onclick="sortTable(5)">Status</th>
-                    <th class="text-center">Actions</th>
+                    <th class="sortable">Logo <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Name <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Type <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Company Size <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Member Since <i class="fas fa-sort"></i></th>
+                    <th class="sortable">Status <i class="fas fa-sort"></i></th>
+                    <th class="text-center actions-column">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -161,8 +82,8 @@
                                 }
                             </div>
                         </td>
-                        <td>@item.MemberName</td>
-                        <td>
+                        <td data-bs-toggle="tooltip" title="@item.MemberName">@item.MemberName</td>
+                        <td data-bs-toggle="tooltip" title="@(item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any() ? string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name)) : "No Membership Type Assigned")">
                             @if (item.MemberMembershipTypes != null && item.MemberMembershipTypes.Any())
                             {
                                 @string.Join(", ", item.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))
@@ -177,7 +98,7 @@
                             @(item.MembershipStatus == MembershipStatus.Cancelled ? item.MemberSince.ToShortDateString() ?? "N/A" : item.MemberSince.ToShortDateString())
                         </td>
                         <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
-                        <td class="text-center">
+                        <td class="text-center actions-column">
                             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
                             {
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View member edit page">Edit</a>
@@ -317,13 +238,11 @@
 
 @section Scripts {
     <script src="~/js/excel.js"></script>
-    <script src="~/js/member.js"></script>
 
     <script>
         $(document).ready(function () {
             var currentPage = 1;
             var recordsPerPage = parseInt($('#recordsPerPage').val());
-            var currentView = 'cards'; // Default view
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -331,47 +250,18 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            // View toggle functionality
-            $('#cards-view-btn').on('click', function() {
-                $(this).addClass('active');
-                $('#table-view-btn').removeClass('active');
-                $('#cards-view').show();
-                $('#table-view').hide();
-                currentView = 'cards';
-                updatePagination();
-            });
-
-            $('#table-view-btn').on('click', function() {
-                $(this).addClass('active');
-                $('#cards-view-btn').removeClass('active');
-                $('#table-view').show();
-                $('#cards-view').hide();
-                currentView = 'table';
-                updatePagination();
-            });
-
             // Function to get visible rows (rows not hidden by filter)
             function getVisibleRows() {
                 var nameFilter = $('#memberNameFilter').val().toLowerCase();
                 var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
 
-                if (currentView === 'cards') {
-                    return $('.member-card').filter(function () {
-                        var nameText = $(this).data('name');
-                        var statusText = $(this).data('status');
-                        var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
-                        var statusMatch = statusFilter === "" || statusText === statusFilter;
-                        return nameMatch && statusMatch;
-                    });
-                } else {
-                    return $('#membersTable tbody tr').filter(function () {
-                        var nameText = $(this).data('name');
-                        var statusText = $(this).data('status');
-                        var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
-                        var statusMatch = statusFilter === "" || statusText === statusFilter;
-                        return nameMatch && statusMatch;
-                    });
-                }
+                return $('#membersTable tbody tr').filter(function () {
+                    var nameText = $(this).data('name');
+                    var statusText = $(this).data('status');
+                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
+                    var statusMatch = statusFilter === "" || statusText === statusFilter;
+                    return nameMatch && statusMatch;
+                });
             }
 
             // Function to show the current page
@@ -386,17 +276,10 @@
                 var startIndex = (page - 1) * recordsPerPage;
                 var endIndex = startIndex + recordsPerPage;
 
-                if (currentView === 'cards') {
-                    // Hide all cards first
-                    $('.member-card').hide();
-                    // Show only the cards for the current page
-                    visibleRows.slice(startIndex, endIndex).show();
-                } else {
-                    // Hide all rows first
-                    $('#membersTable tbody tr').hide();
-                    // Show only the rows for the current page
-                    visibleRows.slice(startIndex, endIndex).show();
-                }
+                // Hide all rows first
+                $('#membersTable tbody tr').hide();
+                // Show only the rows for the current page
+                visibleRows.slice(startIndex, endIndex).show();
 
                 // Update page info
                 $('#pageInfo').text(`Page ${page} of ${totalPages} (${visibleRows.length} records)`);
@@ -407,7 +290,7 @@
             }
 
             // Function to update pagination
-            function updatePagination() {
+            window.updatePagination = function() {
                 var visibleRows = getVisibleRows();
                 var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
 
@@ -466,13 +349,24 @@
                     return;
                 }
 
+                // If status is being set to 'Cancelled', prompt for a reason
+                let reason = "";
+                if (newStatus === 'Cancelled') {
+                    reason = prompt("Please provide a reason for archiving this member:");
+                    if (!reason || reason.trim() === "") {
+                        alert("Archiving reason is required.");
+                        return; // Stop if no reason is provided
+                    }
+                }
+
                 $.ajax({
                     url: '/Member/ToggleArchive',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
                         memberId: parseInt(memberId),
-                        newStatus: newStatus
+                        newStatus: newStatus,
+                        reason: reason // Include the reason here
                     }),
                     success: function (data) {
                         alert(data.message);
@@ -487,102 +381,37 @@
 
             // Initial page load
             updatePagination();
-
-            // Initial sort on page load
-            sortTable(1, "asc");
+            
+            // Listen for sort-complete event to update display
+            document.addEventListener('sort-complete', updatePagination);
         });
 
-        // Sorting function
-        function sortTable(columnIndex, initialDirection = "asc") {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("membersTable");
-            switching = true;
-            dir = initialDirection; // Default sorting direction
+        // Update table header based on the selected status filter
+        function updateTableHeader() {
+            const statusFilter = $('#membershipStatusFilter').val();
+            const tableHeader = document.querySelector('#membersTable thead tr');
+            if (!tableHeader) return;
 
-            // Determine the current sorting direction
-            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
-                dir = "desc";
-            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
-                dir = "asc";
-            }
-
-            // Remove sorting classes from all headers
-            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
-                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
-            }
-
-            // Add sorting class to the clicked header
-            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Perform sorting
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("td")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-
-                    if (dir === "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
+            // If the selected status is 'Cancelled', change the column heading for 'Member Since'
+            if (statusFilter === 'Cancelled') {
+                tableHeader.querySelectorAll('th')[4].textContent = 'Cancelled Date'; // Modify the 5th column header
+                // Add back the sort icon that might have been removed
+                let thElement = tableHeader.querySelectorAll('th')[4];
+                if (!thElement.querySelector('.fas')) {
+                    thElement.innerHTML += ' <i class="fas fa-sort"></i>';
                 }
-
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
+            } else {
+                // Otherwise, keep it as 'Member Since'
+                tableHeader.querySelectorAll('th')[4].textContent = 'Member Since';
+                // Add back the sort icon that might have been removed
+                let thElement = tableHeader.querySelectorAll('th')[4];
+                if (!thElement.querySelector('.fas')) {
+                    thElement.innerHTML += ' <i class="fas fa-sort"></i>';
                 }
             }
-
-            // Update pagination after sorting
-            $(document).ready(function() {
-                updatePagination();
-            });
         }
     </script>
     <style>
-        th {
-            cursor: pointer;
-        }
-
-            th.sorted-asc::after {
-                content: " ▲";
-            }
-
-            th.sorted-desc::after {
-                content: " ▼";
-            }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-            .pagination button {
-                margin: 0 5px;
-            }
-
-        #pageInfo {
-            margin: 0 10px;
-            line-height: 2;
-        }
-
         /* Pagination button styling */
         .pagination-btn {
             min-width: 100px;

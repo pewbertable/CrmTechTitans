@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Pagination state
     let currentPage = 1;
-    let recordsPerPage = parseInt(recordsPerPageSelect.value);
+    let recordsPerPage = parseInt(recordsPerPageSelect?.value || 10);
     
     // Initialize tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -25,14 +25,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     
     // Set default filter to "Good Standing"
-    membershipStatusFilter.value = "GoodStanding";
+    if (membershipStatusFilter) {
+        membershipStatusFilter.value = "GoodStanding";
+    }
     
     /**
      * Get rows that match the current filter criteria
      */
     function getFilteredRows() {
-        const nameFilter = memberNameFilter.value.toLowerCase();
-        const statusFilter = membershipStatusFilter.value.toLowerCase();
+        const nameFilter = memberNameFilter?.value.toLowerCase() || '';
+        const statusFilter = membershipStatusFilter?.value.toLowerCase() || '';
         
         return Array.from(tableRows).filter(row => {
             const name = row.dataset.name || '';
@@ -69,9 +71,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         
         // Update pagination info and buttons
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${filteredRows.length} records)`;
-        prevPageButton.disabled = currentPage <= 1;
-        nextPageButton.disabled = currentPage >= totalPages;
+        if (pageInfo) {
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${filteredRows.length} records)`;
+        }
+        if (prevPageButton) {
+            prevPageButton.disabled = currentPage <= 1;
+        }
+        if (nextPageButton) {
+            nextPageButton.disabled = currentPage >= totalPages;
+        }
     }
     
     /**
@@ -115,11 +123,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     // Event listeners
-    memberNameFilter.addEventListener('input', handleFilterChange);
-    membershipStatusFilter.addEventListener('change', handleFilterChange);
-    recordsPerPageSelect.addEventListener('change', handleRecordsPerPageChange);
-    prevPageButton.addEventListener('click', goToPreviousPage);
-    nextPageButton.addEventListener('click', goToNextPage);
+    if (memberNameFilter) {
+        memberNameFilter.addEventListener('input', handleFilterChange);
+    }
+    if (membershipStatusFilter) {
+        membershipStatusFilter.addEventListener('change', handleFilterChange);
+    }
+    if (recordsPerPageSelect) {
+        recordsPerPageSelect.addEventListener('change', handleRecordsPerPageChange);
+    }
+    if (prevPageButton) {
+        prevPageButton.addEventListener('click', goToPreviousPage);
+    }
+    if (nextPageButton) {
+        nextPageButton.addEventListener('click', goToNextPage);
+    }
     
     // Handle archive/unarchive functionality
     const archiveButtons = document.querySelectorAll('.archive-btn');
@@ -155,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     memberId: parseInt(memberId),
                     newStatus: newStatus,
                     reason: reason // Include the reason here
-
                 })
             })
             .then(response => {
@@ -178,24 +195,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update table header based on the selected status filter
     function updateTableHeader() {
-        const statusFilter = document.getElementById('membershipStatusFilter').value;
+        if (!membershipStatusFilter) return;
+        
+        const statusFilter = membershipStatusFilter.value;
         const tableHeader = document.querySelector('#membersTable thead tr');
+        if (!tableHeader) return;
 
         // If the selected status is 'Cancelled', change the column heading for 'Member Since'
         if (statusFilter === 'Cancelled') {
             tableHeader.querySelectorAll('th')[4].textContent = 'Cancelled Date'; // Modify the 5th column header
+            // Add back the sort icon that might have been removed
+            let thElement = tableHeader.querySelectorAll('th')[4];
+            if (!thElement.querySelector('.fas')) {
+                thElement.innerHTML += ' <i class="fas fa-sort"></i>';
+            }
         } else {
             // Otherwise, keep it as 'Member Since'
             tableHeader.querySelectorAll('th')[4].textContent = 'Member Since';
+            // Add back the sort icon that might have been removed
+            let thElement = tableHeader.querySelectorAll('th')[4];
+            if (!thElement.querySelector('.fas')) {
+                thElement.innerHTML += ' <i class="fas fa-sort"></i>';
+            }
         }
     }
 
     // Add event listener to update the table header whenever the filter changes
-    membershipStatusFilter.addEventListener('change', updateTableHeader);
+    if (membershipStatusFilter) {
+        membershipStatusFilter.addEventListener('change', updateTableHeader);
+    }
 
     // Call this function initially when the page loads
     updateTableHeader();
-
 
     // Get the label element
     const labelElement = document.getElementById("membership-label");
@@ -204,14 +235,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const status = labelElement.getAttribute("data-status").trim().toLowerCase();
 
         // Change the label text dynamically
-        labelElement.textContent = (status === "Cancelled") ? "Cancellation Date:" : "Member Since:";
+        labelElement.textContent = (status === "cancelled") ? "Cancellation Date:" : "Member Since:";
     }
     
     // Initialize the table display
     updateTableDisplay();
     
     // Sort the table by name initially
-    sortTable(1, 'asc');
+    if (membersTable) {
+        sortTable(1, 'asc');
+    }
+    
+    // Listen for sort-complete event to update display
+    document.addEventListener('sort-complete', updateTableDisplay);
 });
 
 /**
@@ -219,48 +255,81 @@ document.addEventListener('DOMContentLoaded', function () {
  * @param {number} columnIndex - The index of the column to sort by
  * @param {string} initialDirection - The initial sort direction ('asc' or 'desc')
  */
+let isSorting = false; // Global flag to prevent concurrent sorts
+
 function sortTable(columnIndex, initialDirection = 'asc') {
-    const table = document.getElementById('membersTable');
-    const headers = table.querySelectorAll('th');
-    const tbody = table.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    
-    // Determine sort direction
-    let direction = initialDirection;
-    if (headers[columnIndex].classList.contains('sorted-asc')) {
-        direction = 'desc';
-    } else if (headers[columnIndex].classList.contains('sorted-desc')) {
-        direction = 'asc';
+    // Prevent concurrent sorting operations
+    if (isSorting) {
+        console.log("Sorting operation already in progress, ignoring new request");
+        return;
     }
     
-    // Remove sort indicators from all headers
-    headers.forEach(header => {
-        header.classList.remove('sorted-asc', 'sorted-desc');
-    });
+    isSorting = true;
     
-    // Add sort indicator to current header
-    headers[columnIndex].classList.add(direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
-    
-    // Sort the rows
-    rows.sort((rowA, rowB) => {
-        const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
-        const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+    try {
+        const table = document.getElementById('membersTable');
+        if (!table) return;
         
-        if (cellA < cellB) {
-            return direction === 'asc' ? -1 : 1;
+        const headers = table.querySelectorAll('th');
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Determine sort direction
+        let direction = initialDirection;
+        if (headers[columnIndex].classList.contains('sorted-asc')) {
+            direction = 'desc';
+        } else if (headers[columnIndex].classList.contains('sorted-desc')) {
+            direction = 'asc';
         }
-        if (cellA > cellB) {
-            return direction === 'asc' ? 1 : -1;
+        
+        // Remove sort indicators from all headers
+        headers.forEach(header => {
+            header.classList.remove('sorted-asc', 'sorted-desc');
+        });
+        
+        // Add sort indicator to current header
+        headers[columnIndex].classList.add(direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        
+        // Update sort icons for all sortable headers
+        for (let i = 1; i < headers.length - 1; i++) { // Skip first (Logo) and last (Actions) columns
+            const iconElement = headers[i].querySelector('.fas');
+            if (iconElement) {
+                if (i === columnIndex) {
+                    // Set the icon for the current sorted column
+                    iconElement.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                } else {
+                    // Reset other column icons to default
+                    iconElement.className = 'fas fa-sort';
+                }
+            }
         }
-        return 0;
-    });
-    
-    // Reorder the rows in the table
-    rows.forEach(row => {
-        tbody.appendChild(row);
-    });
-    
-    // Update the display to maintain pagination
-    const event = new Event('sort-complete');
-    document.dispatchEvent(event);
+        
+        // Sort the rows
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.cells[columnIndex].textContent.trim().toLowerCase();
+            const cellB = rowB.cells[columnIndex].textContent.trim().toLowerCase();
+            
+            if (cellA < cellB) {
+                return direction === 'asc' ? -1 : 1;
+            }
+            if (cellA > cellB) {
+                return direction === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+        
+        // Reorder the rows in the table
+        rows.forEach(row => {
+            tbody.appendChild(row);
+        });
+        
+        // Update the display to maintain pagination
+        const event = new Event('sort-complete');
+        document.dispatchEvent(event);
+    } finally {
+        // Always reset the sorting flag when done
+        isSorting = false;
+    }
 }
