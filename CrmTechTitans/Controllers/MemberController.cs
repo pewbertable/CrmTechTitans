@@ -211,6 +211,39 @@ namespace CrmTechTitans.Controllers
 
             if (ModelState.IsValid)
             {
+                // Check for duplicate member name
+                if (!string.IsNullOrEmpty(model.MemberName))
+                {
+                    var existingMember = await _context.Members
+                        .FirstOrDefaultAsync(m => m.MemberName.ToLower() == model.MemberName.ToLower());
+                    
+                    if (existingMember != null)
+                    {
+                        ModelState.AddModelError("MemberName", "A member with this name already exists. Please use a different name.");
+                        TempData["error"] = "A member with this name already exists.";
+                        
+                        // Repopulate available industries and membership types before returning
+                        model.AvailableIndustries = _context.Industries
+                            .Select(industry => new IndustryViewModel
+                            {
+                                ID = industry.ID,
+                                Name = industry.Name,
+                                NAICS = industry.NAICS
+                            }).ToList();
+
+                        model.AvailableMembershipTypes = _context.MembershipTypes
+                            .Select(m => new MembershipTypeViewModel
+                            {
+                                ID = m.ID,
+                                Name = m.Name
+                            }).ToList();
+                            
+                            // Add a flag to indicate validation errors
+                            ViewBag.HasValidationErrors = true;
+                            return View(model);
+                    }
+                }
+
                 try
                 {
                     await AddMemberPicture(model, memberPicture);
@@ -265,6 +298,24 @@ namespace CrmTechTitans.Controllers
                         if (string.IsNullOrWhiteSpace(contactModel.FirstName) && 
                             string.IsNullOrWhiteSpace(contactModel.Phone))
                         {
+                            continue;
+                        }
+
+                        // Check for duplicate contacts
+                        var existingContact = await _context.Contacts
+                            .FirstOrDefaultAsync(c => 
+                                c.FirstName.ToLower() == contactModel.FirstName.ToLower() && 
+                                c.LastName.ToLower() == contactModel.LastName.ToLower() &&
+                                (string.IsNullOrEmpty(c.Email) ? string.IsNullOrEmpty(contactModel.Email) : 
+                                 c.Email.ToLower() == (contactModel.Email == null ? "" : contactModel.Email.ToLower())));
+                                 
+                        if (existingContact != null)
+                        {
+                            // If contact exists, use the existing one instead of creating a new one
+                            member.MemberContacts.Add(new MemberContact { 
+                                Contact = existingContact,
+                                ContactType = contactModel.ContactType
+                            });
                             continue;
                         }
 
@@ -470,6 +521,38 @@ namespace CrmTechTitans.Controllers
 
             if (ModelState.IsValid)
             {
+                // Check for duplicate member name (excluding the current member)
+                if (!string.IsNullOrEmpty(model.MemberName))
+                {
+                    var existingMember = await _context.Members
+                        .FirstOrDefaultAsync(m => m.ID != id && 
+                                                m.MemberName.ToLower() == model.MemberName.ToLower());
+                    
+                    if (existingMember != null)
+                    {
+                        ModelState.AddModelError("MemberName", "A member with this name already exists. Please use a different name.");
+                        TempData["error"] = "A member with this name already exists.";
+                        
+                        // Repopulate available industries and membership types
+                        model.AvailableIndustries = _context.Industries
+                            .Select(industry => new IndustryViewModel
+                            {
+                                ID = industry.ID,
+                                Name = industry.Name,
+                                NAICS = industry.NAICS
+                            }).ToList();
+                        
+                        model.AvailableMembershipTypes = _context.MembershipTypes
+                            .Select(mt => new MembershipTypeViewModel
+                            {
+                                ID = mt.ID,
+                                Name = mt.Name
+                            }).ToList();
+                        
+                        return View(model);
+                    }
+                }
+
                 try
                 {
                     // Fetch the existing member from the database

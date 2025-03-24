@@ -85,6 +85,26 @@ namespace CrmTechTitans.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check for duplicate contact first
+                if (!string.IsNullOrEmpty(contact.FirstName) && !string.IsNullOrEmpty(contact.LastName))
+                {
+                    var existingContact = await _context.Contacts
+                        .FirstOrDefaultAsync(c => 
+                            c.FirstName.ToLower() == contact.FirstName.ToLower() && 
+                            c.LastName.ToLower() == contact.LastName.ToLower() &&
+                            (string.IsNullOrEmpty(c.Email) ? string.IsNullOrEmpty(contact.Email) : 
+                             c.Email.ToLower() == (contact.Email == null ? "" : contact.Email.ToLower())));
+                    
+                    if (existingContact != null)
+                    {
+                        ModelState.AddModelError("", "A contact with this name and email already exists.");
+                        TempData["error"] = "A contact with this name and email already exists.";
+                        ViewBag.MemberId = memberId;
+                        ViewBag.ReturnUrl = returnUrl;
+                        return View(contact);
+                    }
+                }
+
                 // Process contact picture if any
                 await AddContactPicture(contact, contactPicture);
                 
@@ -158,6 +178,26 @@ namespace CrmTechTitans.Controllers
 
             if (ModelState.IsValid)
             {
+                // Check for duplicate contact (excluding the current contact)
+                if (!string.IsNullOrEmpty(contact.FirstName) && !string.IsNullOrEmpty(contact.LastName))
+                {
+                    var existingContact = await _context.Contacts
+                        .FirstOrDefaultAsync(c => 
+                            c.ID != id &&
+                            c.FirstName.ToLower() == contact.FirstName.ToLower() && 
+                            c.LastName.ToLower() == contact.LastName.ToLower() &&
+                            (string.IsNullOrEmpty(c.Email) ? string.IsNullOrEmpty(contact.Email) : 
+                             c.Email.ToLower() == (contact.Email == null ? "" : contact.Email.ToLower())));
+                    
+                    if (existingContact != null)
+                    {
+                        ModelState.AddModelError("", "A contact with this name and email already exists.");
+                        TempData["error"] = "A contact with this name and email already exists.";
+                        ViewBag.ReturnUrl = returnUrl;
+                        return View(contact);
+                    }
+                }
+
                 try
                 {
                     // Get existing contact with photo
