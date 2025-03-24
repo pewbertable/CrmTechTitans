@@ -58,289 +58,324 @@
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                         <input type="hidden" asp-for="ID" />
 
-                        <!-- Member Details Section -->
-                        <div class="row g-4 mb-5">
-                            <div class="col-12">
-                                <h5 class="border-bottom pb-2 mb-3 text-dark">Member Information</h5>
-                            </div>
+                        <!-- Tab Navigation -->
+                        <ul class="nav nav-tabs mb-4" id="memberTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="member-info-tab" data-bs-toggle="tab" data-bs-target="#member-info" type="button" role="tab" aria-controls="member-info" aria-selected="true">
+                                    <i class="fas fa-user me-2"></i>Member Information
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="addresses-tab" data-bs-toggle="tab" data-bs-target="#addresses" type="button" role="tab" aria-controls="addresses" aria-selected="false">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Addresses
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" type="button" role="tab" aria-controls="contacts" aria-selected="false">
+                                    <i class="fas fa-address-book me-2"></i>Contacts
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="industries-tab" data-bs-toggle="tab" data-bs-target="#industries" type="button" role="tab" aria-controls="industries" aria-selected="false">
+                                    <i class="fas fa-industry me-2"></i>Industries
+                                </button>
+                            </li>
+                        </ul>
 
-                            <!-- Member Name -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="MemberName" class="form-label text-secondary">Name</label>
-                                    <input asp-for="MemberName" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Member Name" />
-                                    <span asp-validation-for="MemberName" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Member Photo -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="MemberPhoto" class="form-label text-secondary">Member Picture</label>
-                                    <div class="input-group h-auto">
-                                        <input asp-for="MemberPhoto" type="file" class="form-control bg-light border-secondary py-2" name="memberPicture" id="memberPicture">
-                                        @if (hasMemberPicture)
-                                        {
-                                            <div class="input-group-text bg-light border-secondary py-2">
-                                                <div class="form-check mb-0">
-                                                    <input class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
-                                                    <label class="form-check-label text-secondary" for="chkRemoveMemberImage">
-                                                        Remove
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        }
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="memberTabsContent">
+                            <!-- Member Information Tab -->
+                            <div class="tab-pane fade show active" id="member-info" role="tabpanel" aria-labelledby="member-info-tab">
+                                <div class="row g-4 mb-5">
+                                    <div class="col-12">
+                                        <h5 class="border-bottom pb-2 mb-3 text-dark">Member Information</h5>
                                     </div>
-                                    <span asp-validation-for="MemberPhoto" class="text-danger small"></span>
-                                </div>
-                            </div>
 
-                            <!-- Membership Types -->
-                            <div class="col-12">
-                                <div class="form-group mb-0">
-                                    <label class="form-label text-secondary">Membership Types</label>
-                                    <div class="row g-2 mt-1">
-                                        @foreach (var type in Model.AvailableMembershipTypes)
-                                        {
-                                            <div class="col-md-4 col-lg-3">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="SelectedMembershipTypeIDs" value="@type.ID"
-                                                    @(Model.SelectedMembershipTypeIDs.Contains(type.ID) ? "checked" : "") id="membershipType@(type.ID)" />
-                                                    <label class="form-check-label text-secondary" for="membershipType@(type.ID)">@type.Name</label>
-                                                </div>
-                                            </div>
-                                        }
+                                    <!-- Member Name -->
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="MemberName" class="form-label text-secondary">Name</label>
+                                            <input asp-for="MemberName" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Member Name" />
+                                            <span asp-validation-for="MemberName" class="text-danger small"></span>
+                                        </div>
                                     </div>
-                                    <span asp-validation-for="SelectedMembershipTypeIDs" class="text-danger small"></span>
-                                </div>
-                            </div>
 
-                            <!-- Contacted By -->
-                            <div class="col-md-6 col-lg-3">
-                                <div class="form-group mb-0">
-                                    <label asp-for="ContactedBy" class="form-label text-secondary">Contacted By</label>
-                                    <input asp-for="ContactedBy" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Contact Person" />
-                                    <span asp-validation-for="ContactedBy" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Company Size -->
-                            <div class="col-md-6 col-lg-3">
-                                <div class="form-group mb-0">
-                                    <label asp-for="CompanySize" class="form-label text-secondary">Company Size</label>
-                                    <select asp-for="CompanySize" class="form-select bg-light border-secondary h-auto py-2" asp-items="Html.GetEnumSelectList<CompanySize>()">
-                                        <option value="">Select Size</option>
-                                    </select>
-                                    <span asp-validation-for="CompanySize" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Company Website -->
-                            <div class="col-md-6 col-lg-3">
-                                <div class="form-group mb-0">
-                                    <label asp-for="CompanyWebsite" class="form-label text-secondary">Website</label>
-                                    <input asp-for="CompanyWebsite" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Company Website" />
-                                    <span asp-validation-for="CompanyWebsite" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Membership Status -->
-                            <div class="col-md-6 col-lg-3">
-                                <div class="form-group mb-0">
-                                    <label asp-for="MembershipStatus" class="form-label text-secondary">Status</label>
-                                    <select asp-for="MembershipStatus" class="form-select bg-light border-secondary h-auto py-2" asp-items="Html.GetEnumSelectList<MembershipStatus>()">
-                                        <option value="">Select Status</option>
-                                    </select>
-                                    <span asp-validation-for="MembershipStatus" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Member Since -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="MemberSince" class="form-label text-secondary">Member Since</label>
-                                    <input asp-for="MemberSince" class="form-control bg-light border-secondary h-auto py-2" type="datetime-local" />
-                                    <span asp-validation-for="MemberSince" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Last Contact Date -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="LastContactDate" class="form-label text-secondary">Last Contact Date</label>
-                                    <input asp-for="LastContactDate" class="form-control bg-light border-secondary h-auto py-2" type="datetime-local" />
-                                    <span asp-validation-for="LastContactDate" class="text-danger small"></span>
-                                </div>
-                            </div>
-
-                            <!-- Notes -->
-                            <div class="col-12">
-                                <div class="form-group mb-0">
-                                    <label asp-for="Notes" class="form-label text-secondary">Notes</label>
-                                    <textarea asp-for="Notes" class="form-control bg-light border-secondary" style="height: 100px" placeholder="Enter any additional notes"></textarea>
-                                    <span asp-validation-for="Notes" class="text-danger small"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Addresses Section -->
-                        <div class="card shadow-sm mb-4 border-0 bg-white">
-                            <div class="card-header bg-light py-3 border-bottom border-secondary">
-                                <h5 class="mb-0 text-dark fw-bold">Addresses</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-end mb-4">
-                                    <a href="/Address/Create?memberId=@Model.ID" class="btn btn-dark px-4">
-                                        <i class="fas fa-plus me-2"></i> Add New Address
-                                    </a>
-                                </div>
-
-                                @if (Model.Addresses != null && Model.Addresses.Any())
-                                {
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead class="bg-light">
-                                                <tr>
-                                                    <th>Address Type</th>
-                                                    <th>Street</th>
-                                                    <th>City</th>
-                                                    <th>Province</th>
-                                                    <th>Postal Code</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var address in Model.Addresses)
+                                    <!-- Member Photo -->
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="MemberPhoto" class="form-label text-secondary">Member Picture</label>
+                                            <div class="input-group h-auto">
+                                                <input asp-for="MemberPhoto" type="file" class="form-control bg-light border-secondary py-2" name="memberPicture" id="memberPicture">
+                                                @if (hasMemberPicture)
                                                 {
-                                                    <tr>
-                                                        <td>@address.AddressType</td>
-                                                        <td>@address.Street</td>
-                                                        <td>@address.City</td>
-                                                        <td>@address.Province</td>
-                                                        <td>@address.PostalCode</td>
-                                                        <td>
-                                                            <a href="/Address/Edit/@address.ID?returnUrl=/Member/Edit/@Model.ID" class="btn btn-sm btn-primary">
-                                                                <i class="fas fa-edit me-1"></i> Edit
-                                                            </a>
-                                                            <a href="/Address/Details/@address.ID" class="btn btn-sm btn-info">
-                                                                <i class="fas fa-eye me-1"></i> View
-                                                            </a>
-                                                        </td>
-                                                    </tr>
+                                                    <div class="input-group-text bg-light border-secondary py-2">
+                                                        <div class="form-check mb-0">
+                                                            <input class="form-check-input" type="checkbox" id="chkRemoveMemberImage" name="chkRemoveMemberImage">
+                                                            <label class="form-check-label text-secondary" for="chkRemoveMemberImage">
+                                                                Remove
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 }
-                                            </tbody>
-                                        </table>
+                                            </div>
+                                            <span asp-validation-for="MemberPhoto" class="text-danger small"></span>
+                                        </div>
                                     </div>
-                                }
-                                else
-                                {
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i> No addresses have been added for this member.
-                                    </div>
-                                }
-                            </div>
-                        </div>
 
-                        <!-- Contacts Section -->
-                        <div class="card shadow-sm mb-4 border-0 bg-white">
-                            <div class="card-header bg-light py-3 border-bottom border-secondary">
-                                <h5 class="mb-0 text-dark fw-bold">Contacts</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-end mb-4">
-                                    <a href="/Contact/Create?memberId=@Model.ID" class="btn btn-dark px-4">
-                                        <i class="fas fa-plus me-2"></i> Add New Contact
-                                    </a>
+                                    <!-- Membership Types -->
+                                    <div class="col-12">
+                                        <div class="form-group mb-0">
+                                            <label class="form-label text-secondary">Membership Types</label>
+                                            <div class="row g-2 mt-1">
+                                                @foreach (var type in Model.AvailableMembershipTypes)
+                                                {
+                                                    <div class="col-md-4 col-lg-3">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" name="SelectedMembershipTypeIDs" value="@type.ID"
+                                                            @(Model.SelectedMembershipTypeIDs.Contains(type.ID) ? "checked" : "") id="membershipType@(type.ID)" />
+                                                            <label class="form-check-label text-secondary" for="membershipType@(type.ID)">@type.Name</label>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <span asp-validation-for="SelectedMembershipTypeIDs" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contacted By -->
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="ContactedBy" class="form-label text-secondary">Contacted By</label>
+                                            <input asp-for="ContactedBy" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Contact Person" />
+                                            <span asp-validation-for="ContactedBy" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Company Size -->
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="CompanySize" class="form-label text-secondary">Company Size</label>
+                                            <select asp-for="CompanySize" class="form-select bg-light border-secondary h-auto py-2" asp-items="Html.GetEnumSelectList<CompanySize>()">
+                                                <option value="">Select Size</option>
+                                            </select>
+                                            <span asp-validation-for="CompanySize" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Company Website -->
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="CompanyWebsite" class="form-label text-secondary">Website</label>
+                                            <input asp-for="CompanyWebsite" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Company Website" />
+                                            <span asp-validation-for="CompanyWebsite" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Membership Status -->
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="MembershipStatus" class="form-label text-secondary">Status</label>
+                                            <select asp-for="MembershipStatus" class="form-select bg-light border-secondary h-auto py-2" asp-items="Html.GetEnumSelectList<MembershipStatus>()">
+                                                <option value="">Select Status</option>
+                                            </select>
+                                            <span asp-validation-for="MembershipStatus" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Member Since -->
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="MemberSince" class="form-label text-secondary">Member Since</label>
+                                            <input asp-for="MemberSince" class="form-control bg-light border-secondary h-auto py-2" type="datetime-local" />
+                                            <span asp-validation-for="MemberSince" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Last Contact Date -->
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="LastContactDate" class="form-label text-secondary">Last Contact Date</label>
+                                            <input asp-for="LastContactDate" class="form-control bg-light border-secondary h-auto py-2" type="datetime-local" />
+                                            <span asp-validation-for="LastContactDate" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Notes -->
+                                    <div class="col-12">
+                                        <div class="form-group mb-0">
+                                            <label asp-for="Notes" class="form-label text-secondary">Notes</label>
+                                            <textarea asp-for="Notes" class="form-control bg-light border-secondary" style="height: 100px" placeholder="Enter any additional notes"></textarea>
+                                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
 
-                                @if (Model.Contacts != null && Model.Contacts.Any())
-                                {
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                                        @foreach (var contact in Model.Contacts)
+                            <!-- Addresses Tab -->
+                            <div class="tab-pane fade" id="addresses" role="tabpanel" aria-labelledby="addresses-tab">
+                                <div class="card shadow-sm mb-4 border-0 bg-white">
+                                    <div class="card-header bg-light py-3 border-bottom border-secondary">
+                                        <h5 class="mb-0 text-dark fw-bold">Addresses</h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="d-flex justify-content-end mb-4">
+                                            <a href="/Address/Create?memberId=@Model.ID&returnUrl=/Member/Edit/@Model.ID" class="btn btn-dark px-4">
+                                                <i class="fas fa-plus me-2"></i> Add New Address
+                                            </a>
+                                        </div>
+
+                                        @if (Model.Addresses != null && Model.Addresses.Any())
                                         {
-                                            <div class="col">
-                                                <div class="card h-100 border-0 shadow-sm">
-                                                    <div class="card-body">
-                                                        <div class="d-flex align-items-center mb-3">
-                                                            @{
-                                                                var hasContactPicture = (contact.ContactPhoto?.Content != null);
-                                                                if (hasContactPicture)
-                                                                {
-                                                                    string imageBase64 = Convert.ToBase64String(contact.ContactPhoto!.Content!);
-                                                                    string imageSrc = string.Format("data:" + contact.ContactPhoto!.MimeType + ";base64,{0}", imageBase64);
-                                                                    <img src="@imageSrc" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                                                }
-                                                                else
-                                                                {
-                                                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
-                                                                        <i class="fas fa-user text-white fa-lg"></i>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th>Address Type</th>
+                                                            <th>Street</th>
+                                                            <th>City</th>
+                                                            <th>Province</th>
+                                                            <th>Postal Code</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var address in Model.Addresses)
+                                                        {
+                                                            <tr>
+                                                                <td>@address.AddressType</td>
+                                                                <td>@address.Street</td>
+                                                                <td>@address.City</td>
+                                                                <td>@address.Province</td>
+                                                                <td>@address.PostalCode</td>
+                                                                <td>
+                                                                    <a href="/Address/Edit/@address.ID?returnUrl=/Member/Edit/@Model.ID" class="btn btn-sm btn-primary">
+                                                                        <i class="fas fa-edit me-1"></i> Edit
+                                                                    </a>
+                                                                    <a href="/Address/Details/@address.ID" class="btn btn-sm btn-info">
+                                                                        <i class="fas fa-eye me-1"></i> View
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i> No addresses have been added for this member.
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contacts Tab -->
+                            <div class="tab-pane fade" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
+                                <div class="card shadow-sm mb-4 border-0 bg-white">
+                                    <div class="card-header bg-light py-3 border-bottom border-secondary">
+                                        <h5 class="mb-0 text-dark fw-bold">Contacts</h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="d-flex justify-content-end mb-4">
+                                            <a href="/Contact/Create?memberId=@Model.ID&returnUrl=/Member/Edit/@Model.ID" class="btn btn-dark px-4">
+                                                <i class="fas fa-plus me-2"></i> Add New Contact
+                                            </a>
+                                        </div>
+
+                                        @if (Model.Contacts != null && Model.Contacts.Any())
+                                        {
+                                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                                                @foreach (var contact in Model.Contacts)
+                                                {
+                                                    <div class="col">
+                                                        <div class="card h-100 border-0 shadow-sm">
+                                                            <div class="card-body">
+                                                                <div class="d-flex align-items-center mb-3">
+                                                                    @{
+                                                                        var hasContactPicture = (contact.ContactPhoto?.Content != null);
+                                                                        if (hasContactPicture)
+                                                                        {
+                                                                            string imageBase64 = Convert.ToBase64String(contact.ContactPhoto!.Content!);
+                                                                            string imageSrc = string.Format("data:" + contact.ContactPhoto!.MimeType + ";base64,{0}", imageBase64);
+                                                                            <img src="@imageSrc" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                                                                <i class="fas fa-user text-white fa-lg"></i>
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                    <div>
+                                                                        <h6 class="mb-1">@contact.FirstName @contact.LastName</h6>
+                                                                        <span class="badge bg-secondary">@contact.ContactType</span>
                                                                     </div>
-                                                                }
-                                                            }
-                                                            <div>
-                                                                <h6 class="mb-1">@contact.FirstName @contact.LastName</h6>
-                                                                <span class="badge bg-secondary">@contact.ContactType</span>
+                                                                </div>
+                                                                
+                                                                <ul class="list-unstyled mb-0">
+                                                                    @if (!string.IsNullOrEmpty(contact.Email))
+                                                                    {
+                                                                        <li class="mb-2">
+                                                                            <i class="fas fa-envelope text-secondary me-2"></i>
+                                                                            <a href="mailto:@contact.Email" class="text-decoration-none">@contact.Email</a>
+                                                                        </li>
+                                                                    }
+                                                                    @if (!string.IsNullOrEmpty(contact.Phone))
+                                                                    {
+                                                                        <li>
+                                                                            <i class="fas fa-phone text-secondary me-2"></i>
+                                                                            <a href="tel:@contact.Phone" class="text-decoration-none">@contact.Phone</a>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                            <div class="card-footer bg-white border-top py-2">
+                                                                <div class="d-flex justify-content-end">
+                                                                    <a href="/Contact/Edit/@contact.ID?returnUrl=/Member/Edit/@Model.ID" class="btn btn-sm btn-primary me-2">
+                                                                        <i class="fas fa-edit me-1"></i> Edit
+                                                                    </a>
+                                                                    <a href="/Contact/Details/@contact.ID" class="btn btn-sm btn-info">
+                                                                        <i class="fas fa-eye me-1"></i> View
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        
-                                                        <ul class="list-unstyled mb-0">
-                                                            @if (!string.IsNullOrEmpty(contact.Email))
-                                                            {
-                                                                <li class="mb-2">
-                                                                    <i class="fas fa-envelope text-secondary me-2"></i>
-                                                                    <a href="mailto:@contact.Email" class="text-decoration-none">@contact.Email</a>
-                                                                </li>
-                                                            }
-                                                            @if (!string.IsNullOrEmpty(contact.Phone))
-                                                            {
-                                                                <li>
-                                                                    <i class="fas fa-phone text-secondary me-2"></i>
-                                                                    <a href="tel:@contact.Phone" class="text-decoration-none">@contact.Phone</a>
-                                                                </li>
-                                                            }
-                                                        </ul>
                                                     </div>
-                                                    <div class="card-footer bg-white border-top py-2">
-                                                        <div class="d-flex justify-content-end">
-                                                            <a href="/Contact/Edit/@contact.ID?returnUrl=/Member/Edit/@Model.ID" class="btn btn-sm btn-primary me-2">
-                                                                <i class="fas fa-edit me-1"></i> Edit
-                                                            </a>
-                                                            <a href="/Contact/Details/@contact.ID" class="btn btn-sm btn-info">
-                                                                <i class="fas fa-eye me-1"></i> View
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i> No contacts have been added for this member.
                                             </div>
                                         }
                                     </div>
-                                }
-                                else
-                                {
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i> No contacts have been added for this member.
-                                    </div>
-                                }
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Industries Section -->
-                        <div class="card shadow-sm mb-4 border-0 bg-white">
-                            <div class="card-header bg-light py-3 border-bottom border-secondary">
-                                <h5 class="mb-0 text-dark fw-bold">Industries</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="form-group">
-                                    <select asp-for="SelectedIndustryIds" class="form-select bg-white border-secondary" multiple data-bs-toggle="tooltip"
-                                            title="Hold Ctrl (or Cmd on Mac) to select multiple industries" style="height: auto; min-height: 150px;">
-                                        @foreach (var industry in Model.AvailableIndustries)
-                                        {
-                                            <option value="@industry.ID">@industry.Name (NAICS: @industry.NAICS)</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="SelectedIndustryIds" class="text-danger small"></span>
-                                    <div class="form-text mt-2 small text-secondary">
-                                        <i class="fas fa-info-circle me-1"></i> Hold Ctrl (or Cmd on Mac) to select multiple industries
+                            <!-- Industries Tab -->
+                            <div class="tab-pane fade" id="industries" role="tabpanel" aria-labelledby="industries-tab">
+                                <div class="card shadow-sm mb-4 border-0 bg-white">
+                                    <div class="card-header bg-light py-3 border-bottom border-secondary">
+                                        <h5 class="mb-0 text-dark fw-bold">Industries</h5>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="form-group">
+                                            <select asp-for="SelectedIndustryIds" class="form-select bg-white border-secondary" multiple data-bs-toggle="tooltip"
+                                                    title="Hold Ctrl (or Cmd on Mac) to select multiple industries" style="height: auto; min-height: 150px;">
+                                                @foreach (var industry in Model.AvailableIndustries)
+                                                {
+                                                    <option value="@industry.ID">@industry.Name (NAICS: @industry.NAICS)</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="SelectedIndustryIds" class="text-danger small"></span>
+                                            <div class="form-text mt-2 small text-secondary">
+                                                <i class="fas fa-info-circle me-1"></i> Hold Ctrl (or Cmd on Mac) to select multiple industries
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -370,6 +405,17 @@
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
+            
+            // Store active tab in session storage
+            $('#memberTabs button').on('shown.bs.tab', function (e) {
+                sessionStorage.setItem('activeMemberTab', $(e.target).attr('id'));
+            });
+            
+            // Restore active tab when page loads
+            var activeTab = sessionStorage.getItem('activeMemberTab');
+            if (activeTab) {
+                $('#' + activeTab).tab('show');
+            }
         });
     </script>
 
