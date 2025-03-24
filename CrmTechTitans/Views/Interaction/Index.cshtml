@@ -22,19 +22,26 @@
 
     <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">
-        <div class="filter-row d-flex align-items-end gap-3">
-            <!-- Filter by Member Name -->
-            <div class="filter-item">
-                <label for="memberNameFilter" class="form-label">Search by Member Name</label>
-                <input type="text" id="memberNameFilter" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member's full or partial name">
+        <div class="row">
+            <!-- Filters on the left -->
+            <div class="col-md-8">
+                <div class="d-flex flex-column flex-md-row gap-3">
+                    <!-- Filter by Member Name -->
+                    <div class="filter-item flex-grow-1">
+                        <label for="memberNameFilter" class="form-label">Search by Member Name</label>
+                        <input type="text" id="memberNameFilter" class="form-control" placeholder="Enter member name" data-bs-toggle="tooltip" title="Enter a member's full or partial name">
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Filtered By Indicator -->
-        <div id="filterStatus" class="text-end mt-3">
-            <span class="text-secondary fs-6">
-                <i class="fas fa-filter me-1"></i> Filtered by: <span id="activeFilters">No filters</span>
-            </span>
+            
+            <!-- Filtered By Indicator on the right -->
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+                <div id="filterStatus" class="mt-md-0 mt-3">
+                    <span class="text-secondary fs-6">
+                        <i class="fas fa-filter me-1"></i> Filtered by: <span id="activeFilters">No filters</span>
+                    </span>
+                </div>
+            </div>
         </div>
     </section>
 

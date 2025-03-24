@@ -23,25 +23,32 @@
 
     <!-- Filter Section -->
     <section class="filter-container bg-light p-3 rounded mb-4">
-        <div class="filter-row d-flex align-items-end gap-3">
-            <!-- Filter by Municipality -->
-            <div class="filter-item">
-                <label for="municipalityFilter" class="form-label">Search by Municipality</label>
-                <input type="text" id="municipalityFilter" class="form-control" placeholder="Enter municipality name">
-            </div>
+        <div class="row">
+            <!-- Filters on the left -->
+            <div class="col-md-8">
+                <div class="d-flex flex-column flex-md-row gap-3">
+                    <!-- Filter by Municipality -->
+                    <div class="filter-item flex-grow-1">
+                        <label for="municipalityFilter" class="form-label">Search by Municipality</label>
+                        <input type="text" id="municipalityFilter" class="form-control" placeholder="Enter municipality name">
+                    </div>
 
-            <!-- Filter by Province -->
-            <div class="filter-item">
-                <label for="provinceFilter" class="form-label">Search by Province</label>
-                <input type="text" id="provinceFilter" class="form-control" placeholder="Enter province">
+                    <!-- Filter by Province -->
+                    <div class="filter-item flex-grow-1">
+                        <label for="provinceFilter" class="form-label">Search by Province</label>
+                        <input type="text" id="provinceFilter" class="form-control" placeholder="Enter province">
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Filtered By Indicator -->
-        <div id="filterStatus" class="text-end mt-3">
-            <span class="text-secondary fs-6">
-                <i class="fas fa-filter me-1"></i> Filtered by: <span id="activeFilters">No filters</span>
-            </span>
+            
+            <!-- Filtered By Indicator on the right -->
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+                <div id="filterStatus" class="mt-md-0 mt-3">
+                    <span class="text-secondary fs-6">
+                        <i class="fas fa-filter me-1"></i> Filtered by: <span id="activeFilters">No filters</span>
+                    </span>
+                </div>
+            </div>
         </div>
     </section>
 
