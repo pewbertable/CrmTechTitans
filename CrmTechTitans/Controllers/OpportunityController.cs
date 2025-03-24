@@ -82,6 +82,7 @@ namespace CrmTechTitans.Controllers
                 _context.Add(opportunity);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Opportunity created successfully!";
+                TempData["message"] = "Opportunity created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             return View(opportunity);
@@ -124,6 +125,7 @@ namespace CrmTechTitans.Controllers
                     _context.Update(opportunity);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "Opportunity updated successfully!";
+                    TempData["message"] = "Opportunity updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {

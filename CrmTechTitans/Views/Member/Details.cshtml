@@ -53,7 +53,7 @@
                     <div class="mb-2">
                         @if (Model.MemberMembershipTypes.Any())
                         {
-                            <span class="badge bg-secondary me-2">@string.Join("</span><span class='badge bg-secondary me-2'>", Model.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))</span>
+                            <span class="badge bg-secondary me-2">@string.Join(", ", Model.MemberMembershipTypes.Select(mmt => mmt.MembershipType.Name))</span>
                         }
                         else
                         {

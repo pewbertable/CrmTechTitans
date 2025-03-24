@@ -73,6 +73,7 @@ namespace CrmTechTitans.Controllers
                 _context.Add(interaction);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Interaction created successfully!";
+                TempData["message"] = "Interaction created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Contacts = await _context.Contacts.ToListAsync();
@@ -118,6 +119,7 @@ namespace CrmTechTitans.Controllers
                     _context.Update(interaction);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "Interaction updated successfully!";
+                    TempData["message"] = "Interaction updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {

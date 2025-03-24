@@ -81,7 +81,8 @@ namespace CrmTechTitans.Controllers
                 }
 
                 TempData["success"] = "Address created successfully!";
-                
+                TempData["message"] = "Address created successfully!";
+
                 // Return to the specified URL or default to the Address Index
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
@@ -135,7 +136,8 @@ namespace CrmTechTitans.Controllers
                     await _context.SaveChangesAsync();
                     
                     TempData["success"] = "Address updated successfully!";
-                    
+                    TempData["message"] = "Address updated successfully!";
+
                     // Return to the specified URL or default to the Address Index
                     if (!string.IsNullOrEmpty(returnUrl))
                     {

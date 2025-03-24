@@ -108,6 +108,8 @@ namespace CrmTechTitans.Controllers
                 _context.Add(industry);
                 await _context.SaveChangesAsync();
                 TempData["success"] = "Industry created successfully!";
+                TempData["message"] = "Industry created successfully!";
+
                 return RedirectToAction(nameof(Index));
             }
             return View(industry);
@@ -150,6 +152,7 @@ namespace CrmTechTitans.Controllers
                     _context.Update(industry);
                     await _context.SaveChangesAsync();
                     TempData["success"] = "Industry updated successfully!";
+                    TempData["message"] = "Industry updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {

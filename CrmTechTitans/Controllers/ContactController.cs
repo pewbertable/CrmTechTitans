@@ -105,7 +105,8 @@ namespace CrmTechTitans.Controllers
                 }
 
                 TempData["success"] = "Contact created successfully!";
-                
+                TempData["message"] = "Contact created successfully!";
+
                 // Return to the specified URL or default to the Contact Index
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
@@ -196,7 +197,8 @@ namespace CrmTechTitans.Controllers
                     await _context.SaveChangesAsync();
                     
                     TempData["success"] = "Contact updated successfully!";
-                    
+                    TempData["message"] = "Contact updated successfully!";
+
                     // Return to the specified URL or default to the Contact Index
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
