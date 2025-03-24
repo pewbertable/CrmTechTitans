@@ -91,7 +91,7 @@
                                 : "No Company Associated")
                         </td>
                         <td data-bs-toggle="tooltip" title="@item.Email">@item.Email</td>
-                        <td data-bs-toggle="tooltip" title="@item.Phone">@item.Phone</td>
+                        <td data-bs-toggle="tooltip" title="@item.FormattedPhone">@item.FormattedPhone</td>
                         <td class="text-center actions-column">
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View contact details">Details</a>
                             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
