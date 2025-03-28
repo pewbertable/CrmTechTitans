@@ -1,3 +1,4 @@
+using CrmTechTitans.Models.Enumerations;
 using System.ComponentModel.DataAnnotations;
 
 namespace CrmTechTitans.Models.ViewModels
@@ -7,10 +8,13 @@ namespace CrmTechTitans.Models.ViewModels
     /// </summary>
     public class UserViewModel
     {
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public List<string> Roles { get; set; } = new List<string>();
+        public UserApprovalStatus ApprovalStatus { get; set; }
+        public DateTime? RegistrationDate { get; set; }
+        public bool RegistrationComplete { get; set; }
     }
 
     /// <summary>
@@ -21,21 +25,21 @@ namespace CrmTechTitans.Models.ViewModels
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = string.Empty;
 
         [Display(Name = "Role")]
-        public string SelectedRole { get; set; }
+        public string SelectedRole { get; set; } = string.Empty;
         
         public List<string> AvailableRoles { get; set; } = new List<string>();
     }
@@ -45,27 +49,33 @@ namespace CrmTechTitans.Models.ViewModels
     /// </summary>
     public class EditUserViewModel
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "New password (leave empty to keep current)")]
-        public string NewPassword { get; set; }
+        public string NewPassword { get; set; } = string.Empty;
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
-        public string ConfirmNewPassword { get; set; }
+        public string ConfirmNewPassword { get; set; } = string.Empty;
 
         [Display(Name = "Role")]
-        public string SelectedRole { get; set; }
+        public string SelectedRole { get; set; } = string.Empty;
+        
+        [Display(Name = "Approval Status")]
+        public UserApprovalStatus ApprovalStatus { get; set; }
+        
+        [Display(Name = "Rejection Reason")]
+        public string RejectionReason { get; set; } = string.Empty;
         
         public List<string> AvailableRoles { get; set; } = new List<string>();
     }

@@ -1,0 +1,46 @@
+@page
+@model CrmTechTitans.Areas.Identity.Pages.Account.ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirm email";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        @if (Model.StatusMessage.Contains("Thank you"))
+                        {
+                            <i class="fas fa-check-circle fa-3x text-success"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-exclamation-circle fa-3x text-danger"></i>
+                        }
+                    </div>
+                    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+                    
+                    <div class="alert @(Model.StatusMessage.Contains("Thank you") ? "alert-success" : "alert-danger")">
+                        <p class="mb-0 text-center">@Model.StatusMessage</p>
+                    </div>
+                    
+                    @if (Model.StatusMessage.Contains("Thank you"))
+                    {
+                        <div class="alert alert-info mt-4">
+                            <p class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Your email is now confirmed. Your account requires administrator approval before you can log in.
+                                You will be notified by email once your account has been approved.
+                            </p>
+                        </div>
+                    }
+                    
+                    <div class="text-center mt-4">
+                        <a asp-page="./Login" class="btn btn-primary">Return to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

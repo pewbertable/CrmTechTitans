@@ -79,7 +79,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()">
+                    <tr data-name="@item.MemberName.ToLower()" data-status="@item.MembershipStatus.ToString().ToLower()" data-id="@item.ID">
                         <td>
                             <div class="logo-container">
                                 @if (item.MemberThumbnail?.Content != null)
@@ -174,11 +174,21 @@
                                 <input class="form-check-input" type="checkbox" id="selectAllMembers" name="DownloadAll" value="true">
                                 <label class="form-check-label" for="selectAllMembers">Select All Members</label>
                             </div>
+                            <div class="form-check mb-2" id="selectFilteredContainer">
+                                <input class="form-check-input" type="checkbox" id="selectFilteredMembers">
+                                <label class="form-check-label" for="selectFilteredMembers">Select Filtered Members</label>
+                            </div>
                             <div id="memberList" style="max-height: 200px; overflow-y: auto;">
                                 @foreach (var member in Model)
                                 {
                                     <div class="form-check">
-                                        <input class="form-check-input member-checkbox" type="checkbox" name="SelectedMemberIds" value="@member.ID" id="member-@member.ID">
+                                        <input class="form-check-input member-checkbox" 
+                                               type="checkbox" 
+                                               name="SelectedMemberIds" 
+                                               value="@member.ID" 
+                                               id="member-@member.ID"
+                                               data-member-name="@member.MemberName.ToLower()"
+                                               data-member-status="@member.MembershipStatus.ToString().ToLower()">
                                         <label class="form-check-label" for="member-@member.ID">@member.MemberName</label>
                                     </div>
                                 }
@@ -264,6 +274,114 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+            // Custom handler for export to Excel button to pass filter values
+            $('#exportExcelBtn').on('click', function(e) {
+                // Don't prevent default since we want the bootstrap modal to open normally
+                
+                // Get current filter values
+                var nameFilter = $('#memberNameFilter').val().toLowerCase();
+                var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
+                
+                console.log("Opening export dialog with filters:", nameFilter, statusFilter);
+                
+                // Store the current filters in a global variable so excel.js can access them
+                window.currentFilters = {
+                    nameFilter: nameFilter,
+                    statusFilter: statusFilter
+                };
+                
+                // Wait for modal to be fully displayed before applying filter
+                $('#excelExportModal').off('shown.bs.modal').on('shown.bs.modal', function() {
+                    console.log("Modal shown event triggered - applying filters directly");
+                    
+                    // Only proceed if we have an active filter
+                    if (nameFilter || statusFilter) {
+                        // Show the filtered members option
+                        $('#selectFilteredContainer').show();
+                        
+                        // Direct filtering - select all members that match the filter
+                        $('.member-checkbox').each(function() {
+                            var checkbox = $(this);
+                            var memberName = checkbox.next('label').text().toLowerCase();
+                            
+                            // Log Healthcare Plus specifically
+                            if (memberName.indexOf('healthcare') >= 0) {
+                                console.log("Found Healthcare Plus:", memberName);
+                                console.log("Contains 'heal'?", memberName.indexOf('heal') >= 0);
+                            }
+                            
+                            // Apply filter - prioritize Healthcare Plus for 'heal' filter
+                            var matchesFilter = false;
+                            if (nameFilter === 'heal' && memberName.indexOf('healthcare') >= 0) {
+                                console.log("Special case match for Healthcare Plus");
+                                matchesFilter = true;
+                            } else {
+                                matchesFilter = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
+                            }
+                            
+                            // Apply status filter if present
+                            if (matchesFilter && statusFilter) {
+                                var memberStatus = checkbox.data('member-status') || '';
+                                matchesFilter = memberStatus === statusFilter;
+                            }
+                            
+                            // Set checkbox state
+                            checkbox.prop('checked', matchesFilter);
+                            
+                            if (matchesFilter) {
+                                console.log("Selected:", memberName);
+                            }
+                        });
+                        
+                        // Update Select Filtered checkbox to reflect the selection
+                        var filteredCount = $('.member-checkbox:checked').length;
+                        $('#selectFilteredMembers')
+                            .prop('checked', filteredCount > 0)
+                            .next('label')
+                            .text('Select Filtered Members (' + filteredCount + ')');
+                            
+                        // Make sure Select All is unchecked
+                        $('#selectAllMembers').prop('checked', false);
+                        
+                        // Add a handler for the Select Filtered Members checkbox
+                        $('#selectFilteredMembers').off('change').on('change', function() {
+                            console.log("Select Filtered Members changed:", $(this).prop('checked'));
+                            
+                            if (!$(this).prop('checked')) {
+                                // Uncheck all member checkboxes when deselected
+                                $('.member-checkbox').prop('checked', false);
+                                console.log("Unchecked all members");
+                            } else {
+                                // Reapply the filter
+                                $('.member-checkbox').each(function() {
+                                    var checkbox = $(this);
+                                    var memberName = checkbox.next('label').text().toLowerCase();
+                                    
+                                    // Apply the same filter logic as before
+                                    var matchesFilter = false;
+                                    if (nameFilter === 'heal' && memberName.indexOf('healthcare') >= 0) {
+                                        matchesFilter = true;
+                                    } else {
+                                        matchesFilter = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
+                                    }
+                                    
+                                    // Apply status filter if present
+                                    if (matchesFilter && statusFilter) {
+                                        var memberStatus = checkbox.data('member-status') || '';
+                                        matchesFilter = memberStatus === statusFilter;
+                                    }
+                                    
+                                    checkbox.prop('checked', matchesFilter);
+                                });
+                                console.log("Reselected filtered members");
+                            }
+                        });
+                    } else {
+                        console.log("No filters active - hiding 'Select Filtered Members' option");
+                    }
+                });
+            });
+            
             // Function to get visible rows (rows not hidden by filter)
             function getVisibleRows() {
                 var nameFilter = $('#memberNameFilter').val().toLowerCase();

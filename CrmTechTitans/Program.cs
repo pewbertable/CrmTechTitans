@@ -1,5 +1,9 @@
 using CrmTechTitans.Data;
+using CrmTechTitans.Middleware;
+using CrmTechTitans.Models;
+using CrmTechTitans.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +14,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Get identity options from appsettings.json
 var identityOptions = builder.Configuration.GetSection("IdentityOptions");
-var requireConfirmedAccount = identityOptions.GetValue<bool>("SignIn:RequireConfirmedAccount", true);
+var requireConfirmedAccount = identityOptions.GetValue<bool>("SignIn:RequireConfirmedAccount", false);
+var requireConfirmedEmail = identityOptions.GetValue<bool>("SignIn:RequireConfirmedEmail", false);
+var twoFactorEnabled = identityOptions.GetValue<bool>("TwoFactor:Enabled", true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
@@ -20,9 +26,18 @@ builder.Services.AddDbContext<CrmContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+// Register Email Sender
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
     {
         options.SignIn.RequireConfirmedAccount = requireConfirmedAccount;
+        options.SignIn.RequireConfirmedEmail = requireConfirmedEmail;
+        
+        // Enable two-factor authentication
+        options.Tokens.AuthenticatorIssuer = "CrmTechTitans";
+        options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
         
         // Configure password requirements from appsettings.json
         if (identityOptions.GetSection("Password") != null)
@@ -78,6 +93,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Use our user approval middleware
+app.UseUserApprovalCheck();
+
 // Use session middleware
 app.UseSession();
 
@@ -105,6 +123,9 @@ using (var scope = app.Services.CreateScope())
         
         // Initialize Identity roles and users
         await IdentityInitializer.InitializeAsync(services);
+        
+        // Update all existing users to Approved status
+        await CrmTechTitans.Data.Utilities.UserStatusUpdater.UpdateExistingUsersToApproved(services);
         
         Console.WriteLine("Database initialization completed successfully.");
     }

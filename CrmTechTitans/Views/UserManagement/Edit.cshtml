@@ -1,4 +1,5 @@
 @model CrmTechTitans.Models.ViewModels.EditUserViewModel
+@using CrmTechTitans.Models.Enumerations
 
 @{
     ViewData["Title"] = "Edit User";
@@ -52,7 +53,7 @@
                             </div>
 
                             <!-- Role -->
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <div class="form-group mb-0">
                                     <label asp-for="SelectedRole" class="form-label text-secondary"></label>
                                     <select asp-for="SelectedRole" class="form-select bg-light border-secondary h-auto py-2">
@@ -63,6 +64,25 @@
                                         }
                                     </select>
                                     <span asp-validation-for="SelectedRole" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Approval Status -->
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    <label asp-for="ApprovalStatus" class="form-label text-secondary"></label>
+                                    <select asp-for="ApprovalStatus" asp-items="Html.GetEnumSelectList<UserApprovalStatus>()" class="form-select bg-light border-secondary h-auto py-2">
+                                    </select>
+                                    <span asp-validation-for="ApprovalStatus" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Rejection Reason (only shown when status is Rejected) -->
+                            <div class="col-12 rejection-reason-container" style="display: @(Model.ApprovalStatus == UserApprovalStatus.Rejected ? "block" : "none")">
+                                <div class="form-group mb-0">
+                                    <label asp-for="RejectionReason" class="form-label text-secondary"></label>
+                                    <textarea asp-for="RejectionReason" class="form-control bg-light border-secondary h-auto py-2" rows="3" placeholder="Provide a reason for rejection"></textarea>
+                                    <span asp-validation-for="RejectionReason" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
@@ -87,4 +107,17 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    
+    <script>
+        $(document).ready(function() {
+            // Show/hide rejection reason based on status
+            $("#ApprovalStatus").on("change", function() {
+                if ($(this).val() === "@((int)UserApprovalStatus.Rejected)") {
+                    $(".rejection-reason-container").show();
+                } else {
+                    $(".rejection-reason-container").hide();
+                }
+            });
+        });
+    </script>
 } 

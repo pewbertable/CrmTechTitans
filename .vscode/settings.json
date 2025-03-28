@@ -1,0 +1,5 @@
+{
+    "appService.preDeployTask": "publish-release",
+    "appService.deploySubpath": "CrmTechTitans\\bin\\Release\\net8.0\\publish",
+    "appService.defaultWebAppToDeploy": "/subscriptions/5a052dd9-4fb9-4a00-a4d8-fdb448e875d9/resourceGroups/NIA-NEW/providers/Microsoft.Web/sites/CRMTECH"
+}
