@@ -668,7 +668,9 @@ namespace CrmTechTitans.Controllers
                     _context.Update(member);
                     await _context.SaveChangesAsync();
 
-                    TempData["success"] = "Member edited successfully!";
+                    TempData["success"] = "Member Edited successfully!";
+                    TempData["message"] = "Member Edited successfully!";
+                    
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException ex)

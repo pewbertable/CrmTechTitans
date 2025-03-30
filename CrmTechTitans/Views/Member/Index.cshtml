@@ -277,6 +277,9 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+            // Set default filter to "Good Standing"
+            membershipStatusFilter.value = "GoodStanding";
+
             // Custom handler for export to Excel button to pass filter values
             $('#exportExcelBtn').on('click', function(e) {
                 // Don't prevent default since we want the bootstrap modal to open normally
