@@ -102,7 +102,7 @@
                             "No Member Associated")
                         </td>
                         <td>@(item.Priority)</td>
-                        <td>@item.Status</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td>@(DateTime.Now.AddDays(30).ToString("yyyy-MM-dd"))</td>
                         <td class="text-center actions-column">
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View opportunity details">Details</a>

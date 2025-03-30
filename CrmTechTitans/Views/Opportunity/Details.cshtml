@@ -62,7 +62,7 @@
                                     <span class="badge @(Model.Status == Status.Qualification ? "bg-primary" :
                                                         Model.Status == Status.Negotiating ? "bg-warning" :
                                                         Model.Status == Status.ClosedNewMember ? "bg-success" : "bg-danger")">
-                                        @Model.Status
+                                        @Html.DisplayFor(modelItem => Model.Status)
                                     </span>
                                 </li>
                                 <li class="list-group-item px-0">

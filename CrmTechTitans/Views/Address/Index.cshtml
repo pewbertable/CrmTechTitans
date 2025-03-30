@@ -77,7 +77,8 @@
                             @(item.MemberAddresses.Any() ? string.Join(", ", item.MemberAddresses.Where(ma => ma.Member != null).Select(ma => ma.Member.MemberName)) : "None")
                         </td>
                         <td data-bs-toggle="tooltip" title="@item.City">@item.City</td>
-                        <td>@item.Province</td>
+                        
+                        <td>@Html.DisplayFor(modelItem => item.Province)</td>
                         <td class="text-center actions-column">
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="Edit municipality details">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="View municipality details">Details</a>
