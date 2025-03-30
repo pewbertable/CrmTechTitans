@@ -8,6 +8,8 @@ namespace CrmTechTitans.Models.Enumerations
         GoodStanding ,
       [Display(Name = "Out Standing")]
         OutStanding
-            ,Cancelled
+            ,
+        [Display(Name = "Archived")] 
+        Cancelled
     }
 }

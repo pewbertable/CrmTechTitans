@@ -58,7 +58,7 @@
                         {
                             <span class="badge bg-light text-dark border">No Membership Type</span>
                         }
-                        <span class="badge bg-@(Model.MembershipStatus.ToString().ToLower() == "active" ? "success" : Model.MembershipStatus.ToString().ToLower() == "inactive" ? "danger" : "warning") ms-2">@Model.MembershipStatus</span>
+                        <span class="status-badge status-@Model.MembershipStatus.ToString().ToLower()">@Html.DisplayFor(modelItem => Model.MembershipStatus)</span>
                     </div>
                 </div>
             </div>

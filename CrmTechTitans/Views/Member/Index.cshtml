@@ -39,7 +39,7 @@
                             <option value="">All Statuses</option>
                             <option value="GoodStanding">Good Standing</option>
                             <option value="OutStanding">Out Standing</option>
-                            <option value="Cancelled">Cancelled</option>
+                            <option value="Cancelled">Archived</option>
                         </select>
                     </div>
                 </div>
@@ -108,10 +108,12 @@
                             }
                         </td>
                         <td>@Html.DisplayFor(modelItem => item.CompanySize)</td>
+
                         <td class="dateColumn">
                             @(item.MembershipStatus == MembershipStatus.Cancelled ? item.MemberSince.ToShortDateString() ?? "N/A" : item.MemberSince.ToShortDateString())
                         </td>
-                        <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@item.MembershipStatus</span></td>
+
+                        <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@Html.DisplayFor(modelItem => item.MembershipStatus)</span></td>
                         <td class="text-center actions-column">
                             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
                             {
