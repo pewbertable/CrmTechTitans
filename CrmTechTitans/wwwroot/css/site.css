@@ -76,23 +76,6 @@ body {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow */
 }
 
-/* === Sidebar Styling === */
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 15rem;
-    max-width: 220px;
-    height: 100vh;
-    background-color: #2e2e2e;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 20px 15px;
-    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-    z-index: 1000;
-}
-
 .sidebar .nav-link {
     font-size: 1rem;
     color: white;
