@@ -264,6 +264,7 @@
 
 @section Scripts {
     <script src="~/js/excel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function () {
@@ -507,24 +508,44 @@
                 const memberId = $(this).data('id');
                 const currentStatus = $(this).data('status').toLowerCase();
                 const newStatus = (currentStatus === 'cancelled') ? 'GoodStanding' : 'Cancelled';
-                const confirmMessage = (currentStatus === 'cancelled')
-                    ? "Are you sure you want to unarchive this member?"
-                    : "Are you sure you want to archive this member?";
 
-                if (!confirm(confirmMessage)) {
-                    return;
-                }
-
-                // If status is being set to 'Cancelled', prompt for a reason
-                let reason = "";
+                // If status is being set to 'Cancelled', ask for a reason
                 if (newStatus === 'Cancelled') {
-                    reason = prompt("Please provide a reason for archiving this member:");
-                    if (!reason || reason.trim() === "") {
-                        alert("Archiving reason is required.");
-                        return; // Stop if no reason is provided
-                    }
+                    Swal.fire({
+                        title: 'Archive Member',
+                        input: 'text',
+                        inputPlaceholder: 'Enter reason for archiving...',
+                        showCancelButton: true,
+                        confirmButtonText: 'Archive',
+                        cancelButtonText: 'Cancel',
+                        inputValidator: (value) => {
+                            if (!value.trim()) {
+                                return 'You must provide a reason!';
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            sendArchiveRequest(memberId, newStatus, result.value);
+                        }
+                    });
+                } else {
+                    // Confirmation before unarchiving
+                    Swal.fire({
+                        title: 'Restore Member?',
+                        text: "Are you sure you want to restore this member to Good Standing?",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, Restore',
+                        cancelButtonText: 'No'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            sendArchiveRequest(memberId, newStatus, "");
+                        }
+                    });
                 }
+            });
 
+            function sendArchiveRequest(memberId, newStatus, reason) {
                 $.ajax({
                     url: '/Member/ToggleArchive',
                     type: 'POST',
@@ -532,18 +553,29 @@
                     data: JSON.stringify({
                         memberId: parseInt(memberId),
                         newStatus: newStatus,
-                        reason: reason // Include the reason here
+                        reason: reason
                     }),
                     success: function (data) {
-                        alert(data.message);
-                        location.reload();
+                        Swal.fire({
+                            title: 'Success!',
+                            text: `Member status is updated to ${newStatus}.`,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();
+                        });
                     },
                     error: function (error) {
-                        console.error("Error:", error);
-                        alert("Failed to update member status.");
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to update member status.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 });
-            });
+            }
+
 
             // Initial page load
             updatePagination();

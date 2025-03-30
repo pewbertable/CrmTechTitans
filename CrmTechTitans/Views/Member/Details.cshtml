@@ -158,18 +158,14 @@
                   </strong>
                                             <p class="mb-0 mt-1">@Model.MemberSince.ToString("MMMM d, yyyy")</p>
                                         </div>
-                                        @if (!string.IsNullOrEmpty(Model.Reason))
-              {
-                  <div class="flex-grow-1">
-             
-          
-                  <strong id="reasonLabel" >
-                      Reason: <p class="mb-0 mt-1" id="reasonText">@Model.Reason</p>
-                  </strong>
-          
-              
-          </div>
-              }
+                                        @if (Model.MembershipStatus == MembershipStatus.Cancelled && !string.IsNullOrEmpty(Model.Reason))
+{
+    <div class="flex-grow-1">
+        <strong id="reasonLabel">
+            Reason: <p class="mb-0 mt-1" id="reasonText">@Model.Reason</p>
+        </strong>
+    </div>
+}
                                     </div>
                                 </li>
                                 <li class="list-group-item px-0">
