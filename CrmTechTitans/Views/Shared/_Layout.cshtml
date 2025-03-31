@@ -85,7 +85,7 @@
             left: 0;
             top: 0;
             width: 260px;
-            height: 100vh; 
+            height: 100vh;
             background: linear-gradient(180deg, var(--dark) 0%, var(--gray-800) 100%);
             color: white;
             display: flex;
@@ -94,9 +94,9 @@
             z-index: 1000;
             transition: all 0.3s ease-in-out;
             box-shadow: var(--shadow-lg);
-            overflow-y: auto; 
-            scrollbar-width: thin; 
-            scrollbar-color: var(--gray-600) var(--gray-900); 
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gray-600) var(--gray-900);
         }
 
 
@@ -253,9 +253,9 @@
             min-height: 130vh;
         }
 
-        .content-container main {
-            flex: 1;
-        }
+            .content-container main {
+                flex: 1;
+            }
 
         /* Mobile Navigation */
         .mobile-nav-toggle {
@@ -318,37 +318,36 @@
                 transform: translateX(-100%);
                 z-index: 1050;
             }
-            
-            .sidebar.mobile-open {
-                transform: translateX(0);
-                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            }
-            
+
+                .sidebar.mobile-open {
+                    transform: translateX(0);
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                }
+
             .mobile-nav-toggle {
                 display: block;
             }
-            
+
             .mobile-nav-overlay {
                 display: none;
                 opacity: 0;
                 transition: opacity 0.3s ease;
             }
-            
-            .mobile-nav-overlay.active {
-                display: block;
-                opacity: 1;
-            }
-            
+
+                .mobile-nav-overlay.active {
+                    display: block;
+                    opacity: 1;
+                }
+
             .content-wrapper {
                 margin-left: 0;
                 width: 100%;
             }
-            
+
             footer {
                 margin-left: 0;
                 width: 100%;
             }
-            
             /* Table responsiveness */
             .table.custom-table {
                 display: block;
@@ -357,13 +356,12 @@
                 table-layout: auto; /* Revert to auto layout for small screens */
                 width: 100%;
             }
-            
-            .table.custom-table th.actions-column,
-            .table.custom-table td.actions-column {
-                width: 230px; /* Slightly smaller on mobile but still large enough for 3 buttons */
-                min-width: 230px;
-            }
-            
+
+                .table.custom-table th.actions-column,
+                .table.custom-table td.actions-column {
+                    width: 230px; /* Slightly smaller on mobile but still large enough for 3 buttons */
+                    min-width: 230px;
+                }
             /* Button adjustments */
             .text-center .btn-sm {
                 padding: 5px 8px;
@@ -377,116 +375,116 @@
 
 </head>
 <body>
-    <!-- Mobile Navigation Toggle Button -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Mobile Navigation Toggle Button - Only visible when authenticated -->
+        <button class="mobile-nav-toggle" id="mobileNavToggle">
+            <i class="fas fa-bars"></i>
+        </button>
 
-    <!-- Mobile Navigation Overlay -->
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+        <!-- Mobile Navigation Overlay - Only visible when authenticated -->
+        <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    }
 
     <div class="main-container">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <img src="~/images/logo.png" alt="CrmTechTitans Logo" class="logo-img" />
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- Sidebar - Only visible when authenticated -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">
+                        <img src="~/images/logo.png" alt="CrmTechTitans Logo" class="logo-img" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="nav-section">
-                <div class="nav-section-title">MAIN</div>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
-                   asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Member" ? "active" : "")"
-                   asp-area="" asp-controller="Member" asp-action="Index">
-                    <i class="fas fa-users"></i> Members
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-section-title">CONTACTS</div>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
-                   asp-area="" asp-controller="Contact" asp-action="Index">
-                    <i class="fas fa-address-book"></i> Contacts
-                </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
-                   asp-area="" asp-controller="Address" asp-action="Index">
-                    <i class="fas fa-map-marker-alt"></i> Municipalities
-                </a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-section-title">BUSINESS</div>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
-                   asp-area="" asp-controller="Opportunity" asp-action="Index">
-                    <i class="fas fa-briefcase"></i> Opportunities
-                </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
-                   asp-area="" asp-controller="Interaction" asp-action="Index">
-                    <i class="fas fa-comments"></i> Interactions
-                </a>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
-                   asp-area="" asp-controller="Industry" asp-action="Index">
-                    <i class="fas fa-industry"></i> Industries
-                </a>
-            </div>
-            
-            @if (User.IsInRole("Administrator"))
-            {
                 <div class="nav-section">
-                    <div class="nav-section-title">ADMINISTRATION</div>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" ? "active" : "")"
-                       asp-area="" asp-controller="UserManagement" asp-action="Index">
-                        <i class="fas fa-user-shield"></i> User Management
+                    <div class="nav-section-title">MAIN</div>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+                       asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="fas fa-home"></i> Dashboard
                     </a>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" && ViewContext.RouteData.Values["action"]?.ToString() == "PendingApprovals" ? "active" : "")"
-                       asp-area="" asp-controller="UserManagement" asp-action="PendingApprovals">
-                        <i class="fas fa-user-clock"></i> Pending Approvals
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Member" ? "active" : "")"
+                       asp-area="" asp-controller="Member" asp-action="Index">
+                        <i class="fas fa-users"></i> Members
                     </a>
                 </div>
-            }
 
-            <div class="nav-section">
-                <div class="nav-section-title">PROFILE</div>
-                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Profile" ? "active" : "")"
-                   asp-area="" asp-controller="Profile" asp-action="Index">
-                    <i class="fas fa-user-circle"></i> My Profile
-                </a>
-            </div>
-
-            <div class="sidebar-footer">
-                <div class="email-name">
-                    <i class="fas fa-user-circle me-2"></i>
-
-                    <span>@User.Identity?.Name</span>
-
+                <div class="nav-section">
+                    <div class="nav-section-title">CONTACTS</div>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
+                       asp-area="" asp-controller="Contact" asp-action="Index">
+                        <i class="fas fa-address-book"></i> Contacts
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
+                       asp-area="" asp-controller="Address" asp-action="Index">
+                        <i class="fas fa-map-marker-alt"></i> Municipalities
+                    </a>
                 </div>
-                <div class="mt-2">
-                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="btn btn-sm btn-outline-light w-100">
-                            <i class="fas fa-sign-out-alt me-1"></i> Logout
-                        </button>
-                    </form>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">BUSINESS</div>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
+                       asp-area="" asp-controller="Opportunity" asp-action="Index">
+                        <i class="fas fa-briefcase"></i> Opportunities
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
+                       asp-area="" asp-controller="Interaction" asp-action="Index">
+                        <i class="fas fa-comments"></i> Interactions
+                    </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
+                       asp-area="" asp-controller="Industry" asp-action="Index">
+                        <i class="fas fa-industry"></i> Industries
+                    </a>
+                </div>
+
+                @if (User.IsInRole("Administrator"))
+                {
+                    <div class="nav-section">
+                        <div class="nav-section-title">ADMINISTRATION</div>
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" ? "active" : "")"
+                           asp-area="" asp-controller="UserManagement" asp-action="Index">
+                            <i class="fas fa-user-shield"></i> User Management
+                        </a>
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" && ViewContext.RouteData.Values["action"]?.ToString() == "PendingApprovals" ? "active" : "")"
+                           asp-area="" asp-controller="UserManagement" asp-action="PendingApprovals">
+                            <i class="fas fa-user-clock"></i> Pending Approvals
+                        </a>
+                    </div>
+                }
+
+                <div class="nav-section">
+                    <div class="nav-section-title">PROFILE</div>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Profile" ? "active" : "")"
+                       asp-area="" asp-controller="Profile" asp-action="Index">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="email-name">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <span>@User.Identity?.Name</span>
+                    </div>
+                    <div class="mt-2">
+                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button type="submit" class="btn btn-sm btn-outline-light w-100">
+                                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
 
-        <div class="content-wrapper">
+        <div class="content-wrapper" style="@(User.Identity.IsAuthenticated ? "" : "margin-left: 0;")">
             <!-- Main Content -->
             <div class="content-container">
                 <main role="main">
                     @RenderBody()
                 </main>
             </div>
-            
-            <footer class="border-top footer text-muted">
-                <div class="container">
-                    &copy; @DateTime.Now.Year - CrmTechTitans - Member Management System
-                </div>
-            </footer>
+
+
         </div>
     </div>
 
@@ -500,53 +498,68 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
-    
-   
 
-    <!-- Navigation Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sidebar = document.getElementById('sidebar');
-            const mobileNavToggle = document.getElementById('mobileNavToggle');
-            const mobileNavOverlay = document.getElementById('mobileNavOverlay');
-            const mobileLinks = document.querySelectorAll('.sidebar a');
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Navigation Script - Only include when authenticated -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const sidebar = document.getElementById('sidebar');
+                const mobileNavToggle = document.getElementById('mobileNavToggle');
+                const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+                const mobileLinks = document.querySelectorAll('.sidebar a');
 
-            // Function to check if we're on mobile
-            function isMobile() {
-                return window.innerWidth <= 768;
-            }
+                // Function to check if we're on mobile
+                function isMobile() {
+                    return window.innerWidth <= 768;
+                }
 
-            // Toggle mobile navigation
-            mobileNavToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('mobile-open');
-                mobileNavOverlay.classList.toggle('active');
+                // Toggle mobile navigation
+                mobileNavToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('mobile-open');
+                    mobileNavOverlay.classList.toggle('active');
 
-                // Change icon based on state
-                const icon = this.querySelector('i');
-                if (sidebar.classList.contains('mobile-open')) {
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
-                } else {
+                    // Change icon based on state
+                    const icon = this.querySelector('i');
+                    if (sidebar.classList.contains('mobile-open')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+
+                // Close mobile navigation when clicking the overlay
+                mobileNavOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('mobile-open');
+                    mobileNavOverlay.classList.remove('active');
+
+                    // Reset icon
+                    const icon = mobileNavToggle.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
-                }
-            });
+                });
 
-            // Close mobile navigation when clicking the overlay
-            mobileNavOverlay.addEventListener('click', function() {
-                sidebar.classList.remove('mobile-open');
-                mobileNavOverlay.classList.remove('active');
+                // Close mobile navigation when clicking a link (on mobile only)
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (isMobile()) {
+                            sidebar.classList.remove('mobile-open');
+                            mobileNavOverlay.classList.remove('active');
 
-                // Reset icon
-                const icon = mobileNavToggle.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            });
+                            // Reset icon
+                            const icon = mobileNavToggle.querySelector('i');
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    });
+                });
 
-            // Close mobile navigation when clicking a link (on mobile only)
-            mobileLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (isMobile()) {
+                // Handle window resize
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        // If desktop, ensure sidebar is visible
                         sidebar.classList.remove('mobile-open');
                         mobileNavOverlay.classList.remove('active');
 
@@ -557,22 +570,8 @@
                     }
                 });
             });
-
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (!isMobile()) {
-                    // If desktop, ensure sidebar is visible
-                    sidebar.classList.remove('mobile-open');
-                    mobileNavOverlay.classList.remove('active');
-
-                    // Reset icon
-                    const icon = mobileNavToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            });
-        });
-    </script>
+        </script>
+    }
 
     <!-- Table sorting script -->
     <script src="~/js/table-sorting.js" asp-append-version="true"></script>
