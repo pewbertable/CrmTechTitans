@@ -442,8 +442,20 @@
                        asp-area="" asp-controller="UserManagement" asp-action="Index">
                         <i class="fas fa-user-shield"></i> User Management
                     </a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" && ViewContext.RouteData.Values["action"]?.ToString() == "PendingApprovals" ? "active" : "")"
+                       asp-area="" asp-controller="UserManagement" asp-action="PendingApprovals">
+                        <i class="fas fa-user-clock"></i> Pending Approvals
+                    </a>
                 </div>
             }
+
+            <div class="nav-section">
+                <div class="nav-section-title">PROFILE</div>
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Profile" ? "active" : "")"
+                   asp-area="" asp-controller="Profile" asp-action="Index">
+                    <i class="fas fa-user-circle"></i> My Profile
+                </a>
+            </div>
 
             <div class="sidebar-footer">
                 <div class="email-name">

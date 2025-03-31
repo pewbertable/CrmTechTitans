@@ -1,0 +1,74 @@
+@model CrmTechTitans.Models.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-xxl-6">
+            <!-- Page Header -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h1 class="h3 mb-0 text-dark fw-bold">Profile</h1>
+                    <p class="text-secondary mb-0">Manage your account settings and preferences</p>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Profile Card -->
+            <div class="card shadow-sm border-0 mb-4 bg-white">
+                <div class="card-header bg-primary-subtle py-3">
+                    <h5 class="mb-0 text-primary fw-bold">Account Information</h5>
+                </div>
+                <div class="card-body p-lg-4">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-secondary">Email</p>
+                            <p class="h5 mb-3">@Model.Email</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-secondary">Username</p>
+                            <p class="h5 mb-3">@Model.UserName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-secondary">Phone Number</p>
+                            <p class="h5 mb-3">@(Model.PhoneNumber ?? "Not set")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-secondary">Two-Factor Authentication</p>
+                            <p class="h5 mb-3">
+                                @if (Model.TwoFactorEnabled)
+                                {
+                                    <span class="badge bg-success">Enabled</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Disabled</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i> Edit Profile
+                        </a>
+                        <a asp-action="ChangePassword" class="btn btn-outline-primary">
+                            <i class="fas fa-key me-2"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -62,7 +62,11 @@ namespace CrmTechTitans.Middleware
                 "/Identity/Account/AccessDenied",
                 "/Identity/Account/ApprovalWaiting",
                 "/Identity/Account/Manage/EnableAuthenticator",
-                "/Identity/Account/Manage/ShowRecoveryCodes"
+                "/Identity/Account/Manage/ShowRecoveryCodes",
+                "/Profile",
+                "/Profile/Index",
+                "/Profile/Edit",
+                "/Profile/ChangePassword"
             };
 
             return pathsToSkip.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase));

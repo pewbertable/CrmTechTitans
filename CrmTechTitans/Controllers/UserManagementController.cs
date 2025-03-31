@@ -129,7 +129,9 @@ namespace CrmTechTitans.Controllers
                 UserName = user.UserName,
                 SelectedRole = userRoles.FirstOrDefault(),
                 AvailableRoles = UserRoles.AllRoles.ToList(),
-                ApprovalStatus = user.ApprovalStatus
+                ApprovalStatus = user.ApprovalStatus,
+                NewPassword = string.Empty,
+                ConfirmNewPassword = string.Empty
             };
 
             return View(viewModel);
@@ -243,8 +245,9 @@ namespace CrmTechTitans.Controllers
                 return NotFound();
             }
 
-            // Don't allow admin to delete themselves
-            if (User.Identity.Name == user.UserName)
+            // Don't allow any user to delete their own account
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null && currentUser.Id == user.Id)
             {
                 ModelState.AddModelError(string.Empty, "You cannot delete your own account.");
                 var roles = await _userManager.GetRolesAsync(user);
