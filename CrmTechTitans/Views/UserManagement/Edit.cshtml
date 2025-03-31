@@ -3,98 +3,109 @@
 
 @{
     ViewData["Title"] = "Edit User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid py-4">
+<div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-xl-8 col-xxl-6">
+        <div class="col-lg-10">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index" class="text-decoration-none">Users</a>
+                    </li>
+                    @if (Context.Request.Query["fromDetails"] == "true")
+                    {
+                        <li class="breadcrumb-item">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">Details</a>
+                        </li>
+                    }
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
+
             <!-- Page Header -->
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <div>
-                    <h1 class="h3 mb-0 text-dark fw-bold">Edit User</h1>
-                    <p class="text-secondary mb-0">Modify user details and role assignments.</p>
-                </div>
+            <div class="mb-4">
+                <h1 class="h3 mb-2">Edit User</h1>
+                
             </div>
 
-            <!-- Edit User Card -->
-            <div class="card shadow-sm border-0 mb-4 bg-white">
-                <div class="card-body p-lg-5">
+            <!-- User Edit Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="UserName" />
 
-                        <div class="row g-4 mb-4">
+                        <div class="row g-3 mb-4">
                             <!-- Email -->
-                            <div class="col-12">
-                                <div class="form-group mb-0">
-                                    <label asp-for="Email" class="form-label text-secondary"></label>
-                                    <input asp-for="Email" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter Email" />
-                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" class="form-control" placeholder="Enter Email" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                             </div>
 
-                            <!-- New Password (Optional) -->
+                            <!-- New Password -->
                             <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="NewPassword" class="form-label text-secondary"></label>
-                                    <input asp-for="NewPassword" class="form-control bg-light border-secondary h-auto py-2" placeholder="Enter New Password" />
-                                    <span asp-validation-for="NewPassword" class="text-danger small"></span>
+                                <div class="form-group mb-3">
+                                    <label asp-for="NewPassword" class="form-label">New Password</label>
+                                    <input asp-for="NewPassword" class="form-control" placeholder="Enter New Password" />
+                                    <span asp-validation-for="NewPassword" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <!-- Confirm New Password -->
                             <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="ConfirmNewPassword" class="form-label text-secondary"></label>
-                                    <input asp-for="ConfirmNewPassword" class="form-control bg-light border-secondary h-auto py-2" placeholder="Confirm New Password" />
-                                    <span asp-validation-for="ConfirmNewPassword" class="text-danger small"></span>
+                                <div class="form-group mb-3">
+                                    <label asp-for="ConfirmNewPassword" class="form-label">Confirm New Password</label>
+                                    <input asp-for="ConfirmNewPassword" class="form-control" placeholder="Confirm New Password" />
+                                    <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
                                 </div>
                             </div>
 
-                            <!-- Role -->
+                            <!-- Role Selection -->
                             <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="SelectedRole" class="form-label text-secondary"></label>
-                                    <select asp-for="SelectedRole" class="form-select bg-light border-secondary h-auto py-2">
+                                <div class="form-group mb-3">
+                                    <label asp-for="SelectedRole" class="form-label">Role</label>
+                                    <select asp-for="SelectedRole" class="form-select">
                                         <option value="">Select Role</option>
                                         @foreach (var role in Model.AvailableRoles)
                                         {
                                             <option value="@role">@role</option>
                                         }
                                     </select>
-                                    <span asp-validation-for="SelectedRole" class="text-danger small"></span>
+                                    <span asp-validation-for="SelectedRole" class="text-danger"></span>
                                 </div>
                             </div>
-                            
+
                             <!-- Approval Status -->
                             <div class="col-md-6">
-                                <div class="form-group mb-0">
-                                    <label asp-for="ApprovalStatus" class="form-label text-secondary"></label>
-                                    <select asp-for="ApprovalStatus" asp-items="Html.GetEnumSelectList<UserApprovalStatus>()" class="form-select bg-light border-secondary h-auto py-2">
+                                <div class="form-group mb-3">
+                                    <label asp-for="ApprovalStatus" class="form-label">Approval Status</label>
+                                    <select asp-for="ApprovalStatus" asp-items="Html.GetEnumSelectList<UserApprovalStatus>()" class="form-select">
                                     </select>
-                                    <span asp-validation-for="ApprovalStatus" class="text-danger small"></span>
+                                    <span asp-validation-for="ApprovalStatus" class="text-danger"></span>
                                 </div>
                             </div>
-                            
-                            <!-- Rejection Reason (only shown when status is Rejected) -->
+
+                            <!-- Rejection Reason -->
                             <div class="col-12 rejection-reason-container" style="display: @(Model.ApprovalStatus == UserApprovalStatus.Rejected ? "block" : "none")">
-                                <div class="form-group mb-0">
-                                    <label asp-for="RejectionReason" class="form-label text-secondary"></label>
-                                    <textarea asp-for="RejectionReason" class="form-control bg-light border-secondary h-auto py-2" rows="3" placeholder="Provide a reason for rejection"></textarea>
-                                    <span asp-validation-for="RejectionReason" class="text-danger small"></span>
+                                <div class="form-group mb-3">
+                                    <label asp-for="RejectionReason" class="form-label">Rejection Reason</label>
+                                    <textarea asp-for="RejectionReason" class="form-control" rows="3" placeholder="Provide a reason for rejection"></textarea>
+                                    <span asp-validation-for="RejectionReason" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-outline-secondary px-4 py-2">
-                                <i class="fas fa-arrow-left me-2"></i> Back to List
-                            </a>
-                            <button type="submit" class="btn btn-dark px-4 py-2">
-                                <i class="fas fa-save me-2"></i> Save Changes
-                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">Back to Users</a>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -102,7 +113,6 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
