@@ -18,9 +18,9 @@
                     <i class="fas fa-user-plus"></i> Create New Member
                 </a>
             }
-            <button id="exportExcelBtn" class="btn btn-success" data-bs-toggle="tooltip" title="Export members to Excel">
+            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#excelExportModal">
                 <i class="fas fa-file-excel"></i> Export to Excel
-            </button>
+            </a>
         </div>
     </header>
 
@@ -177,7 +177,7 @@
                                 <input class="form-check-input" type="checkbox" id="selectAllMembers" name="DownloadAll" value="true">
                                 <label class="form-check-label" for="selectAllMembers">Select All Members</label>
                             </div>
-                            <div class="form-check mb-2" id="selectFilteredContainer">
+                            <div class="form-check mb-2" id="selectFilteredContainer" style="display: block;">
                                 <input class="form-check-input" type="checkbox" id="selectFilteredMembers">
                                 <label class="form-check-label" for="selectFilteredMembers">Select Filtered Members</label>
                             </div>
@@ -264,7 +264,6 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/excel.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -277,118 +276,149 @@
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-
-            // Set default filter to "Good Standing"
-            membershipStatusFilter.value = "GoodStanding";
-
-            // Custom handler for export to Excel button to pass filter values
-            $('#exportExcelBtn').on('click', function(e) {
-                // Don't prevent default since we want the bootstrap modal to open normally
+            
+            // Handle modal shown event to update filtered members
+            $('#excelExportModal').on('shown.bs.modal', function() {
+                console.log("Export modal shown - handling filters");
+                
+                // Initialize Select All Fields checkbox state
+                var totalFields = $('.field-checkbox').length;
+                var checkedFields = $('.field-checkbox:checked').length;
+                $('#selectAllFields').prop('checked', totalFields === checkedFields && totalFields > 0);
                 
                 // Get current filter values
                 var nameFilter = $('#memberNameFilter').val().toLowerCase();
                 var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
                 
-                console.log("Opening export dialog with filters:", nameFilter, statusFilter);
+                console.log("Current filters:", { nameFilter, statusFilter });
                 
-                // Store the current filters in a global variable so excel.js can access them
-                window.currentFilters = {
-                    nameFilter: nameFilter,
-                    statusFilter: statusFilter
-                };
-                
-                // Wait for modal to be fully displayed before applying filter
-                $('#excelExportModal').off('shown.bs.modal').on('shown.bs.modal', function() {
-                    console.log("Modal shown event triggered - applying filters directly");
+                // Only proceed if we have an active filter
+                if (nameFilter || statusFilter) {
+                    console.log("Active filters found - showing filtered members option");
+                    // Show the filtered members option
+                    $('#selectFilteredContainer').show();
                     
-                    // Only proceed if we have an active filter
-                    if (nameFilter || statusFilter) {
-                        // Show the filtered members option
-                        $('#selectFilteredContainer').show();
+                    // Direct filtering - select all members that match the filter
+                    $('.member-checkbox').each(function() {
+                        var $checkbox = $(this);
+                        var memberName = $checkbox.data('member-name') || '';
+                        var memberStatus = $checkbox.data('member-status') || '';
                         
-                        // Direct filtering - select all members that match the filter
-                        $('.member-checkbox').each(function() {
-                            var checkbox = $(this);
-                            var memberName = checkbox.next('label').text().toLowerCase();
-                            
-                            // Log Healthcare Plus specifically
-                            if (memberName.indexOf('healthcare') >= 0) {
-                                console.log("Found Healthcare Plus:", memberName);
-                                console.log("Contains 'heal'?", memberName.indexOf('heal') >= 0);
-                            }
-                            
-                            // Apply filter - prioritize Healthcare Plus for 'heal' filter
-                            var matchesFilter = false;
-                            if (nameFilter === 'heal' && memberName.indexOf('healthcare') >= 0) {
-                                console.log("Special case match for Healthcare Plus");
-                                matchesFilter = true;
-                            } else {
-                                matchesFilter = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
-                            }
-                            
-                            // Apply status filter if present
-                            if (matchesFilter && statusFilter) {
-                                var memberStatus = checkbox.data('member-status') || '';
-                                matchesFilter = memberStatus === statusFilter;
-                            }
-                            
-                            // Set checkbox state
-                            checkbox.prop('checked', matchesFilter);
-                            
-                            if (matchesFilter) {
-                                console.log("Selected:", memberName);
-                            }
-                        });
+                        // Apply filter - prioritize Healthcare Plus for 'heal' filter
+                        var matchesFilter = false;
+                        if (nameFilter === 'heal' && memberName.indexOf('healthcare') >= 0) {
+                            console.log("Special case match for Healthcare Plus");
+                            matchesFilter = true;
+                        } else {
+                            matchesFilter = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
+                        }
                         
-                        // Update Select Filtered checkbox to reflect the selection
-                        var filteredCount = $('.member-checkbox:checked').length;
-                        $('#selectFilteredMembers')
-                            .prop('checked', filteredCount > 0)
-                            .next('label')
-                            .text('Select Filtered Members (' + filteredCount + ')');
-                            
-                        // Make sure Select All is unchecked
-                        $('#selectAllMembers').prop('checked', false);
+                        // Apply status filter if present
+                        if (matchesFilter && statusFilter) {
+                            matchesFilter = memberStatus === statusFilter;
+                        }
                         
-                        // Add a handler for the Select Filtered Members checkbox
-                        $('#selectFilteredMembers').off('change').on('change', function() {
-                            console.log("Select Filtered Members changed:", $(this).prop('checked'));
-                            
-                            if (!$(this).prop('checked')) {
-                                // Uncheck all member checkboxes when deselected
-                                $('.member-checkbox').prop('checked', false);
-                                console.log("Unchecked all members");
-                            } else {
-                                // Reapply the filter
-                                $('.member-checkbox').each(function() {
-                                    var checkbox = $(this);
-                                    var memberName = checkbox.next('label').text().toLowerCase();
-                                    
-                                    // Apply the same filter logic as before
-                                    var matchesFilter = false;
-                                    if (nameFilter === 'heal' && memberName.indexOf('healthcare') >= 0) {
-                                        matchesFilter = true;
-                                    } else {
-                                        matchesFilter = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
-                                    }
-                                    
-                                    // Apply status filter if present
-                                    if (matchesFilter && statusFilter) {
-                                        var memberStatus = checkbox.data('member-status') || '';
-                                        matchesFilter = memberStatus === statusFilter;
-                                    }
-                                    
-                                    checkbox.prop('checked', matchesFilter);
-                                });
-                                console.log("Reselected filtered members");
-                            }
-                        });
-                    } else {
-                        console.log("No filters active - hiding 'Select Filtered Members' option");
-                    }
-                });
+                        // Set checkbox state
+                        $checkbox.prop('checked', matchesFilter);
+                        
+                        if (matchesFilter) {
+                            console.log("Selected:", memberName);
+                        }
+                    });
+                    
+                    // Update Select Filtered checkbox to reflect the selection
+                    var filteredCount = $('.member-checkbox:checked').length;
+                    $('#selectFilteredMembers')
+                        .prop('checked', filteredCount > 0)
+                        .next('label')
+                        .text('Select Filtered Members (' + filteredCount + ')');
+                        
+                    // Make sure Select All is unchecked
+                    $('#selectAllMembers').prop('checked', false);
+                } else {
+                    console.log("No filters active");
+                }
             });
             
+            // Handle Select All Members checkbox
+            $('#selectAllMembers').on('change', function() {
+                if ($(this).is(':checked')) {
+                    // If "Select All" is checked, uncheck "Select Filtered"
+                    $('#selectFilteredMembers').prop('checked', false);
+                    // Check all member checkboxes
+                    $('.member-checkbox').prop('checked', true);
+                } else {
+                    // Uncheck all member checkboxes
+                    $('.member-checkbox').prop('checked', false);
+                }
+            });
+            
+            // Handle Select Filtered Members checkbox
+            $('#selectFilteredMembers').on('change', function() {
+                if ($(this).is(':checked')) {
+                    // If "Select Filtered" is checked, uncheck "Select All"
+                    $('#selectAllMembers').prop('checked', false);
+                    
+                    // Select members based on current filters
+                    var nameFilter = $('#memberNameFilter').val().toLowerCase();
+                    var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
+                    
+                    $('.member-checkbox').each(function() {
+                        var $checkbox = $(this);
+                        var memberName = $checkbox.data('member-name') || '';
+                        var memberStatus = $checkbox.data('member-status') || '';
+                        
+                        var nameMatch = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
+                        var statusMatch = statusFilter === '' || memberStatus === statusFilter;
+                        
+                        $checkbox.prop('checked', nameMatch && statusMatch);
+                    });
+                } else {
+                    // Uncheck all member checkboxes
+                    $('.member-checkbox').prop('checked', false);
+                }
+            });
+            
+            // Handle Select All Fields checkbox
+            $('#selectAllFields').on('change', function() {
+                $('.field-checkbox, input[name="SelectedFields"]').prop('checked', $(this).is(':checked'));
+            });
+            
+            // Update Select All Fields checkbox when individual field checkboxes change
+            $('.field-checkbox, input[name="SelectedFields"]').on('change', function() {
+                var totalFields = $('.field-checkbox').length;
+                var checkedFields = $('.field-checkbox:checked').length;
+                $('#selectAllFields').prop('checked', totalFields === checkedFields && totalFields > 0);
+            });
+            
+            // Handle form submission
+            $('#downloadExcelBtn').on('click', function() {
+                var selectedMembers = $('.member-checkbox:checked').length;
+                var selectedFields = $('input[name="SelectedFields"]:checked').length;
+                
+                if (selectedMembers === 0 && !$('#selectAllMembers').is(':checked')) {
+                    alert('Please select at least one member to download.');
+                    return;
+                }
+                
+                if (selectedFields === 0) {
+                    alert('Please select at least one field to include in the download.');
+                    return;
+                }
+                
+                // Submit the form
+                $('#downloadForm').submit();
+                
+                // Hide the modal
+                var modal = bootstrap.Modal.getInstance(document.getElementById('excelExportModal'));
+                if (modal) {
+                    modal.hide();
+                }
+            });
+
+            // Set default filter to "Good Standing"
+            membershipStatusFilter.value = "GoodStanding";
+
             // Function to get visible rows (rows not hidden by filter)
             function getVisibleRows() {
                 var nameFilter = $('#memberNameFilter').val().toLowerCase();
@@ -497,121 +527,17 @@
                 } else {
                     $('#activeFilters').text('No filters');
                 }
-                $('#filterStatus').show();
             }
+
+            // Update filter status when filters change
+            $('#memberNameFilter, #membershipStatusFilter').on('input change', updateFilterStatus);
             
-            // Call updateFilterStatus whenever filters change
-            $('#memberNameFilter').on('input', updateFilterStatus);
-            $('#membershipStatusFilter').on('change', updateFilterStatus);
-            
-            // Initialize filter status on page load
+            // Initial filter status update
             updateFilterStatus();
-
-            // Handle archive/unarchive functionality
-            $('.archive-btn').on('click', function () {
-                const memberId = $(this).data('id');
-                const currentStatus = $(this).data('status').toLowerCase();
-                const newStatus = (currentStatus === 'cancelled') ? 'GoodStanding' : 'Cancelled';
-
-                // If status is being set to 'Cancelled', ask for a reason
-                if (newStatus === 'Cancelled') {
-                    Swal.fire({
-                        title: 'Archive Member',
-                        input: 'text',
-                        inputPlaceholder: 'Enter reason for archiving...',
-                        showCancelButton: true,
-                        confirmButtonText: 'Archive',
-                        cancelButtonText: 'Cancel',
-                        inputValidator: (value) => {
-                            if (!value.trim()) {
-                                return 'You must provide a reason!';
-                            }
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            sendArchiveRequest(memberId, newStatus, result.value);
-                        }
-                    });
-                } else {
-                    // Confirmation before unarchiving
-                    Swal.fire({
-                        title: 'Restore Member?',
-                        text: "Are you sure you want to restore this member to Good Standing?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Restore',
-                        cancelButtonText: 'No'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            sendArchiveRequest(memberId, newStatus, "");
-                        }
-                    });
-                }
-            });
-
-            function sendArchiveRequest(memberId, newStatus, reason) {
-                $.ajax({
-                    url: '/Member/ToggleArchive',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        memberId: parseInt(memberId),
-                        newStatus: newStatus,
-                        reason: reason
-                    }),
-                    success: function (data) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: `Member status is updated to ${newStatus}.`,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            location.reload();
-                        });
-                    },
-                    error: function (error) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to update member status.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                });
-            }
-
-
-            // Initial page load
-            updatePagination();
             
-            // Listen for sort-complete event to update display
-            document.addEventListener('sort-complete', updatePagination);
+            // Initial page display
+            showPage(currentPage);
         });
-
-        // Update table header based on the selected status filter
-        function updateTableHeader() {
-            const statusFilter = $('#membershipStatusFilter').val();
-            const tableHeader = document.querySelector('#membersTable thead tr');
-            if (!tableHeader) return;
-
-            // If the selected status is 'Cancelled', change the column heading for 'Member Since'
-            if (statusFilter === 'Cancelled') {
-                tableHeader.querySelectorAll('th')[4].textContent = 'Cancelled Date'; // Modify the 5th column header
-                // Add back the sort icon that might have been removed
-                let thElement = tableHeader.querySelectorAll('th')[4];
-                if (!thElement.querySelector('.fas')) {
-                    thElement.innerHTML += ' <i class="fas fa-sort"></i>';
-                }
-            } else {
-                // Otherwise, keep it as 'Member Since'
-                tableHeader.querySelectorAll('th')[4].textContent = 'Member Since';
-                // Add back the sort icon that might have been removed
-                let thElement = tableHeader.querySelectorAll('th')[4];
-                if (!thElement.querySelector('.fas')) {
-                    thElement.innerHTML += ' <i class="fas fa-sort"></i>';
-                }
-            }
-        }
     </script>
     <style>
         /* Pagination button styling */
