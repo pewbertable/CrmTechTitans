@@ -142,8 +142,13 @@ namespace CrmTechTitans.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, EditUserViewModel model)
         {
+            _logger.LogInformation($"Edit action started - ID: {id}");
+            _logger.LogInformation($"Model state: {ModelState.IsValid}");
+            _logger.LogInformation($"Model data: Email={model.Email}, UserName={model.UserName}, SelectedRole={model.SelectedRole}, ApprovalStatus={model.ApprovalStatus}");
+            
             if (id != model.Id)
             {
+                _logger.LogError($"ID mismatch - Route ID: {id}, Model ID: {model.Id}");
                 return NotFound();
             }
 
@@ -152,53 +157,121 @@ namespace CrmTechTitans.Controllers
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
                 {
+                    _logger.LogError($"User not found with ID: {id}");
                     return NotFound();
                 }
 
-                user.Email = model.Email;
-                user.UserName = model.Email;
-                
-                // Update approval status if changed
+                _logger.LogInformation($"Found user: Email={user.Email}, UserName={user.UserName}, CurrentRole={await _userManager.GetRolesAsync(user)}");
+
+                // First, handle role changes
+                var userRoles = await _userManager.GetRolesAsync(user);
+                if (userRoles.FirstOrDefault() != model.SelectedRole)
+                {
+                    _logger.LogInformation($"Updating role from '{userRoles.FirstOrDefault()}' to '{model.SelectedRole}'");
+                    await _userManager.RemoveFromRolesAsync(user, userRoles);
+                    if (!string.IsNullOrEmpty(model.SelectedRole))
+                    {
+                        var roleResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                        if (!roleResult.Succeeded)
+                        {
+                            _logger.LogError($"Failed to update role: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+                            foreach (var error in roleResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            model.AvailableRoles = UserRoles.AllRoles.ToList();
+                            return View(model);
+                        }
+                    }
+                }
+
+                // Then handle email update
+                if (user.Email != model.Email)
+                {
+                    _logger.LogInformation($"Updating email from '{user.Email}' to '{model.Email}'");
+                    var emailResult = await _userManager.SetEmailAsync(user, model.Email);
+                    if (!emailResult.Succeeded)
+                    {
+                        _logger.LogError($"Failed to update email: {string.Join(", ", emailResult.Errors.Select(e => e.Description))}");
+                        foreach (var error in emailResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        model.AvailableRoles = UserRoles.AllRoles.ToList();
+                        return View(model);
+                    }
+                }
+
+                // Then handle username update
+                if (user.UserName != model.UserName)
+                {
+                    _logger.LogInformation($"Updating username from '{user.UserName}' to '{model.UserName}'");
+                    var usernameResult = await _userManager.SetUserNameAsync(user, model.UserName);
+                    if (!usernameResult.Succeeded)
+                    {
+                        _logger.LogError($"Failed to update username: {string.Join(", ", usernameResult.Errors.Select(e => e.Description))}");
+                        foreach (var error in usernameResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        model.AvailableRoles = UserRoles.AllRoles.ToList();
+                        return View(model);
+                    }
+                }
+
+                // Handle approval status update
                 if (user.ApprovalStatus != model.ApprovalStatus)
                 {
+                    _logger.LogInformation($"Updating approval status from '{user.ApprovalStatus}' to '{model.ApprovalStatus}'");
                     user.ApprovalStatus = model.ApprovalStatus;
                     user.StatusUpdatedDate = DateTime.Now;
                     
-                    // If user was rejected, save the reason
                     if (model.ApprovalStatus == UserApprovalStatus.Rejected && !string.IsNullOrEmpty(model.RejectionReason))
                     {
                         user.RejectionReason = model.RejectionReason;
                     }
                 }
 
+                // Handle password update if provided
+                if (!string.IsNullOrEmpty(model.NewPassword))
+                {
+                    _logger.LogInformation("Updating password");
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var passwordResult = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    if (!passwordResult.Succeeded)
+                    {
+                        _logger.LogError($"Failed to update password: {string.Join(", ", passwordResult.Errors.Select(e => e.Description))}");
+                        foreach (var error in passwordResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        model.AvailableRoles = UserRoles.AllRoles.ToList();
+                        return View(model);
+                    }
+                }
+
+                // Finally, update the user
+                _logger.LogInformation("Saving final user update");
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    // Handle role change
-                    var userRoles = await _userManager.GetRolesAsync(user);
-                    
-                    // Remove existing roles
-                    await _userManager.RemoveFromRolesAsync(user, userRoles);
-                    
-                    // Add new role if selected
-                    if (!string.IsNullOrEmpty(model.SelectedRole))
-                    {
-                        await _userManager.AddToRoleAsync(user, model.SelectedRole);
-                    }
-
-                    // Update password if provided
-                    if (!string.IsNullOrEmpty(model.NewPassword))
-                    {
-                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                        await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-                    }
-
+                    _logger.LogInformation("User updated successfully");
+                    TempData["SuccessMessage"] = "User updated successfully.";
                     return RedirectToAction(nameof(Index));
                 }
 
+                _logger.LogError($"Failed to update user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            else
+            {
+                _logger.LogError("Model state is invalid");
+                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    _logger.LogError($"Model error: {modelError.ErrorMessage}");
                 }
             }
 

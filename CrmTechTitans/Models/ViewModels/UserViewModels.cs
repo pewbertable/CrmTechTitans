@@ -18,6 +18,29 @@ namespace CrmTechTitans.Models.ViewModels
     }
 
     /// <summary>
+    /// View model for user profile
+    /// </summary>
+    public class ProfileViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [Display(Name = "Username")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+        public string UserName { get; set; } = string.Empty;
+
+        [Phone]
+        [Display(Name = "Phone Number")]
+        public string? PhoneNumber { get; set; }
+
+        [Display(Name = "Two-Factor Authentication")]
+        public bool TwoFactorEnabled { get; set; }
+    }
+
+    /// <summary>
     /// View model for creating a new user
     /// </summary>
     public class CreateUserViewModel
@@ -49,6 +72,7 @@ namespace CrmTechTitans.Models.ViewModels
     /// </summary>
     public class EditUserViewModel
     {
+        [Required]
         public string Id { get; set; } = string.Empty;
 
         [Required]
@@ -56,6 +80,9 @@ namespace CrmTechTitans.Models.ViewModels
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
 
+        [Required]
+        [Display(Name = "Username")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         public string UserName { get; set; } = string.Empty;
 
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -68,14 +95,16 @@ namespace CrmTechTitans.Models.ViewModels
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmNewPassword { get; set; } = string.Empty;
 
+        [Required]
         [Display(Name = "Role")]
         public string SelectedRole { get; set; } = string.Empty;
         
+        [Required]
         [Display(Name = "Approval Status")]
         public UserApprovalStatus ApprovalStatus { get; set; }
         
         [Display(Name = "Rejection Reason")]
-        public string RejectionReason { get; set; } = string.Empty;
+        public string? RejectionReason { get; set; }
         
         public List<string> AvailableRoles { get; set; } = new List<string>();
     }

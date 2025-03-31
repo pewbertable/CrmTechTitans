@@ -37,7 +37,6 @@
                     <form asp-action="Edit" method="post">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                         <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="UserName" />
 
                         <div class="row g-3 mb-4">
                             <!-- Email -->
@@ -46,6 +45,15 @@
                                     <label asp-for="Email" class="form-label">Email</label>
                                     <input asp-for="Email" class="form-control" placeholder="Enter Email" />
                                     <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="UserName" class="form-label">Username</label>
+                                    <input asp-for="UserName" class="form-control" placeholder="Enter Username" />
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
                             </div>
 
