@@ -151,5 +151,12 @@ namespace CrmTechTitans.Controllers
             TempData["SuccessMessage"] = "Password changed successfully.";
             return RedirectToAction(nameof(Index));
         }
+        
+        // GET: Profile/Manage2FA
+        public IActionResult Manage2FA()
+        {
+            // Redirect to the EnableAuthenticator page in the Identity area
+            return RedirectToPage("/Account/Manage/EnableAuthenticator", new { area = "Identity" });
+        }
     }
 } 

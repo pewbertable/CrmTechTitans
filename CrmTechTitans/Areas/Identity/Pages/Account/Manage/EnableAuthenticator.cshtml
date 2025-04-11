@@ -79,22 +79,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Clean up the layout - hide the aside navigation if present
-        document.addEventListener('DOMContentLoaded', function() {
-            const sideNavs = document.querySelectorAll('aside, .sidebar, nav.sidebar');
-            sideNavs.forEach(nav => {
-                if (nav) {
-                    nav.style.display = 'none';
-                }
-            });
-            
-            // Try to make the main content full width
-            const mainContent = document.querySelector('main, .main-content, #main-content');
-            if (mainContent) {
-                mainContent.classList.add('col-md-12');
-                mainContent.classList.remove('col-md-9', 'col-md-8', 'col-md-10');
-            }
-        });
-    </script>
 } 

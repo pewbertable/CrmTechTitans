@@ -3,6 +3,7 @@ using CrmTechTitans.Middleware;
 using CrmTechTitans.Models;
 using CrmTechTitans.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 

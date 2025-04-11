@@ -32,15 +32,8 @@ namespace CrmTechTitans.Middleware
 
                 if (user != null)
                 {
-                    // Check if 2FA setup is required but not completed
-                    if (!user.RegistrationComplete) 
-                    {
-                        // Redirect to the EnableAuthenticator page
-                        context.Response.Redirect("/Identity/Account/Manage/EnableAuthenticator");
-                        return;
-                    }
-                
-                    // Check approval status
+                    // We no longer force 2FA setup
+                    // Only check approval status
                     if (user.ApprovalStatus != UserApprovalStatus.Approved)
                     {
                         // Redirect to approval waiting page
@@ -63,10 +56,12 @@ namespace CrmTechTitans.Middleware
                 "/Identity/Account/ApprovalWaiting",
                 "/Identity/Account/Manage/EnableAuthenticator",
                 "/Identity/Account/Manage/ShowRecoveryCodes",
+                "/Identity/Account/Manage/TwoFactorAuthentication",
                 "/Profile",
                 "/Profile/Index",
                 "/Profile/Edit",
-                "/Profile/ChangePassword"
+                "/Profile/ChangePassword",
+                "/Profile/Manage2FA"
             };
 
             return pathsToSkip.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase));

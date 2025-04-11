@@ -82,7 +82,9 @@ namespace CrmTechTitans.Controllers
                     Email = model.Email,
                     EmailConfirmed = true,
                     ApprovalStatus = UserApprovalStatus.Approved, // Admin-created users are auto-approved
-                    StatusUpdatedDate = DateTime.Now
+                    StatusUpdatedDate = DateTime.Now,
+                    TwoFactorEnabled = false, // Set 2FA to disabled by default
+                    RegistrationComplete = true // Mark as complete so they can log in without 2FA setup
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -129,9 +131,7 @@ namespace CrmTechTitans.Controllers
                 UserName = user.UserName,
                 SelectedRole = userRoles.FirstOrDefault(),
                 AvailableRoles = UserRoles.AllRoles.ToList(),
-                ApprovalStatus = user.ApprovalStatus,
-                NewPassword = string.Empty,
-                ConfirmNewPassword = string.Empty
+                ApprovalStatus = user.ApprovalStatus
             };
 
             return View(viewModel);
@@ -142,103 +142,65 @@ namespace CrmTechTitans.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, EditUserViewModel model)
         {
-            _logger.LogInformation("Edit action started for user ID: {UserId}", id);
-            _logger.LogInformation("Model state is valid: {IsValid}", ModelState.IsValid);
-            _logger.LogInformation("Model data - Email: {Email}, Username: {Username}, SelectedRole: {SelectedRole}, ApprovalStatus: {ApprovalStatus}",
-                model.Email, model.UserName, model.SelectedRole, model.ApprovalStatus);
-
-            if (id != model.Id)
+            if (id == null)
             {
-                _logger.LogError("ID mismatch - Route ID: {RouteId}, Model ID: {ModelId}", id, model.Id);
                 return NotFound();
             }
 
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Model state is invalid");
+                model.AvailableRoles = UserRoles.AllRoles.ToList();
                 return View(model);
             }
 
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                _logger.LogError("User not found with ID: {UserId}", id);
                 return NotFound();
             }
 
-            _logger.LogInformation("Found user - Email: {Email}, Username: {Username}", user.Email, user.UserName);
-
-            // Get current user
+            // Only prevent users from changing their own role
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null)
-            {
-                _logger.LogError("Current user not found");
-                return NotFound();
-            }
-
-            // Check if current user is trying to change their own role
-            if (currentUser.Id == user.Id)
-            {
-                _logger.LogWarning("User {UserId} attempted to change their own role", currentUser.Id);
-                ModelState.AddModelError("", "You cannot change your own role.");
-                return View(model);
-            }
-
-            // Get current user's roles
-            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
-            _logger.LogInformation("Current user roles: {Roles}", string.Join(", ", currentUserRoles));
-
-            // Get target user's current roles
             var userRoles = await _userManager.GetRolesAsync(user);
-            _logger.LogInformation("Target user current roles: {Roles}", string.Join(", ", userRoles));
-
-            // Check if target user is an admin
-            bool isTargetUserAdmin = userRoles.Contains("Admin");
-
-            // If target user is an admin, only allow other admins to change their role
-            if (isTargetUserAdmin && !currentUserRoles.Contains("Admin"))
+            if (currentUser != null)
             {
-                _logger.LogWarning("Non-admin user {UserId} attempted to change admin user {TargetUserId}'s role", 
-                    currentUser.Id, user.Id);
-                ModelState.AddModelError("", "Only administrators can modify other administrators' roles.");
-                return View(model);
+                if (currentUser.Id == user.Id && userRoles.FirstOrDefault() != model.SelectedRole)
+                {
+                    ModelState.AddModelError(string.Empty, "You cannot change your own role.");
+                    model.AvailableRoles = UserRoles.AllRoles.ToList();
+                    return View(model);
+                }
             }
 
-            // Update role if changed
-            if (model.SelectedRole != null)
+            // Handle role change - needs to happen first since we check the current role above
+            if (userRoles.FirstOrDefault() != model.SelectedRole)
             {
-                var currentRoles = await _userManager.GetRolesAsync(user);
-                if (!currentRoles.Contains(model.SelectedRole))
+                if (!string.IsNullOrEmpty(model.SelectedRole))
                 {
-                    _logger.LogInformation("Updating role from {CurrentRoles} to {NewRole}", 
-                        string.Join(", ", currentRoles), model.SelectedRole);
-                    var roleResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
-                    if (!roleResult.Succeeded)
+                    // Remove existing roles
+                    _logger.LogInformation($"Removing existing roles: {string.Join(", ", userRoles)}");
+                    foreach (var role in userRoles)
                     {
-                        _logger.LogError("Failed to remove current roles: {Errors}", 
-                            string.Join(", ", roleResult.Errors.Select(e => e.Description)));
-                        foreach (var error in roleResult.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                        return View(model);
+                        await _userManager.RemoveFromRoleAsync(user, role);
                     }
 
-                    roleResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                    // Add the new role
+                    _logger.LogInformation($"Adding new role: {model.SelectedRole}");
+                    var roleResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
                     if (!roleResult.Succeeded)
                     {
-                        _logger.LogError("Failed to add new role: {Errors}", 
-                            string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                        _logger.LogError($"Failed to add role: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
                         foreach (var error in roleResult.Errors)
                         {
-                            ModelState.AddModelError("", error.Description);
+                            ModelState.AddModelError(string.Empty, error.Description);
                         }
+                        model.AvailableRoles = UserRoles.AllRoles.ToList();
                         return View(model);
                     }
                 }
             }
 
-            // Then handle email update
+            // Handle email update
             if (user.Email != model.Email)
             {
                 _logger.LogInformation($"Updating email from '{user.Email}' to '{model.Email}'");
@@ -282,24 +244,6 @@ namespace CrmTechTitans.Controllers
                 if (model.ApprovalStatus == UserApprovalStatus.Rejected && !string.IsNullOrEmpty(model.RejectionReason))
                 {
                     user.RejectionReason = model.RejectionReason;
-                }
-            }
-
-            // Handle password update if provided
-            if (!string.IsNullOrEmpty(model.NewPassword))
-            {
-                _logger.LogInformation("Updating password");
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var passwordResult = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-                if (!passwordResult.Succeeded)
-                {
-                    _logger.LogError($"Failed to update password: {string.Join(", ", passwordResult.Errors.Select(e => e.Description))}");
-                    foreach (var error in passwordResult.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    model.AvailableRoles = UserRoles.AllRoles.ToList();
-                    return View(model);
                 }
             }
 
