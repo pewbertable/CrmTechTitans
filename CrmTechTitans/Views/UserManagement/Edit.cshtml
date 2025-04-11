@@ -34,6 +34,12 @@
             <!-- User Edit Card -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
+                    <!-- Password Note -->
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> Users can change their passwords through their own profile page. Administrators cannot change passwords for security reasons.
+                    </div>
+                    
                     <form asp-action="Edit" method="post">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
                         <input type="hidden" asp-for="Id" />
@@ -54,26 +60,6 @@
                                     <label asp-for="UserName" class="form-label">Username</label>
                                     <input asp-for="UserName" class="form-control" placeholder="Enter Username" />
                                     <span asp-validation-for="UserName" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <!-- New Password -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="NewPassword" class="form-label">New Password</label>
-                                    <input asp-for="NewPassword" class="form-control" placeholder="Leave empty to keep current password" />
-                                    <div class="form-text">Leave empty to keep the current password</div>
-                                    <span asp-validation-for="NewPassword" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <!-- Confirm New Password -->
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="ConfirmNewPassword" class="form-label">Confirm New Password</label>
-                                    <input asp-for="ConfirmNewPassword" class="form-control" placeholder="Leave empty to keep current password" />
-                                    <div class="form-text">Leave empty to keep the current password</div>
-                                    <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
                                 </div>
                             </div>
 
