@@ -2,9 +2,15 @@
 using CrmTechTitans.Models;
 using CrmTechTitans.Models.Enumerations;
 using CrmTechTitans.Models.JoinTables;
+using CrmTechTitans.Services;
+using CrmTechTitans.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 //Braydon Pew added 01.22.25
 namespace CrmTechTitans.Controllers
@@ -13,10 +19,12 @@ namespace CrmTechTitans.Controllers
     public class AddressController : Controller
     {
         private readonly CrmContext _context;
+        private readonly ExcelExportService _excelExportService;
 
-        public AddressController(CrmContext context)
+        public AddressController(CrmContext context, ExcelExportService excelExportService)
         {
             _context = context;
+            _excelExportService = excelExportService;
         }
 
         // GET: Address
@@ -196,6 +204,93 @@ namespace CrmTechTitans.Controllers
             await _context.SaveChangesAsync();
             TempData["success"] = "Address deleted successfully!";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
+        public IActionResult DownloadAddresses([FromForm] AddressExportOptions options)
+        {
+            if (options.SelectedFields == null || !options.SelectedFields.Any())
+            {
+                TempData["error"] = "Please select at least one field to export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            IQueryable<Address> addressesQuery = _context.Addresses
+                 .Include(a => a.MemberAddresses).ThenInclude(ma => ma.Member)
+                 .AsQueryable();
+
+            if (!options.DownloadAll)
+            {
+                if (options.SelectedAddressIds != null && options.SelectedAddressIds.Any())
+                {
+                    addressesQuery = addressesQuery.Where(a => options.SelectedAddressIds.Contains(a.ID));
+                }
+                else
+                {
+                    TempData["error"] = "No addresses selected for filtered export.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            var addresses = addressesQuery.ToList();
+
+             if (!addresses.Any())
+            {
+                TempData["warning"] = "No addresses found matching the selected criteria for export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var exportData = new List<Dictionary<string, object>>();
+            foreach (var address in addresses)
+            {
+                var addressData = new Dictionary<string, object>();
+                foreach (var field in options.SelectedFields)
+                {
+                    object value = null;
+                    switch (field)
+                    {
+                        case "Street": value = address.Street; break;
+                        case "City": value = address.City; break;
+                        case "Province": value = address.Province.ToString(); break;
+                        case "PostalCode": value = address.PostalCode; break;
+                        case "AddressType": value = address.AddressType?.ToString(); break;
+                        case "AssociatedMembers":
+                            value = address.MemberAddresses != null && address.MemberAddresses.Any()
+                                ? string.Join(", ", address.MemberAddresses.Select(ma => ma.Member?.MemberName ?? "N/A"))
+                                : "N/A";
+                            break;
+                        default:
+                            break;
+                    }
+                    addressData[field] = value;
+                }
+                exportData.Add(addressData);
+            }
+
+            try
+            {
+                byte[] fileBytes = _excelExportService.GenerateExcelPackage(
+                    exportData,
+                    options.SelectedFields,
+                    sheetName: "Addresses",
+                    reportTitle: "Address Report"
+                );
+
+                string filename = $"Addresses_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                return File(fileBytes, mimeType, filename);
+            }
+            catch (TimeZoneNotFoundException tzEx)
+            {
+                TempData["error"] = $"Error generating report: Timezone not found. {tzEx.Message}";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "An error occurred while generating the Excel file.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool AddressExists(int id)

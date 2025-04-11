@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Contact>
 @using CrmTechTitans.Models.Enumerations
+@using CrmTechTitans.Utilities
 
 @{
     ViewData["Title"] = "All Contacts";
@@ -18,6 +19,9 @@
                     <i class="fas fa-user-plus"></i> Create New Contact
                 </a>
             }
+            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#excelExportModal">
+                <i class="fas fa-file-excel"></i> Export to Excel
+            </a>
         </div>
     </header>
 
@@ -74,7 +78,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr data-id="@item.ID" data-name="@item.FullFormalName?.ToLower()" data-email="@item.Email?.ToLower()">
                         <td>
                             <div class="logo-container">
                                 @if (item.ContactThumbnail?.Content != null)
@@ -146,6 +150,8 @@
         $(document).ready(function () {
             var currentPage = 1;
             var recordsPerPage = parseInt($('#recordsPerPage').val());
+            var tableBody = $('#contactsTable tbody');
+            var rows = tableBody.find('tr').toArray(); // Get all rows initially
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -153,213 +159,298 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            // Function to get visible rows (rows not hidden by filter)
-            function getVisibleRows() {
+            // --- Filtering Logic ---
+            function filterTableRows() {
                 var nameFilter = $('#nameFilter').val().toLowerCase();
                 var emailFilter = $('#emailFilter').val().toLowerCase();
+                var filteredRows = [];
 
-                var visibleRows = $('#contactsTable tbody tr').filter(function () {
-                    var nameText = $(this).find('td:nth-child(2)').text().toLowerCase();
-                    var emailText = $(this).find('td:nth-child(4)').text().toLowerCase();
-
-                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
-                    var emailMatch = emailFilter === "" || emailText.includes(emailFilter);
-
-                    return nameMatch && emailMatch;
+                rows.forEach(function(row) {
+                    var jqRow = $(row);
+                    var name = jqRow.data('name') || '';
+                    var email = jqRow.data('email') || '';
+                    
+                    var nameMatch = nameFilter === "" || name.includes(nameFilter);
+                    var emailMatch = emailFilter === "" || email.includes(emailFilter);
+                    
+                    if (nameMatch && emailMatch) {
+                        filteredRows.push(row);
+                        jqRow.show(); // Show if matches
+                    } else {
+                        jqRow.hide(); // Hide if doesn't match
+                    }
                 });
-
-                return visibleRows;
+                return filteredRows; // Return only the rows that match the filter
             }
 
-            // Function to show the current page
-            function showPage(page) {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
+            // --- Pagination Logic ---
+            function displayPage(page, filteredRows) {
+                var totalFilteredRecords = filteredRows.length;
+                var totalPages = Math.ceil(totalFilteredRecords / recordsPerPage) || 1;
+                currentPage = page; // Update current page
 
                 // Ensure currentPage is within valid range
-                if (page < 1) page = 1;
-                if (page > totalPages) page = totalPages;
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages) currentPage = totalPages;
 
-                var startIndex = (page - 1) * recordsPerPage;
+                var startIndex = (currentPage - 1) * recordsPerPage;
                 var endIndex = startIndex + recordsPerPage;
 
-                // Hide all rows first
-                $('#contactsTable tbody tr').hide();
+                // Hide all rows first, then show only the ones for the current page *from the filtered set*
+                $(rows).hide(); // Hide all original rows
+                $(filteredRows).slice(startIndex, endIndex).show(); // Show only the slice of filtered rows
 
-                // Show only the rows for the current page
-                visibleRows.slice(startIndex, endIndex).show();
-
-                // Update page info
-                $('#pageInfo').text(`Page ${page} of ${totalPages} (${visibleRows.length} records)`);
-
-                // Enable/disable pagination buttons
-                $('#prevPage').prop('disabled', page === 1);
-                $('#nextPage').prop('disabled', page === totalPages || visibleRows.length === 0);
+                // Update pagination info
+                $('#pageInfo').text(`Page ${currentPage} of ${totalPages} (${totalFilteredRecords} records)`);
+                $('#prevPage').prop('disabled', currentPage === 1);
+                $('#nextPage').prop('disabled', currentPage === totalPages || totalFilteredRecords === 0);
             }
 
-            // Function to update pagination
-            window.updatePagination = function() {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
-
-                if (currentPage > totalPages) {
-                    currentPage = totalPages > 0 ? totalPages : 1;
-                }
-
-                showPage(currentPage);
+            // --- Combined Update Function ---
+            function updateTableDisplay() {
+                 var currentlyFilteredRows = filterTableRows();
+                 displayPage(currentPage, currentlyFilteredRows);
+                 updateFilterStatus(); // Update the 'Filtered by' text
+                 
+                 // Update modal visibility if open - based on the *filtered* rows
+                 if ($('#excelExportModal').hasClass('show')) {
+                     updateModalContactVisibility(currentlyFilteredRows);
+                     // Always uncheck "Select Filtered" when filters change
+                     $('#selectFilteredContacts').prop('checked', false); 
+                 }
             }
 
-            // Event listener for records per page dropdown
+             // Function to update the "Filtered by" text
+             function updateFilterStatus() {
+                 var nameFilter = $('#nameFilter').val().trim();
+                 var emailFilter = $('#emailFilter').val().trim();
+                 var activeFilters = [];
+                 if (nameFilter !== '') activeFilters.push('Name: ' + nameFilter);
+                 if (emailFilter !== '') activeFilters.push('Email: ' + emailFilter);
+                 
+                 if (activeFilters.length > 0) {
+                     $('#activeFilters').text(activeFilters.join(', '));
+                 } else {
+                     $('#activeFilters').text('No filters');
+                 }
+                 $('#filterStatus').show();
+             }
+
+            // --- Event Listeners ---
+            // Filter inputs
+            $('#nameFilter, #emailFilter').on('input', function() {
+                currentPage = 1; // Reset to page 1 when filters change
+                updateTableDisplay();
+            });
+
+            // Records per page
             $('#recordsPerPage').on('change', function () {
                 recordsPerPage = parseInt($(this).val());
-                currentPage = 1; // Reset to the first page
-                updatePagination();
+                currentPage = 1; 
+                updateTableDisplay();
             });
 
-            // Event listener for previous page button
+            // Pagination buttons
             $('#prevPage').on('click', function () {
                 if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
+                     var currentlyFilteredRows = filterTableRows(); // Need filtered rows for correct pagination
+                    displayPage(currentPage - 1, currentlyFilteredRows);
                 }
             });
 
-            // Event listener for next page button
             $('#nextPage').on('click', function () {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
-
+                 var currentlyFilteredRows = filterTableRows(); // Need filtered rows for correct pagination
+                 var totalPages = Math.ceil(currentlyFilteredRows.length / recordsPerPage) || 1;
                 if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
+                    displayPage(currentPage + 1, currentlyFilteredRows);
                 }
             });
-
-            // Filter function
-            function filterTable() {
-                currentPage = 1; // Reset to the first page
-                updatePagination();
-            }
-
-            // Attach filter function to input events
-            $('#nameFilter, #emailFilter').on('input', filterTable);
             
-            // Update filter status indicators whenever filters change
-            function updateFilterStatus() {
-                var activeFilters = [];
-                
-                // Check if name filter is active
-                var nameFilter = $('#nameFilter').val();
-                if (nameFilter && nameFilter.trim() !== '') {
-                    activeFilters.push('Name: "' + nameFilter + '"');
+            // Listen for sort-complete event (if using separate sort script)
+             // document.addEventListener('sort-complete', function() { rows = tableBody.find('tr').toArray(); currentPage = 1; updateTableDisplay(); });
+
+            // --- Excel Export Modal Script (Restored to Member Style) ---
+            var excelModal = new bootstrap.Modal(document.getElementById('excelExportModal'));
+            var downloadForm = $('#downloadForm');
+            var selectAllContactsDb = $('#selectAllContactsDb'); // The true 'Download All'
+            var selectFilteredContacts = $('#selectFilteredContacts');
+            var selectAllFields = $('#selectAllFields');
+            var contactCheckboxes = $('.contact-checkbox'); // Checkboxes in the modal list
+            var fieldCheckboxes = $('.field-checkbox');
+            var contactListContainer = $('#contactList');
+
+             // Helper to get IDs of contacts currently matching the main page filter
+             function getFilteredContactIds() {
+                 var filteredIds = [];
+                 rows.forEach(function(row) { // Iterate over all original rows
+                     var jqRow = $(row);
+                      // Check if the row matches the current filters
+                      var nameFilter = $('#nameFilter').val().toLowerCase();
+                      var emailFilter = $('#emailFilter').val().toLowerCase();
+                      var name = jqRow.data('name') || '';
+                      var email = jqRow.data('email') || '';
+                      var nameMatch = nameFilter === "" || name.includes(nameFilter);
+                      var emailMatch = emailFilter === "" || email.includes(emailFilter);
+
+                      if (nameMatch && emailMatch) {
+                          var id = jqRow.data('id');
+                          if(id) filteredIds.push(id.toString());
+                      }
+                 });
+                 return filteredIds;
+             }
+
+             // Update modal list visibility and Select Filtered availability
+             function updateModalContactVisibility() {
+                 var filteredIds = getFilteredContactIds();
+                 var anyFiltered = filteredIds.length > 0 && filteredIds.length < rows.length; // Filter is active and effective
+
+                 contactCheckboxes.each(function() {
+                     var checkbox = $(this);
+                     var contactId = checkbox.val();
+                     // Always show all checkboxes in the modal list
+                     checkbox.closest('.form-check').show(); 
+                 });
+
+                 // Show/hide the "Select Filtered" option based on whether filters are active
+                 $('#selectFilteredContainer').toggle(anyFiltered);
+                 if (!anyFiltered) {
+                     selectFilteredContacts.prop('checked', false);
+                 }
+             }
+
+             // When the modal is shown, update visibility of 'Select Filtered' option
+             $('#excelExportModal').on('show.bs.modal', function () {
+                 updateModalContactVisibility(); 
+                 // Reset checkboxes
+                 selectAllContactsDb.prop('checked', false);
+                 selectFilteredContacts.prop('checked', false);
+                 selectAllFields.prop('checked', false);
+                 contactCheckboxes.prop('checked', false).prop('disabled', false);
+                 fieldCheckboxes.prop('checked', false);
+                 // Default checked fields
+                 $('#field-FirstName').prop('checked', true);
+                 $('#field-LastName').prop('checked', true);
+                 $('#field-Email').prop('checked', true);
+                 $('#field-Phone').prop('checked', true);
+                 updateContactSelectionState();
+             });
+
+             // Handle TRUE "Select All" (DownloadAll=true)
+             selectAllContactsDb.on('change', function () {
+                 var isChecked = $(this).prop('checked');
+                 // If checked, uncheck and disable individual/filtered options
+                 if (isChecked) {
+                     selectFilteredContacts.prop('checked', false);
+                     contactCheckboxes.prop('checked', false);
+                 }
+                 updateContactSelectionState();
+             });
+
+             // Handle "Select Filtered" checkbox
+             selectFilteredContacts.on('change', function () {
+                 var isChecked = $(this).prop('checked');
+                 var filteredIds = getFilteredContactIds();
+
+                 contactCheckboxes.prop('checked', false); // Uncheck all first
+                 if (isChecked) {
+                     contactCheckboxes.each(function() {
+                         if (filteredIds.includes($(this).val())) {
+                             $(this).prop('checked', true);
+                         }
+                     });
+                      selectAllContactsDb.prop('checked', false); // Uncheck true "Select All"
+                 }
+                 updateContactSelectionState();
+             });
+
+             // Handle individual contact checkbox changes
+             contactCheckboxes.on('change', function() {
+                 selectAllContactsDb.prop('checked', false);
+                 selectFilteredContacts.prop('checked', false);
+                 updateContactSelectionState(); 
+             });
+
+             // Update enable/disable state of checkboxes
+             function updateContactSelectionState() {
+                 var disableIndividual = selectAllContactsDb.prop('checked');
+                 contactCheckboxes.prop('disabled', disableIndividual);
+                 selectFilteredContacts.prop('disabled', disableIndividual);
+                 contactListContainer.toggle(!disableIndividual); // Hide list if true "Select All" is checked
+                 // Show/hide filtered container based on filtering state AND true select all
+                 updateModalContactVisibility(); 
+             }
+
+             // Handle "Select All Fields"
+             selectAllFields.on('change', function () {
+                 fieldCheckboxes.prop('checked', $(this).prop('checked'));
+             });
+
+             // Handle individual field checkbox changes
+             fieldCheckboxes.on('change', function() {
+                 if (!$(this).prop('checked')) {
+                     selectAllFields.prop('checked', false);
+                 } else {
+                     if ($('.field-checkbox:checked').length === fieldCheckboxes.length) {
+                         selectAllFields.prop('checked', true);
+                     }
+                 }
+             });
+
+            // Handle form submission (restored Member logic)
+            downloadForm.on('submit', function (e) {
+                if ($('.field-checkbox:checked').length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one field to export.');
+                    return;
                 }
                 
-                // Check if email filter is active
-                var emailFilter = $('#emailFilter').val();
-                if (emailFilter && emailFilter.trim() !== '') {
-                    activeFilters.push('Email: "' + emailFilter + '"');
-                }
-                
-                // Update the filter status display
-                if (activeFilters.length > 0) {
-                    $('#activeFilters').text(activeFilters.join(', '));
-                } else {
-                    $('#activeFilters').text('No filters');
-                }
-                $('#filterStatus').show();
-            }
-            
-            // Call updateFilterStatus whenever filters change
-            $('#nameFilter, #emailFilter').on('input', updateFilterStatus);
-            
-            // Initialize filter status on page load
-            updateFilterStatus();
+                // If true "Select All" is NOT checked, ensure at least one individual contact is checked
+                if (!selectAllContactsDb.prop('checked') && $('.contact-checkbox:checked').length === 0) { 
+                     e.preventDefault();
+                     alert('Please select at least one contact to export, or choose "Select All Contacts".');
+                     return;
+                 }
 
-            // Initial page load
-            updatePagination();
+                 // Prepare form based on whether true "Select All" is checked
+                 if (selectAllContactsDb.prop('checked')) {
+                     // Ensure DownloadAll=true is submitted
+                     if (!$('#selectAllContactsDb[name="DownloadAll"]').length) {
+                          $('<input>').attr({ type: 'hidden', name: 'DownloadAll', value: 'true' }).appendTo(downloadForm);
+                     } else {
+                           $('#selectAllContactsDb').prop('checked', true);
+                     }
+                     // Remove individual IDs as they are not needed
+                     $('input.contact-checkbox[name="SelectedContactIds"]').remove(); 
+                 } else {
+                      // Ensure DownloadAll=false is submitted
+                      if ($('#selectAllContactsDb[name="DownloadAll"]').length) {
+                           $('#selectAllContactsDb').prop('checked', false);
+                      }
+                       // Add hidden input if it doesn't exist
+                      if ($('input[type="hidden"][name="DownloadAll"]').length === 0) {
+                           $('<input>').attr({ type: 'hidden', name: 'DownloadAll', value: 'false' }).appendTo(downloadForm);
+                      } else {
+                           $('input[type="hidden"][name="DownloadAll"]').val('false');
+                      }
 
-            // Initial sort on page load
-            sortTable(1, "asc");
+                       // Ensure only checked contacts have the name attribute for submission
+                       contactCheckboxes.each(function() {
+                           var cb = $(this);
+                           if (!cb.prop('checked')) {
+                               cb.removeAttr('name'); 
+                           } else {
+                               cb.attr('name', 'SelectedContactIds');
+                           }
+                       });
+                 }
+                 // excelModal.hide(); // Optionally hide modal
+            });
+            
+             // Initial setup calls
+             updateTableDisplay(); // Use combined update function
+
         });
-
-        // Sorting function
-        function sortTable(columnIndex, initialDirection = "asc") {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("contactsTable");
-            switching = true;
-            dir = initialDirection; // Default sorting direction
-
-            // Determine the current sorting direction
-            if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-asc")) {
-                dir = "desc";
-            } else if (table.rows[0].getElementsByTagName("th")[columnIndex].classList.contains("sorted-desc")) {
-                dir = "asc";
-            }
-
-            // Remove sorting classes from all headers
-            for (i = 0; i < table.rows[0].getElementsByTagName("th").length; i++) {
-                table.rows[0].getElementsByTagName("th")[i].classList.remove("sorted-asc", "sorted-desc");
-            }
-
-            // Add sorting class to the clicked header
-            table.rows[0].getElementsByTagName("th")[columnIndex].classList.add(dir === "asc" ? "sorted-asc" : "sorted-desc");
-
-            // Update sort icon for all headers
-            for (i = 1; i < 5; i++) { // Only for sortable columns (1-4)
-                if (i !== columnIndex) {
-                    var iconElement = table.rows[0].getElementsByTagName("th")[i].querySelector(".fas");
-                    if (iconElement) {
-                        iconElement.className = "fas fa-sort";
-                    }
-                }
-            }
-
-            // Update the icon for the sorted column
-            var sortedIconElement = table.rows[0].getElementsByTagName("th")[columnIndex].querySelector(".fas");
-            if (sortedIconElement) {
-                sortedIconElement.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            }
-
-            // Perform sorting
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("td")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-
-                    if (dir === "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir === "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-
-            // Update pagination after sorting
-            $(document).ready(function() {
-                updatePagination();
-            });
-        }
     </script>
 
     <style>
@@ -391,3 +482,84 @@
         }
     </style>
 }
+
+@* --- Excel Export Modal (Restored Member Style) --- *@
+<div class="modal fade" id="excelExportModal" tabindex="-1" aria-labelledby="excelExportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excelExportModalLabel">Export Contacts to Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="downloadForm" method="post" asp-action="DownloadContacts" asp-controller="Contact"> 
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Select Contacts:</h6>
+                             <div class="form-check mb-2">
+                                 @* This is the TRUE Select All (DownloadAll=true) *@
+                                <input class="form-check-input" type="checkbox" id="selectAllContactsDb" name="DownloadAll" value="true">
+                                <label class="form-check-label" for="selectAllContactsDb">Select All Contacts (Entire Database)</label>
+                            </div>
+                            <div class="form-check mb-2" id="selectFilteredContainer" style="display: none;"> 
+                                <input class="form-check-input" type="checkbox" id="selectFilteredContacts">
+                                <label class="form-check-label" for="selectFilteredContacts">Select Filtered Contacts</label>
+                            </div>
+                            <div id="contactList" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 4px;">
+                                @foreach (var contact in Model)
+                                {
+                                    <div class="form-check">
+                                        @* Name attribute added/removed by JS before submit *@
+                                        <input class="form-check-input contact-checkbox" 
+                                               type="checkbox"
+                                               value="@contact.ID"
+                                               id="contact-@contact.ID">
+                                        <label class="form-check-label" for="contact-@contact.ID">
+                                            @contact.FullFormalName
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Select Fields:</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="selectAllFields">
+                                <label class="form-check-label" for="selectAllFields">Select All Fields</label>
+                            </div>
+                            @* Field checkboxes remain the same *@
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="field-FirstName" checked>
+                                <label class="form-check-label" for="field-FirstName">First Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="field-LastName" checked>
+                                <label class="form-check-label" for="field-LastName">Last Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="field-Email" checked>
+                                <label class="form-check-label" for="field-Email">Email</label>
+                            </div>
+                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="field-Phone" checked>
+                                <label class="form-check-label" for="field-Phone">Phone</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="field-ContactType">
+                                <label class="form-check-label" for="field-ContactType">Contact Type</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="field-AssociatedMembers">
+                                <label class="form-check-label" for="field-AssociatedMembers">Associated Members</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Download Excel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

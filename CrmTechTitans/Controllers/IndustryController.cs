@@ -10,6 +10,8 @@ using CrmTechTitans.Models;
 using Microsoft.AspNetCore.Components.QuickGrid;
 using Microsoft.AspNetCore.Authorization;
 using CrmTechTitans.Models.Enumerations;
+using CrmTechTitans.Services;
+using CrmTechTitans.ViewModels;
 
 namespace CrmTechTitans.Controllers
 {
@@ -17,10 +19,12 @@ namespace CrmTechTitans.Controllers
     public class IndustryController : Controller
     {
         private readonly CrmContext _context;
+        private readonly ExcelExportService _excelExportService;
 
-        public IndustryController(CrmContext context)
+        public IndustryController(CrmContext context, ExcelExportService excelExportService)
         {
             _context = context;
+            _excelExportService = excelExportService;
         }
 
         // GET: Industry
@@ -207,6 +211,93 @@ namespace CrmTechTitans.Controllers
             await _context.SaveChangesAsync();
             TempData["success"] = "Industry deleted successfully!";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
+        public IActionResult DownloadIndustries([FromForm] IndustryExportOptions options)
+        {
+            if (options.SelectedFields == null || !options.SelectedFields.Any())
+            {
+                TempData["error"] = "Please select at least one field to export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            IQueryable<Industry> industriesQuery = _context.Industries
+                .Include(i => i.IndustryMembers).ThenInclude(im => im.Member)
+                .AsQueryable();
+
+            if (!options.DownloadAll)
+            {
+                if (options.SelectedIndustryIds != null && options.SelectedIndustryIds.Any())
+                {
+                    industriesQuery = industriesQuery.Where(i => options.SelectedIndustryIds.Contains(i.ID));
+                }
+                else
+                {
+                    TempData["error"] = "No industries selected for filtered export.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            var industries = industriesQuery.ToList();
+
+            if (!industries.Any())
+            {
+                TempData["warning"] = "No industries found matching the selected criteria for export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var exportData = new List<Dictionary<string, object>>();
+            foreach (var industry in industries)
+            {
+                var industryData = new Dictionary<string, object>();
+                foreach (var field in options.SelectedFields)
+                {
+                    object value = null;
+                    switch (field)
+                    {
+                        case "Name": value = industry.Name; break;
+                        case "NAICS": value = industry.NAICS; break;
+                        case "MemberCount":
+                            value = industry.IndustryMembers?.Count() ?? 0;
+                            break;
+                        case "AssociatedMembers":
+                             value = industry.IndustryMembers != null && industry.IndustryMembers.Any()
+                                ? string.Join(", ", industry.IndustryMembers.Select(im => im.Member?.MemberName ?? "N/A"))
+                                : "N/A";
+                             break;
+                        default:
+                            break;
+                    }
+                    industryData[field] = value;
+                }
+                exportData.Add(industryData);
+            }
+
+            try
+            {
+                byte[] fileBytes = _excelExportService.GenerateExcelPackage(
+                    exportData,
+                    options.SelectedFields,
+                    sheetName: "Industries",
+                    reportTitle: "Industry Report"
+                );
+
+                string filename = $"Industries_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                return File(fileBytes, mimeType, filename);
+            }
+            catch (TimeZoneNotFoundException tzEx)
+            {
+                TempData["error"] = $"Error generating report: Timezone not found. {tzEx.Message}";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "An error occurred while generating the Excel file.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool IndustryExists(int id)

@@ -30,6 +30,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+// Register Excel Export Service
+builder.Services.AddScoped<ExcelExportService>();
+
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
     {
         options.SignIn.RequireConfirmedAccount = requireConfirmedAccount;

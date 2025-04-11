@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<CrmTechTitans.Models.Address>
 @using CrmTechTitans.Models.Enumerations
+@using CrmTechTitans.Utilities
 
 @{
     ViewData["Title"] = "All Addresses";
@@ -10,14 +11,18 @@
 
 <div class="container-fluid">
     <header class="page-header d-flex justify-content-between align-items-center mb-4">
-        <h1>All Municipalities</h1>
+        <h1>All Addresses</h1>
         <div class="d-flex align-items-center gap-3">
             @if (Context.User.IsInRole(UserRoles.Administrator) || Context.User.IsInRole(UserRoles.Editor))
             {
                 <a asp-action="Create" class="btn btn-primary">
-                    <i class="fas fa-plus-circle me-2"></i> Create New Municipality
+                    <i class="fas fa-plus-circle me-2"></i> Create New Address
                 </a>
             }
+            @* Export Button - Added *@
+            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#excelExportModal">
+                <i class="fas fa-file-excel"></i> Export to Excel
+            </a>
         </div>
     </header>
 
@@ -72,7 +77,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr data-id="@item.ID" data-municipality="@item.City?.ToLower()" data-province="@item.Province.ToString()?.ToLower()">
                         <td data-bs-toggle="tooltip" title="@(item.MemberAddresses.Any() ? string.Join(", ", item.MemberAddresses.Where(ma => ma.Member != null).Select(ma => ma.Member.MemberName)) : "None")">
                             @(item.MemberAddresses.Any() ? string.Join(", ", item.MemberAddresses.Where(ma => ma.Member != null).Select(ma => ma.Member.MemberName)) : "None")
                         </td>
@@ -112,9 +117,12 @@
 
 @section Scripts {
     <script>
+        // Script largely copied and adapted from Contact/Index.cshtml
         $(document).ready(function () {
             var currentPage = 1;
             var recordsPerPage = parseInt($('#recordsPerPage').val());
+            var tableBody = $('#addressTable tbody'); // Changed ID
+            var rows = tableBody.find('tr').toArray(); // Get all rows initially
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -122,130 +130,297 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            // Function to get visible rows (rows not hidden by filter)
-            function getVisibleRows() {
-                var municipalityFilter = $('#municipalityFilter').val().toLowerCase();
-                var provinceFilter = $('#provinceFilter').val().toLowerCase();
+            // --- Filtering Logic ---
+            function filterTableRows() {
+                var municipalityFilter = $('#municipalityFilter').val().toLowerCase(); // Changed ID
+                var provinceFilter = $('#provinceFilter').val().toLowerCase(); // Changed ID
+                var filteredRows = [];
 
-                var visibleRows = $('#addressTable tbody tr').filter(function () {
-                    var municipalityText = $(this).find('td:nth-child(2)').text().toLowerCase();
-                    var provinceText = $(this).find('td:nth-child(3)').text().toLowerCase();
-
-                    var municipalityMatch = municipalityFilter === "" || municipalityText.includes(municipalityFilter);
-                    var provinceMatch = provinceFilter === "" || provinceText.includes(provinceFilter);
-
-                    return municipalityMatch && provinceMatch;
+                rows.forEach(function(row) {
+                    var jqRow = $(row);
+                    var municipality = jqRow.data('municipality') || ''; // Changed data attribute
+                    var province = jqRow.data('province') || ''; // Changed data attribute
+                    
+                    var municipalityMatch = municipalityFilter === "" || municipality.includes(municipalityFilter);
+                    var provinceMatch = provinceFilter === "" || province.includes(provinceFilter);
+                    
+                    if (municipalityMatch && provinceMatch) {
+                        filteredRows.push(row);
+                        jqRow.show(); // Show if matches
+                    } else {
+                        jqRow.hide(); // Hide if doesn't match
+                    }
                 });
-
-                return visibleRows;
+                return filteredRows; // Return only the rows that match the filter
             }
 
-            // Function to show the current page
-            function showPage(page) {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
+            // --- Pagination Logic ---
+            function displayPage(page, filteredRows) {
+                var totalFilteredRecords = filteredRows.length;
+                var totalPages = Math.ceil(totalFilteredRecords / recordsPerPage) || 1;
+                currentPage = page; // Update current page
 
                 // Ensure currentPage is within valid range
-                if (page < 1) page = 1;
-                if (page > totalPages) page = totalPages;
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages) currentPage = totalPages;
 
-                var startIndex = (page - 1) * recordsPerPage;
+                var startIndex = (currentPage - 1) * recordsPerPage;
                 var endIndex = startIndex + recordsPerPage;
 
-                // Hide all rows first
-                $('#addressTable tbody tr').hide();
+                // Hide all rows first, then show only the ones for the current page *from the filtered set*
+                $(rows).hide(); // Hide all original rows
+                $(filteredRows).slice(startIndex, endIndex).show(); // Show only the slice of filtered rows
 
-                // Show only the rows for the current page
-                visibleRows.slice(startIndex, endIndex).show();
-
-                // Update page info
-                $('#pageInfo').text(`Page ${page} of ${totalPages} (${visibleRows.length} records)`);
-
-                // Enable/disable pagination buttons
-                $('#prevPage').prop('disabled', page === 1);
-                $('#nextPage').prop('disabled', page === totalPages || visibleRows.length === 0);
+                // Update pagination info
+                $('#pageInfo').text(`Page ${currentPage} of ${totalPages} (${totalFilteredRecords} records)`);
+                $('#prevPage').prop('disabled', currentPage === 1);
+                $('#nextPage').prop('disabled', currentPage === totalPages || totalFilteredRecords === 0);
             }
 
-            // Function to update pagination
-            window.updatePagination = function() {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
-
-                if (currentPage > totalPages) {
-                    currentPage = totalPages > 0 ? totalPages : 1;
-                }
-
-                showPage(currentPage);
+            // --- Combined Update Function ---
+            function updateTableDisplay() {
+                 var currentlyFilteredRows = filterTableRows();
+                 displayPage(currentPage, currentlyFilteredRows);
+                 updateFilterStatus(); // Update the 'Filtered by' text
+                 
+                 // Update modal visibility if open - based on the *filtered* rows
+                 if ($('#excelExportModal').hasClass('show')) {
+                     updateModalAddressVisibility(currentlyFilteredRows); // Changed function name
+                     // Always uncheck "Select Filtered" when filters change
+                     $('#selectFilteredAddresses').prop('checked', false); // Changed ID
+                 }
             }
 
-            // Event listener for records per page dropdown
+             // Function to update the "Filtered by" text
+             function updateFilterStatus() {
+                 var municipalityFilter = $('#municipalityFilter').val().trim(); // Changed ID
+                 var provinceFilter = $('#provinceFilter').val().trim(); // Changed ID
+                 var activeFilters = [];
+                 if (municipalityFilter !== '') activeFilters.push('Municipality: ' + municipalityFilter);
+                 if (provinceFilter !== '') activeFilters.push('Province: ' + provinceFilter);
+                 
+                 if (activeFilters.length > 0) {
+                     $('#activeFilters').text(activeFilters.join(', '));
+                 } else {
+                     $('#activeFilters').text('No filters');
+                 }
+                 $('#filterStatus').show();
+             }
+
+            // --- Event Listeners ---
+            // Filter inputs
+            $('#municipalityFilter, #provinceFilter').on('input', function() { // Changed IDs
+                currentPage = 1; // Reset to page 1 when filters change
+                updateTableDisplay();
+            });
+
+            // Records per page
             $('#recordsPerPage').on('change', function () {
                 recordsPerPage = parseInt($(this).val());
-                currentPage = 1; // Reset to the first page
-                updatePagination();
+                currentPage = 1; 
+                updateTableDisplay();
             });
 
-            // Event listener for previous page button
+            // Pagination buttons
             $('#prevPage').on('click', function () {
                 if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
+                     var currentlyFilteredRows = filterTableRows(); // Need filtered rows for correct pagination
+                    displayPage(currentPage - 1, currentlyFilteredRows);
                 }
             });
 
-            // Event listener for next page button
             $('#nextPage').on('click', function () {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
-
+                 var currentlyFilteredRows = filterTableRows(); // Need filtered rows for correct pagination
+                 var totalPages = Math.ceil(currentlyFilteredRows.length / recordsPerPage) || 1;
                 if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
+                    displayPage(currentPage + 1, currentlyFilteredRows);
                 }
             });
-
-            // Filter function
-            function filterTable() {
-                currentPage = 1; // Reset to the first page
-                updatePagination();
-            }
-
-            // Attach filter function to input events
-            $('#municipalityFilter, #provinceFilter').on('input', function() {
-                filterTable();
-                updateFilterStatus();
-            });
-
-            // Function to update filter status
-            function updateFilterStatus() {
-                var municipalityFilter = $('#municipalityFilter').val().trim();
-                var provinceFilter = $('#provinceFilter').val().trim();
-                
-                var hasActiveFilters = municipalityFilter !== '' || provinceFilter !== '';
-                var activeFiltersText = [];
-                
-                if (municipalityFilter !== '') {
-                    activeFiltersText.push('Municipality: ' + municipalityFilter);
-                }
-                
-                if (provinceFilter !== '') {
-                    activeFiltersText.push('Province: ' + provinceFilter);
-                }
-                
-                if (hasActiveFilters) {
-                    $('#activeFilters').text(activeFiltersText.join(', '));
-                } else {
-                    $('#activeFilters').text('No filters');
-                }
-                $('#filterStatus').show();
-            }
-
-            // Initial page load
-            updatePagination();
-            updateFilterStatus();
             
-            // Listen for sort-complete event to update display
-            document.addEventListener('sort-complete', updatePagination);
+            // Listen for sort-complete event (if using separate sort script)
+             // document.addEventListener('sort-complete', function() { rows = tableBody.find('tr').toArray(); currentPage = 1; updateTableDisplay(); });
+
+            // --- Excel Export Modal Script (Adapted from Contact Style) ---
+            var excelModal = new bootstrap.Modal(document.getElementById('excelExportModal'));
+            var downloadForm = $('#downloadForm');
+            var selectAllAddressesDb = $('#selectAllAddressesDb'); // Changed ID
+            var selectFilteredAddresses = $('#selectFilteredAddresses'); // Changed ID
+            var selectAllFields = $('#selectAllFields');
+            var addressCheckboxes = $('.address-checkbox'); // Changed class
+            var fieldCheckboxes = $('.field-checkbox');
+            var addressListContainer = $('#addressList'); // Changed ID
+
+             // Helper to get IDs of addresses currently matching the main page filter
+             function getFilteredAddressIds() { // Changed function name
+                 var filteredIds = [];
+                 rows.forEach(function(row) { // Iterate over all original rows
+                     var jqRow = $(row);
+                      // Check if the row matches the current filters
+                      var municipalityFilter = $('#municipalityFilter').val().toLowerCase(); // Changed ID
+                      var provinceFilter = $('#provinceFilter').val().toLowerCase(); // Changed ID
+                      var municipality = jqRow.data('municipality') || ''; // Changed data attribute
+                      var province = jqRow.data('province') || ''; // Changed data attribute
+                      var municipalityMatch = municipalityFilter === "" || municipality.includes(municipalityFilter);
+                      var provinceMatch = provinceFilter === "" || province.includes(provinceFilter);
+
+                      if (municipalityMatch && provinceMatch) {
+                          var id = jqRow.data('id');
+                          if(id) filteredIds.push(id.toString());
+                      }
+                 });
+                 return filteredIds;
+             }
+
+             // Update modal list visibility and Select Filtered availability
+             function updateModalAddressVisibility() { // Changed function name
+                 var filteredIds = getFilteredAddressIds(); // Changed function name
+                 var anyFiltered = filteredIds.length > 0 && filteredIds.length < rows.length; // Filter is active and effective
+
+                 addressCheckboxes.each(function() { // Changed variable
+                     var checkbox = $(this);
+                     var addressId = checkbox.val(); // Changed variable name
+                     // Always show all checkboxes in the modal list
+                     checkbox.closest('.form-check').show(); 
+                 });
+
+                 // Show/hide the "Select Filtered" option based on whether filters are active
+                 $('#selectFilteredContainer').toggle(anyFiltered);
+                 if (!anyFiltered) {
+                     selectFilteredAddresses.prop('checked', false); // Changed ID
+                 }
+             }
+
+             // When the modal is shown, update visibility of 'Select Filtered' option
+             $('#excelExportModal').on('show.bs.modal', function () {
+                 updateModalAddressVisibility(); // Changed function name
+                 // Reset checkboxes
+                 selectAllAddressesDb.prop('checked', false); // Changed ID
+                 selectFilteredAddresses.prop('checked', false); // Changed ID
+                 selectAllFields.prop('checked', false);
+                 addressCheckboxes.prop('checked', false).prop('disabled', false); // Changed variable
+                 fieldCheckboxes.prop('checked', false);
+                 // Default checked fields for Address
+                 $('#field-Street').prop('checked', true); // Changed field ID
+                 $('#field-City').prop('checked', true); // Changed field ID
+                 $('#field-Province').prop('checked', true); // Changed field ID
+                 $('#field-PostalCode').prop('checked', true); // Changed field ID
+                 updateAddressSelectionState(); // Changed function name
+             });
+
+             // Handle TRUE "Select All" (DownloadAll=true)
+             selectAllAddressesDb.on('change', function () { // Changed ID
+                 var isChecked = $(this).prop('checked');
+                 // If checked, uncheck and disable individual/filtered options
+                 if (isChecked) {
+                     selectFilteredAddresses.prop('checked', false); // Changed ID
+                     addressCheckboxes.prop('checked', false); // Changed variable
+                 }
+                 updateAddressSelectionState(); // Changed function name
+             });
+
+             // Handle "Select Filtered" checkbox
+             selectFilteredAddresses.on('change', function () { // Changed ID
+                 var isChecked = $(this).prop('checked');
+                 var filteredIds = getFilteredAddressIds(); // Changed function name
+
+                 addressCheckboxes.prop('checked', false); // Uncheck all first // Changed variable
+                 if (isChecked) {
+                     addressCheckboxes.each(function() { // Changed variable
+                         if (filteredIds.includes($(this).val())) {
+                             $(this).prop('checked', true);
+                         }
+                     });
+                      selectAllAddressesDb.prop('checked', false); // Uncheck true "Select All" // Changed ID
+                 }
+                 updateAddressSelectionState(); // Changed function name
+             });
+
+             // Handle individual address checkbox changes
+             addressCheckboxes.on('change', function() { // Changed variable
+                 selectAllAddressesDb.prop('checked', false); // Changed ID
+                 selectFilteredAddresses.prop('checked', false); // Changed ID
+                 updateAddressSelectionState(); // Changed function name
+             });
+
+             // Update enable/disable state of checkboxes
+             function updateAddressSelectionState() { // Changed function name
+                 var disableIndividual = selectAllAddressesDb.prop('checked'); // Changed ID
+                 addressCheckboxes.prop('disabled', disableIndividual); // Changed variable
+                 selectFilteredAddresses.prop('disabled', disableIndividual); // Changed ID
+                 addressListContainer.toggle(!disableIndividual); // Hide list if true "Select All" is checked // Changed ID
+                 // Show/hide filtered container based on filtering state AND true select all
+                 updateModalAddressVisibility(); // Changed function name
+             }
+
+             // Handle "Select All Fields"
+             selectAllFields.on('change', function () {
+                 fieldCheckboxes.prop('checked', $(this).prop('checked'));
+             });
+
+             // Handle individual field checkbox changes
+             fieldCheckboxes.on('change', function() {
+                 if (!$(this).prop('checked')) {
+                     selectAllFields.prop('checked', false);
+                 } else {
+                     if ($('.field-checkbox:checked').length === fieldCheckboxes.length) {
+                         selectAllFields.prop('checked', true);
+                     }
+                 }
+             });
+
+            // Handle form submission (restored Member logic, adapted for Address)
+            downloadForm.on('submit', function (e) {
+                if ($('.field-checkbox:checked').length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one field to export.');
+                    return;
+                }
+                
+                // If true "Select All" is NOT checked, ensure at least one individual address is checked
+                if (!selectAllAddressesDb.prop('checked') && $('.address-checkbox:checked').length === 0) { // Changed ID and class
+                     e.preventDefault();
+                     alert('Please select at least one address to export, or choose "Select All Addresses".'); // Changed text
+                     return;
+                 }
+
+                 // Prepare form based on whether true "Select All" is checked
+                 if (selectAllAddressesDb.prop('checked')) { // Changed ID
+                     // Ensure DownloadAll=true is submitted
+                     if (!$('#selectAllAddressesDb[name="DownloadAll"]').length) { // Changed ID
+                          $('<input>').attr({ type: 'hidden', name: 'DownloadAll', value: 'true' }).appendTo(downloadForm);
+                     } else {
+                           $('#selectAllAddressesDb').prop('checked', true); // Changed ID
+                     }
+                     // Remove individual IDs as they are not needed
+                     $('input.address-checkbox[name="SelectedAddressIds"]').remove(); // Changed class and name
+                 } else {
+                      // Ensure DownloadAll=false is submitted
+                      if ($('#selectAllAddressesDb[name="DownloadAll"]').length) { // Changed ID
+                           $('#selectAllAddressesDb').prop('checked', false); // Changed ID
+                      }
+                       // Add hidden input if it doesn't exist
+                      if ($('input[type="hidden"][name="DownloadAll"]').length === 0) {
+                           $('<input>').attr({ type: 'hidden', name: 'DownloadAll', value: 'false' }).appendTo(downloadForm);
+                      } else {
+                           $('input[type="hidden"][name="DownloadAll"]').val('false');
+                      }
+
+                       // Ensure only checked addresses have the name attribute for submission
+                       addressCheckboxes.each(function() { // Changed variable
+                           var cb = $(this);
+                           if (!cb.prop('checked')) {
+                               cb.removeAttr('name'); 
+                           } else {
+                               cb.attr('name', 'SelectedAddressIds'); // Changed name
+                           }
+                       });
+                 }
+                 // excelModal.hide(); // Optionally hide modal
+            });
+            
+             // Initial setup calls
+             updateTableDisplay(); // Use combined update function
+
         });
     </script>
 
@@ -278,3 +453,83 @@
         }
     </style>
 }
+
+@* --- Excel Export Modal (Adapted from Contact Style) --- *@
+<div class="modal fade" id="excelExportModal" tabindex="-1" aria-labelledby="excelExportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excelExportModalLabel">Export Addresses to Excel</h5> @* Changed Title *@
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                 @* Changed Action and Controller *@
+                <form id="downloadForm" method="post" asp-action="DownloadAddresses" asp-controller="Address">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Select Addresses:</h6> @* Changed Text *@
+                             <div class="form-check mb-2">
+                                 @* This is the TRUE Select All (DownloadAll=true) *@
+                                <input class="form-check-input" type="checkbox" id="selectAllAddressesDb" name="DownloadAll" value="true"> @* Changed ID *@
+                                <label class="form-check-label" for="selectAllAddressesDb">Select All Addresses (Entire Database)</label> @* Changed Text/For *@
+                            </div>
+                            <div class="form-check mb-2" id="selectFilteredContainer" style="display: none;"> 
+                                <input class="form-check-input" type="checkbox" id="selectFilteredAddresses"> @* Changed ID *@
+                                <label class="form-check-label" for="selectFilteredAddresses">Select Filtered Addresses</label> @* Changed Text/For *@
+                            </div>
+                             @* Changed ID and list generation logic *@
+                            <div id="addressList" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 4px;">
+                                @foreach (var address in Model) @* Changed variable *@
+                                {
+                                    <div class="form-check">
+                                        @* Name attribute added/removed by JS before submit *@
+                                        <input class="form-check-input address-checkbox" @* Changed class *@
+                                               type="checkbox"
+                                               value="@address.ID" @* Changed variable *@
+                                               id="address-@address.ID"> @* Changed ID/variable *@
+                                        <label class="form-check-label" for="address-@address.ID"> @* Changed ID/variable *@
+                                             @* Display something meaningful for the address *@
+                                            @(string.IsNullOrWhiteSpace(address.Street) ? $"{address.City}, {address.Province}" : $"{address.Street}, {address.City}")
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Select Fields:</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="selectAllFields">
+                                <label class="form-check-label" for="selectAllFields">Select All Fields</label>
+                            </div>
+                            @* Field checkboxes adapted for Address *@
+                            <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="StreetAddress" id="field-StreetAddress" checked>
+                                <label class="form-check-label" for="field-StreetAddress">Street Address</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="City" id="field-City" checked>
+                                <label class="form-check-label" for="field-City">City</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="Province" id="field-Province" checked>
+                                <label class="form-check-label" for="field-Province">Province</label>
+                            </div>
+                             <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="PostalCode" id="field-PostalCode" checked>
+                                <label class="form-check-label" for="field-PostalCode">Postal Code</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="AssociatedMembers" id="field-AssociatedMembers">
+                                <label class="form-check-label" for="field-AssociatedMembers">Associated Members</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Download Excel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

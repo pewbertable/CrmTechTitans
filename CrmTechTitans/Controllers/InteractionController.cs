@@ -6,6 +6,10 @@ using CrmTechTitans.Data;
 using CrmTechTitans.Models;
 using CrmTechTitans.Models.Enumerations;
 using Microsoft.AspNetCore.Authorization;
+using CrmTechTitans.Services;
+using CrmTechTitans.ViewModels;
+using System;
+using System.Collections.Generic;
 
 namespace CrmTechTitans.Controllers
 {
@@ -13,10 +17,12 @@ namespace CrmTechTitans.Controllers
     public class InteractionController : Controller
     {
         private readonly CrmContext _context;
+        private readonly ExcelExportService _excelExportService;
 
-        public InteractionController(CrmContext context)
+        public InteractionController(CrmContext context, ExcelExportService excelExportService)
         {
             _context = context;
+            _excelExportService = excelExportService;
         }
 
         // GET: Interaction
@@ -174,6 +180,92 @@ namespace CrmTechTitans.Controllers
             await _context.SaveChangesAsync();
             TempData["success"] = "Interaction deleted successfully!";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
+        public IActionResult DownloadInteractions([FromForm] InteractionExportOptions options)
+        {
+            if (options.SelectedFields == null || !options.SelectedFields.Any())
+            {
+                TempData["error"] = "Please select at least one field to export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            IQueryable<Interaction> interactionsQuery = _context.Interactions
+                .Include(i => i.Contact)
+                .Include(i => i.InteractionMembers).ThenInclude(im => im.Member)
+                .AsQueryable();
+
+            if (!options.DownloadAll)
+            {
+                if (options.SelectedInteractionIds != null && options.SelectedInteractionIds.Any())
+                {
+                    interactionsQuery = interactionsQuery.Where(i => options.SelectedInteractionIds.Contains(i.Id));
+                }
+                else
+                {
+                    TempData["error"] = "No interactions selected for filtered export.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            var interactions = interactionsQuery.ToList();
+
+            if (!interactions.Any())
+            {
+                TempData["warning"] = "No interactions found matching the selected criteria for export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var exportData = new List<Dictionary<string, object>>();
+            foreach (var interaction in interactions)
+            {
+                var interactionData = new Dictionary<string, object>();
+                foreach (var field in options.SelectedFields)
+                {
+                    object value = null;
+                    switch (field)
+                    {
+                        case "InteractionDetails": value = interaction.InteractionDetails; break;
+                        case "Date": value = interaction.Date; break;
+                        case "ContactName":
+                            value = interaction.Contact != null ? $"{interaction.Contact.FirstName} {interaction.Contact.LastName}" : "N/A";
+                            break;
+                        case "ContactEmail":
+                            value = interaction.Contact?.Email ?? "N/A";
+                            break;
+                        case "AssociatedMembers":
+                            value = interaction.InteractionMembers != null && interaction.InteractionMembers.Any()
+                                ? string.Join(", ", interaction.InteractionMembers.Select(im => im.Member?.MemberName ?? "N/A"))
+                                : "N/A";
+                            break;
+                        default:
+                            break;
+                    }
+                    interactionData[field] = value;
+                }
+                exportData.Add(interactionData);
+            }
+
+            try
+            {
+                byte[] fileBytes = _excelExportService.GenerateExcelPackage(
+                    exportData,
+                    options.SelectedFields,
+                    sheetName: "Interactions",
+                    reportTitle: "Interaction Report"
+                );
+
+                string filename = $"Interactions_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                return File(fileBytes, mimeType, filename);
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "An error occurred while generating the Excel file.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool InteractionExists(int id)

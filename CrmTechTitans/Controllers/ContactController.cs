@@ -12,6 +12,8 @@ using CrmTechTitans.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using CrmTechTitans.Models.Enumerations;
 using CrmTechTitans.Models.JoinTables;
+using CrmTechTitans.Services;
+using CrmTechTitans.ViewModels;
 
 namespace CrmTechTitans.Controllers
 {
@@ -19,10 +21,12 @@ namespace CrmTechTitans.Controllers
     public class ContactController : Controller
     {
         private readonly CrmContext _context;
+        private readonly ExcelExportService _excelExportService;
 
-        public ContactController(CrmContext context)
+        public ContactController(CrmContext context, ExcelExportService excelExportService)
         {
             _context = context;
+            _excelExportService = excelExportService;
         }
 
         // GET: Contact
@@ -300,6 +304,99 @@ namespace CrmTechTitans.Controllers
             await _context.SaveChangesAsync();
             TempData["success"] = "Contact deleted successfully!";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.Editor)]
+        public IActionResult DownloadContacts([FromForm] ContactExportOptions options)
+        {
+            if (options.SelectedFields == null || !options.SelectedFields.Any())
+            {
+                TempData["error"] = "Please select at least one field to export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            IQueryable<Contact> contactsQuery = _context.Contacts
+                 .Include(c => c.MemberContacts).ThenInclude(mc => mc.Member)
+                 .AsQueryable();
+
+            // Filter by selected IDs if not downloading all
+            if (!options.DownloadAll)
+            {
+                if (options.SelectedContactIds != null && options.SelectedContactIds.Any())
+                {
+                    contactsQuery = contactsQuery.Where(c => options.SelectedContactIds.Contains(c.ID));
+                }
+                else
+                {
+                    TempData["error"] = "No contacts selected for filtered export.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            var contacts = contactsQuery.ToList();
+
+             if (!contacts.Any())
+            {
+                TempData["warning"] = "No contacts found matching the selected criteria for export.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Transform data
+            var exportData = new List<Dictionary<string, object>>();
+            foreach (var contact in contacts)
+            {
+                var contactData = new Dictionary<string, object>();
+                foreach (var field in options.SelectedFields)
+                {
+                    object value = null;
+                    switch (field)
+                    {
+                        case "FirstName": value = contact.FirstName; break;
+                        case "LastName": value = contact.LastName; break;
+                        case "Email": value = contact.Email; break;
+                        case "Phone": value = contact.Phone; break;
+                        case "ContactType": value = contact.ContactType?.ToString(); break;
+                        // Example: Get associated member names (comma-separated)
+                        case "AssociatedMembers":
+                            value = contact.MemberContacts != null && contact.MemberContacts.Any()
+                                ? string.Join(", ", contact.MemberContacts.Select(mc => mc.Member?.MemberName ?? "N/A"))
+                                : "N/A";
+                            break;
+                        default:
+                            // Log or ignore unhandled fields
+                            break;
+                    }
+                    contactData[field] = value;
+                }
+                exportData.Add(contactData);
+            }
+
+            try
+            {
+                byte[] fileBytes = _excelExportService.GenerateExcelPackage(
+                    exportData,
+                    options.SelectedFields,
+                    sheetName: "Contacts",
+                    reportTitle: "Contact Report"
+                );
+
+                string filename = $"Contacts_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                return File(fileBytes, mimeType, filename);
+            }
+             catch (TimeZoneNotFoundException tzEx)
+            {
+                TempData["error"] = $"Error generating report: Timezone not found. {tzEx.Message}";
+                // Log tzEx
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "An error occurred while generating the Excel file.";
+                // Log ex
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool ContactExists(int id)

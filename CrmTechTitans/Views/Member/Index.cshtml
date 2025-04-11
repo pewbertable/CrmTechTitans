@@ -36,7 +36,7 @@
 
                     <div class="filter-item flex-grow-1">
                         <label for="membershipStatusFilter" class="form-label">Filter by Member Status</label>
-                        <select id="membershipStatusFilter" class="form-select" onchange="updateTableHeader()">
+                        <select id="membershipStatusFilter" class="form-select">
                             <option value="">All Statuses</option>
                             <option value="GoodStanding">Good Standing</option>
                             <option value="OutStanding">Out Standing</option>
@@ -111,7 +111,7 @@
                         <td>@Html.DisplayFor(modelItem => item.CompanySize)</td>
 
                         <td class="dateColumn">
-                            @(item.MembershipStatus == MembershipStatus.Cancelled ? item.MemberSince.ToShortDateString() ?? "N/A" : item.MemberSince.ToShortDateString())
+                             @(item.MemberSince != DateTime.MinValue ? item.MemberSince.ToShortDateString() : "N/A") @* Added check for default DateTime *@
                         </td>
 
                         <td><span class="status-badge status-@item.MembershipStatus.ToString().ToLower()">@Html.DisplayFor(modelItem => item.MembershipStatus)</span></td>
@@ -154,13 +154,13 @@
         <!-- Pagination Controls -->
         <div id="paginationControls" class="col-md-8 d-flex justify-content-end align-items-center gap-3">
             <button id="prevPage" class="btn btn-primary pagination-btn">Previous</button>
-            <span id="pageInfo" class="pagination-info">Page 1 of 4 (16 records)</span>
+            <span id="pageInfo" class="pagination-info">Page 1 of 1 (0 records)</span> @* Default/placeholder *@
             <button id="nextPage" class="btn btn-primary pagination-btn">Next</button>
         </div>
     </div>
 </div>
 
-<!-- Excel Export Modal -->
+<!-- Excel Export Modal (Updated to match Contact/Index logic) -->
 <div class="modal fade" id="excelExportModal" tabindex="-1" aria-labelledby="excelExportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -173,26 +173,26 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <h6>Select Members:</h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="selectAllMembers" name="DownloadAll" value="true">
-                                <label class="form-check-label" for="selectAllMembers">Select All Members</label>
+                             <div class="form-check mb-2">
+                                 @* This is the TRUE Select All (DownloadAll=true) *@
+                                <input class="form-check-input" type="checkbox" id="selectAllMembersDb" name="DownloadAll" value="true"> @* Changed ID *@
+                                <label class="form-check-label" for="selectAllMembersDb">Select All Members (Entire Database)</label> @* Changed Text/For *@
                             </div>
-                            <div class="form-check mb-2" id="selectFilteredContainer" style="display: block;">
+                            <div class="form-check mb-2" id="selectFilteredContainer" style="display: none;"> @* Initially hidden *@
                                 <input class="form-check-input" type="checkbox" id="selectFilteredMembers">
                                 <label class="form-check-label" for="selectFilteredMembers">Select Filtered Members</label>
                             </div>
-                            <div id="memberList" style="max-height: 200px; overflow-y: auto;">
-                                @foreach (var member in Model)
+                             @* Changed ID and list generation logic *@
+                            <div id="memberList" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 4px;">
+                                @foreach (var member in Model) @* Changed variable *@
                                 {
                                     <div class="form-check">
-                                        <input class="form-check-input member-checkbox" 
-                                               type="checkbox" 
-                                               name="SelectedMemberIds" 
-                                               value="@member.ID" 
-                                               id="member-@member.ID"
-                                               data-member-name="@member.MemberName.ToLower()"
-                                               data-member-status="@member.MembershipStatus.ToString().ToLower()">
-                                        <label class="form-check-label" for="member-@member.ID">@member.MemberName</label>
+                                        @* Name attribute added/removed by JS before submit *@
+                                        <input class="form-check-input member-checkbox" @* Changed class *@
+                                               type="checkbox"
+                                               value="@member.ID" @* Changed variable *@
+                                               id="member-@member.ID"> @* Changed ID/variable, Removed data attributes *@
+                                        <label class="form-check-label" for="member-@member.ID">@member.MemberName</label> @* Changed ID/variable *@
                                     </div>
                                 }
                             </div>
@@ -203,9 +203,14 @@
                                 <input class="form-check-input" type="checkbox" id="selectAllFields">
                                 <label class="form-check-label" for="selectAllFields">Select All Fields</label>
                             </div>
+                            @* Field checkboxes remain largely the same, ensure IDs and values are correct *@
                             <div class="form-check">
                                 <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="MemberName" id="field-MemberName" checked>
                                 <label class="form-check-label" for="field-MemberName">Member Name</label>
+                            </div>
+                             <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="MembershipType" id="field-MembershipType">
+                                <label class="form-check-label" for="field-MembershipType">Membership Type</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="CompanySize" id="field-CompanySize">
@@ -216,7 +221,7 @@
                                 <label class="form-check-label" for="field-Website">Website</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="MembershipStatus" id="field-MembershipStatus">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="MembershipStatus" id="field-MembershipStatus" checked>
                                 <label class="form-check-label" for="field-MembershipStatus">Membership Status</label>
                             </div>
                             <div class="form-check">
@@ -236,8 +241,8 @@
                                 <label class="form-check-label" for="field-Industries">Industries</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="Address" id="field-Address">
-                                <label class="form-check-label" for="field-Address">Street Address</label>
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="StreetAddress" id="field-StreetAddress"> @* Updated Value *@
+                                <label class="form-check-label" for="field-StreetAddress">Street Address</label> @* Updated Label *@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="City" id="field-City">
@@ -251,294 +256,402 @@
                                 <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="PostalCode" id="field-PostalCode">
                                 <label class="form-check-label" for="field-PostalCode">Postal Code</label>
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input field-checkbox" type="checkbox" name="SelectedFields" value="AssociatedContacts" id="field-AssociatedContacts">
+                                <label class="form-check-label" for="field-AssociatedContacts">Associated Contacts</label>
+                            </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Download Excel</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="downloadExcelBtn">Download Excel</button>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
+        // Script largely copied and adapted from Contact/Index.cshtml
         $(document).ready(function () {
             var currentPage = 1;
             var recordsPerPage = parseInt($('#recordsPerPage').val());
+            var tableBody = $('#membersTable tbody'); // Changed ID
+            var rows = tableBody.find('tr').toArray(); // Get all rows initially
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-            
-            // Handle modal shown event to update filtered members
-            $('#excelExportModal').on('shown.bs.modal', function() {
-                console.log("Export modal shown - handling filters");
-                
-                // Initialize Select All Fields checkbox state
-                var totalFields = $('.field-checkbox').length;
-                var checkedFields = $('.field-checkbox:checked').length;
-                $('#selectAllFields').prop('checked', totalFields === checkedFields && totalFields > 0);
-                
-                // Get current filter values
-                var nameFilter = $('#memberNameFilter').val().toLowerCase();
-                var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
-                
-                console.log("Current filters:", { nameFilter, statusFilter });
-                
-                // Only proceed if we have an active filter
-                if (nameFilter || statusFilter) {
-                    console.log("Active filters found - showing filtered members option");
-                    // Show the filtered members option
-                    $('#selectFilteredContainer').show();
-                    
-                    // Direct filtering - select all members that match the filter
-                    $('.member-checkbox').each(function() {
-                        var $checkbox = $(this);
-                        var memberName = $checkbox.data('member-name') || '';
-                        var memberStatus = $checkbox.data('member-status') || '';
-                        
-                        // Apply filter - prioritize Healthcare Plus for 'heal' filter
-                        var matchesFilter = false;
-                        if (nameFilter === 'heal' && memberName.indexOf('healthcare') >= 0) {
-                            console.log("Special case match for Healthcare Plus");
-                            matchesFilter = true;
-                        } else {
-                            matchesFilter = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
-                        }
-                        
-                        // Apply status filter if present
-                        if (matchesFilter && statusFilter) {
-                            matchesFilter = memberStatus === statusFilter;
-                        }
-                        
-                        // Set checkbox state
-                        $checkbox.prop('checked', matchesFilter);
-                        
-                        if (matchesFilter) {
-                            console.log("Selected:", memberName);
-                        }
-                    });
-                    
-                    // Update Select Filtered checkbox to reflect the selection
-                    var filteredCount = $('.member-checkbox:checked').length;
-                    $('#selectFilteredMembers')
-                        .prop('checked', filteredCount > 0)
-                        .next('label')
-                        .text('Select Filtered Members (' + filteredCount + ')');
-                        
-                    // Make sure Select All is unchecked
-                    $('#selectAllMembers').prop('checked', false);
-                } else {
-                    console.log("No filters active");
-                }
-            });
-            
-            // Handle Select All Members checkbox
-            $('#selectAllMembers').on('change', function() {
-                if ($(this).is(':checked')) {
-                    // If "Select All" is checked, uncheck "Select Filtered"
-                    $('#selectFilteredMembers').prop('checked', false);
-                    // Check all member checkboxes
-                    $('.member-checkbox').prop('checked', true);
-                } else {
-                    // Uncheck all member checkboxes
-                    $('.member-checkbox').prop('checked', false);
-                }
-            });
-            
-            // Handle Select Filtered Members checkbox
-            $('#selectFilteredMembers').on('change', function() {
-                if ($(this).is(':checked')) {
-                    // If "Select Filtered" is checked, uncheck "Select All"
-                    $('#selectAllMembers').prop('checked', false);
-                    
-                    // Select members based on current filters
-                    var nameFilter = $('#memberNameFilter').val().toLowerCase();
-                    var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
-                    
-                    $('.member-checkbox').each(function() {
-                        var $checkbox = $(this);
-                        var memberName = $checkbox.data('member-name') || '';
-                        var memberStatus = $checkbox.data('member-status') || '';
-                        
-                        var nameMatch = nameFilter === '' || memberName.indexOf(nameFilter) >= 0;
-                        var statusMatch = statusFilter === '' || memberStatus === statusFilter;
-                        
-                        $checkbox.prop('checked', nameMatch && statusMatch);
-                    });
-                } else {
-                    // Uncheck all member checkboxes
-                    $('.member-checkbox').prop('checked', false);
-                }
-            });
-            
-            // Handle Select All Fields checkbox
-            $('#selectAllFields').on('change', function() {
-                $('.field-checkbox, input[name="SelectedFields"]').prop('checked', $(this).is(':checked'));
-            });
-            
-            // Update Select All Fields checkbox when individual field checkboxes change
-            $('.field-checkbox, input[name="SelectedFields"]').on('change', function() {
-                var totalFields = $('.field-checkbox').length;
-                var checkedFields = $('.field-checkbox:checked').length;
-                $('#selectAllFields').prop('checked', totalFields === checkedFields && totalFields > 0);
-            });
-            
-            // Handle form submission
-            $('#downloadExcelBtn').on('click', function() {
-                var selectedMembers = $('.member-checkbox:checked').length;
-                var selectedFields = $('input[name="SelectedFields"]:checked').length;
-                
-                if (selectedMembers === 0 && !$('#selectAllMembers').is(':checked')) {
-                    alert('Please select at least one member to download.');
-                    return;
-                }
-                
-                if (selectedFields === 0) {
-                    alert('Please select at least one field to include in the download.');
-                    return;
-                }
-                
-                // Submit the form
-                $('#downloadForm').submit();
-                
-                // Hide the modal
-                var modal = bootstrap.Modal.getInstance(document.getElementById('excelExportModal'));
-                if (modal) {
-                    modal.hide();
-                }
-            });
 
-            // Set default filter to "Good Standing"
-            membershipStatusFilter.value = "GoodStanding";
+            // --- Filtering Logic ---
+            function filterTableRows() {
+                var memberNameFilter = $('#memberNameFilter').val().toLowerCase(); // Changed ID
+                var statusFilter = $('#membershipStatusFilter').val()?.toLowerCase() || ""; // Changed ID
+                var filteredRows = [];
 
-            // Function to get visible rows (rows not hidden by filter)
-            function getVisibleRows() {
-                var nameFilter = $('#memberNameFilter').val().toLowerCase();
-                var statusFilter = $('#membershipStatusFilter').val().toLowerCase();
-
-                return $('#membersTable tbody tr').filter(function () {
-                    var nameText = $(this).data('name');
-                    var statusText = $(this).data('status');
-                    var nameMatch = nameFilter === "" || nameText.includes(nameFilter);
-                    var statusMatch = statusFilter === "" || statusText === statusFilter;
-                    return nameMatch && statusMatch;
+                rows.forEach(function(row) {
+                    var jqRow = $(row);
+                    var name = jqRow.data('name') || ''; // Changed data attribute
+                    var status = jqRow.data('status') || ''; // Changed data attribute
+                    
+                    var nameMatch = memberNameFilter === "" || name.includes(memberNameFilter);
+                    var statusMatch = statusFilter === "" || status.includes(statusFilter);
+                    
+                    if (nameMatch && statusMatch) {
+                        filteredRows.push(row);
+                        jqRow.show(); // Show if matches
+                    } else {
+                        jqRow.hide(); // Hide if doesn't match
+                    }
                 });
+                return filteredRows; // Return only the rows that match the filter
             }
 
-            // Function to show the current page
-            function showPage(page) {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
+            // --- Pagination Logic ---
+            function displayPage(page, filteredRows) {
+                var totalFilteredRecords = filteredRows.length;
+                var totalPages = Math.ceil(totalFilteredRecords / recordsPerPage) || 1;
+                currentPage = page; // Update current page
 
                 // Ensure currentPage is within valid range
-                if (page < 1) page = 1;
-                if (page > totalPages) page = totalPages;
+                if (currentPage < 1) currentPage = 1;
+                if (currentPage > totalPages) currentPage = totalPages;
 
-                var startIndex = (page - 1) * recordsPerPage;
+                var startIndex = (currentPage - 1) * recordsPerPage;
                 var endIndex = startIndex + recordsPerPage;
 
-                // Hide all rows first
-                $('#membersTable tbody tr').hide();
-                // Show only the rows for the current page
-                visibleRows.slice(startIndex, endIndex).show();
+                // Hide all rows first, then show only the ones for the current page *from the filtered set*
+                $(rows).hide(); // Hide all original rows
+                $(filteredRows).slice(startIndex, endIndex).show(); // Show only the slice of filtered rows
 
-                // Update page info
-                $('#pageInfo').text(`Page ${page} of ${totalPages} (${visibleRows.length} records)`);
-
-                // Enable/disable pagination buttons
-                $('#prevPage').prop('disabled', page === 1);
-                $('#nextPage').prop('disabled', page === totalPages || visibleRows.length === 0);
+                // Update pagination info
+                $('#pageInfo').text(`Page ${currentPage} of ${totalPages} (${totalFilteredRecords} records)`);
+                $('#prevPage').prop('disabled', currentPage === 1);
+                $('#nextPage').prop('disabled', currentPage === totalPages || totalFilteredRecords === 0);
             }
 
-            // Function to update pagination
-            window.updatePagination = function() {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
-
-                if (currentPage > totalPages) {
-                    currentPage = totalPages > 0 ? totalPages : 1;
-                }
-
-                showPage(currentPage);
+            // --- Combined Update Function ---
+            function updateTableDisplay() {
+                 var currentlyFilteredRows = filterTableRows();
+                 displayPage(currentPage, currentlyFilteredRows);
+                 updateFilterStatus(); // Update the 'Filtered by' text
+                 
+                 // Update modal visibility if open - based on the *filtered* rows
+                 if ($('#excelExportModal').hasClass('show')) {
+                     updateModalMemberVisibility(currentlyFilteredRows); // Changed function name
+                     // Always uncheck "Select Filtered" when filters change
+                     $('#selectFilteredMembers').prop('checked', false); // Changed ID
+                 }
             }
 
-            // Event listener for records per page dropdown
+             // Function to update the "Filtered by" text
+             function updateFilterStatus() {
+                 var memberNameFilter = $('#memberNameFilter').val().trim(); // Changed ID
+                 var statusFilter = $('#membershipStatusFilter').val(); // Changed ID
+                 var statusFilterText = statusFilter ? $('#membershipStatusFilter option:selected').text() : "";
+                 var activeFilters = [];
+                 if (memberNameFilter !== '') activeFilters.push('Member Name: ' + memberNameFilter);
+                 if (statusFilter !== '') activeFilters.push('Status: ' + statusFilterText);
+                 
+                 if (activeFilters.length > 0) {
+                     $('#activeFilters').text(activeFilters.join(', '));
+                 } else {
+                     $('#activeFilters').text('No filters');
+                 }
+                 $('#filterStatus').show();
+             }
+
+            // --- Event Listeners ---
+            // Filter inputs
+            $('#memberNameFilter').on('input', function() { // Text input
+                currentPage = 1; // Reset to page 1 when filters change
+                updateTableDisplay();
+            });
+             $('#membershipStatusFilter').on('change', function() { // Dropdown
+                currentPage = 1; // Reset to page 1 when filters change
+                updateTableDisplay();
+            });
+
+            // Records per page
             $('#recordsPerPage').on('change', function () {
                 recordsPerPage = parseInt($(this).val());
-                currentPage = 1; // Reset to the first page
-                updatePagination();
+                currentPage = 1; 
+                updateTableDisplay();
             });
 
-            // Event listener for previous page button
+            // Pagination buttons
             $('#prevPage').on('click', function () {
                 if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
+                     var currentlyFilteredRows = filterTableRows(); // Need filtered rows for correct pagination
+                    displayPage(currentPage - 1, currentlyFilteredRows);
                 }
             });
 
-            // Event listener for next page button
             $('#nextPage').on('click', function () {
-                var visibleRows = getVisibleRows();
-                var totalPages = Math.ceil(visibleRows.length / recordsPerPage) || 1;
-
+                 var currentlyFilteredRows = filterTableRows(); // Need filtered rows for correct pagination
+                 var totalPages = Math.ceil(currentlyFilteredRows.length / recordsPerPage) || 1;
                 if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
+                    displayPage(currentPage + 1, currentlyFilteredRows);
+                }
+            });
+            
+            // Listen for sort-complete event (if using separate sort script)
+             // document.addEventListener('sort-complete', function() { rows = tableBody.find('tr').toArray(); currentPage = 1; updateTableDisplay(); });
+
+            // --- Excel Export Modal Script (Adapted from Contact Style) ---
+            var excelModal = new bootstrap.Modal(document.getElementById('excelExportModal'));
+            var downloadForm = $('#downloadForm');
+            var selectAllMembersDb = $('#selectAllMembersDb'); // Changed ID
+            var selectFilteredMembers = $('#selectFilteredMembers'); // Changed ID
+            var selectAllFields = $('#selectAllFields');
+            var memberCheckboxes = $('.member-checkbox'); // Changed class
+            var fieldCheckboxes = $('.field-checkbox');
+            var memberListContainer = $('#memberList'); // Changed ID
+
+             // Helper to get IDs of members currently matching the main page filter
+             function getFilteredMemberIds() { // Changed function name
+                 var filteredIds = [];
+                 rows.forEach(function(row) { // Iterate over all original rows
+                     var jqRow = $(row);
+                      // Check if the row matches the current filters
+                      var memberNameFilter = $('#memberNameFilter').val().toLowerCase(); // Changed ID
+                      var statusFilter = $('#membershipStatusFilter').val()?.toLowerCase() || ""; // Changed ID
+                      var name = jqRow.data('name') || ''; // Changed data attribute
+                      var status = jqRow.data('status') || ''; // Changed data attribute
+                      var nameMatch = memberNameFilter === "" || name.includes(memberNameFilter);
+                      var statusMatch = statusFilter === "" || status.includes(statusFilter);
+
+                      if (nameMatch && statusMatch) {
+                          var id = jqRow.data('id');
+                          if(id) filteredIds.push(id.toString());
+                      }
+                 });
+                 return filteredIds;
+             }
+
+             // Update modal list visibility and Select Filtered availability
+             function updateModalMemberVisibility() { // Changed function name
+                 var filteredIds = getFilteredMemberIds(); // Changed function name
+                 var anyFiltered = filteredIds.length > 0 && filteredIds.length < rows.length; // Filter is active and effective
+
+                 memberCheckboxes.each(function() { // Changed variable
+                     var checkbox = $(this);
+                     var memberId = checkbox.val(); // Changed variable name
+                     // Always show all checkboxes in the modal list
+                     checkbox.closest('.form-check').show(); 
+                 });
+
+                 // Show/hide the "Select Filtered" option based on whether filters are active
+                 $('#selectFilteredContainer').toggle(anyFiltered);
+                 if (!anyFiltered) {
+                     selectFilteredMembers.prop('checked', false); // Changed ID
+                 }
+             }
+
+             // When the modal is shown, update visibility of 'Select Filtered' option
+             $('#excelExportModal').on('show.bs.modal', function () {
+                 updateModalMemberVisibility(); // Changed function name
+                 // Reset checkboxes
+                 selectAllMembersDb.prop('checked', false); // Changed ID
+                 selectFilteredMembers.prop('checked', false); // Changed ID
+                 selectAllFields.prop('checked', false);
+                 memberCheckboxes.prop('checked', false).prop('disabled', false); // Changed variable
+                 fieldCheckboxes.prop('checked', false);
+                 // Default checked fields for Member
+                 $('#field-MemberName').prop('checked', true);
+                 $('#field-MembershipStatus').prop('checked', true);
+                 // Add other defaults if desired
+                 updateMemberSelectionState(); // Changed function name
+             });
+
+             // Handle TRUE "Select All" (DownloadAll=true)
+             selectAllMembersDb.on('change', function () { // Changed ID
+                 var isChecked = $(this).prop('checked');
+                 // If checked, uncheck and disable individual/filtered options
+                 if (isChecked) {
+                     selectFilteredMembers.prop('checked', false); // Changed ID
+                     memberCheckboxes.prop('checked', false); // Changed variable
+                 }
+                 updateMemberSelectionState(); // Changed function name
+             });
+
+             // Handle "Select Filtered" checkbox
+             selectFilteredMembers.on('change', function () { // Changed ID
+                 var isChecked = $(this).prop('checked');
+                 var filteredIds = getFilteredMemberIds(); // Changed function name
+
+                 memberCheckboxes.prop('checked', false); // Uncheck all first // Changed variable
+                 if (isChecked) {
+                     memberCheckboxes.each(function() { // Changed variable
+                         if (filteredIds.includes($(this).val())) {
+                             $(this).prop('checked', true);
+                         }
+                     });
+                      selectAllMembersDb.prop('checked', false); // Uncheck true "Select All" // Changed ID
+                 }
+                 updateMemberSelectionState(); // Changed function name
+             });
+
+             // Handle individual member checkbox changes
+             memberCheckboxes.on('change', function() { // Changed variable
+                 selectAllMembersDb.prop('checked', false); // Changed ID
+                 selectFilteredMembers.prop('checked', false); // Changed ID
+                 updateMemberSelectionState(); // Changed function name
+             });
+
+             // Update enable/disable state of checkboxes
+             function updateMemberSelectionState() { // Changed function name
+                 var disableIndividual = selectAllMembersDb.prop('checked'); // Changed ID
+                 memberCheckboxes.prop('disabled', disableIndividual); // Changed variable
+                 selectFilteredMembers.prop('disabled', disableIndividual); // Changed ID
+                 memberListContainer.toggle(!disableIndividual); // Hide list if true "Select All" is checked // Changed ID
+                 // Show/hide filtered container based on filtering state AND true select all
+                 updateModalMemberVisibility(); // Changed function name
+             }
+
+             // Handle "Select All Fields"
+             selectAllFields.on('change', function () {
+                 fieldCheckboxes.prop('checked', $(this).prop('checked'));
+             });
+
+             // Handle individual field checkbox changes
+             fieldCheckboxes.on('change', function() {
+                 if (!$(this).prop('checked')) {
+                     selectAllFields.prop('checked', false);
+                 } else {
+                     if ($('.field-checkbox:checked').length === fieldCheckboxes.length) {
+                         selectAllFields.prop('checked', true);
+                     }
+                 }
+             });
+
+            // Handle form submission (restored logic, adapted for Member)
+            downloadForm.on('submit', function (e) {
+                if ($('.field-checkbox:checked').length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one field to export.');
+                    return;
+                }
+                
+                // If true "Select All" is NOT checked, ensure at least one individual member is checked
+                if (!selectAllMembersDb.prop('checked') && $('.member-checkbox:checked').length === 0) { // Changed ID and class
+                     e.preventDefault();
+                     alert('Please select at least one member to export, or choose "Select All Members".'); // Changed text
+                     return;
+                 }
+
+                 // Prepare form based on whether true "Select All" is checked
+                 if (selectAllMembersDb.prop('checked')) { // Changed ID
+                     // Ensure DownloadAll=true is submitted
+                     if (!$('#selectAllMembersDb[name="DownloadAll"]').length) { // Changed ID
+                          $('<input>').attr({ type: 'hidden', name: 'DownloadAll', value: 'true' }).appendTo(downloadForm);
+                     } else {
+                           $('#selectAllMembersDb').prop('checked', true); // Changed ID
+                     }
+                     // Remove individual IDs as they are not needed
+                     $('input.member-checkbox[name="SelectedMemberIds"]').remove(); // Changed class and name
+                 } else {
+                      // Ensure DownloadAll=false is submitted
+                      if ($('#selectAllMembersDb[name="DownloadAll"]').length) { // Changed ID
+                           $('#selectAllMembersDb').prop('checked', false); // Changed ID
+                      }
+                       // Add hidden input if it doesn't exist
+                      if ($('input[type="hidden"][name="DownloadAll"]').length === 0) {
+                           $('<input>').attr({ type: 'hidden', name: 'DownloadAll', value: 'false' }).appendTo(downloadForm);
+                      } else {
+                           $('input[type="hidden"][name="DownloadAll"]').val('false');
+                      }
+
+                       // Ensure only checked members have the name attribute for submission
+                       memberCheckboxes.each(function() { // Changed variable
+                           var cb = $(this);
+                           if (!cb.prop('checked')) {
+                               cb.removeAttr('name'); 
+                           } else {
+                               cb.attr('name', 'SelectedMemberIds'); // Changed name
+                           }
+                       });
+                 }
+                 // excelModal.hide(); // Optionally hide modal
+            });
+            
+             // Initial setup calls
+             updateTableDisplay(); // Use combined update function
+
+             // --- Archive/Unarchive Confirmation (Keep existing logic) ---
+             $('.archive-btn').click(function (event) {
+                event.preventDefault(); // Prevent default link behavior
+                var button = $(this);
+                var memberId = button.data('id');
+                var currentStatus = button.data('status');
+                var isArchiving = (currentStatus !== 'Cancelled');
+                var actionText = isArchiving ? 'archive' : 'unarchive';
+                var confirmMessage = `Are you sure you want to ${actionText} this member?`;
+
+                if (confirm(confirmMessage)) {
+                    $.ajax({
+                        url: '@Url.Action("ToggleMemberStatus", "Member")', // Adjust the action name if needed
+                        type: 'POST',
+                        data: { id: memberId },
+                        headers: {
+                            // Include AntiForgery token for security
+                            RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (result) {
+                            if (result.success) {
+                                // Update the button text and class
+                                var newStatus = isArchiving ? 'Cancelled' : 'GoodStanding'; // Determine new status based on action
+                                var newButtonText = isArchiving ? 'Unarchive' : 'Archive';
+                                var newButtonClass = isArchiving ? 'btn-success' : 'btn-danger';
+                                var oldButtonClass = isArchiving ? 'btn-danger' : 'btn-success';
+
+                                button.text(newButtonText);
+                                button.removeClass(oldButtonClass).addClass(newButtonClass);
+                                button.data('status', newStatus);
+                                button.attr('title', isArchiving ? 'Unarchive Member' : 'Archive Member');
+                                // Update the tooltip text
+                                var tooltipInstance = bootstrap.Tooltip.getInstance(button[0]);
+                                if (tooltipInstance) {
+                                    tooltipInstance.setContent({ '.tooltip-inner': isArchiving ? 'Unarchive Member' : 'Archive Member' });
+                                }
+                                
+                                // Update the status badge in the table
+                                var row = button.closest('tr');
+                                var statusBadge = row.find('.status-badge');
+                                statusBadge.removeClass(function (index, className) {
+                                    return (className.match(/(^|\s)status-\S+/g) || []).join(' ');
+                                }).addClass('status-' + newStatus.toLowerCase());
+                                statusBadge.text(result.newStatusDisplay); // Use display text from server
+                                
+                                // Update the data-status on the row for filtering
+                                row.data('status', newStatus.toLowerCase());
+                                row.attr('data-status', newStatus.toLowerCase());
+
+                                // Optionally re-apply filters/pagination if the status change affects visibility
+                                updateTableDisplay(); 
+
+                                // Show success notification (assuming _Notification partial handles TempData)
+                                // Add TempData message in controller or use a JS notification library
+                                console.log(result.message);
+                            } else {
+                                alert('Error: ' + result.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error toggling member status:", status, error);
+                            alert('An error occurred while updating the member status.');
+                        }
+                    });
                 }
             });
 
-            // Filter function
-            function filterTable() {
-                currentPage = 1; // Reset to the first page
-                updatePagination();
-            }
-
-            // Attach filter function to input events
-            $('#memberNameFilter, #membershipStatusFilter').on('input change', filterTable);
-            
-            // Update filter status indicators whenever filters change
-            function updateFilterStatus() {
-                var activeFilters = [];
-                
-                // Check if member name filter is active
-                var nameFilter = $('#memberNameFilter').val();
-                if (nameFilter && nameFilter.trim() !== '') {
-                    activeFilters.push('Member Name: "' + nameFilter + '"');
-                }
-                
-                // Check if status filter is active
-                var statusFilter = $('#membershipStatusFilter').val();
-                if (statusFilter && statusFilter !== '') {
-                    activeFilters.push('Status: "' + $('#membershipStatusFilter option:selected').text() + '"');
-                }
-                
-                // Update the filter status display
-                if (activeFilters.length > 0) {
-                    $('#activeFilters').text(activeFilters.join(', '));
-                } else {
-                    $('#activeFilters').text('No filters');
-                }
-            }
-
-            // Update filter status when filters change
-            $('#memberNameFilter, #membershipStatusFilter').on('input change', updateFilterStatus);
-            
-            // Initial filter status update
-            updateFilterStatus();
-            
-            // Initial page display
-            showPage(currentPage);
         });
     </script>
+
     <style>
         /* Pagination button styling */
         .pagination-btn {
@@ -566,5 +679,32 @@
             font-size: 14px;
             border-radius: 4px;
         }
+
+         /* Status Badge Styles */
+        .status-badge {
+            padding: 0.25em 0.6em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .status-goodstanding {
+            background-color: #28a745; /* Green */
+        }
+
+        .status-outstanding {
+            background-color: #ffc107; /* Yellow */
+            color: #212529; /* Darker text for yellow */
+        }
+
+        .status-cancelled {
+            background-color: #6c757d; /* Gray */
+        }
+
     </style>
 }

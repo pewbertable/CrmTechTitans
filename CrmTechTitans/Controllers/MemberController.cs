@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using CrmTechTitans.Services;
 
 namespace CrmTechTitans.Controllers
 {
@@ -23,10 +24,12 @@ namespace CrmTechTitans.Controllers
     public class MemberController : Controller
     {
         private readonly CrmContext _context;
+        private readonly ExcelExportService _excelExportService;
 
-        public MemberController(CrmContext context)
+        public MemberController(CrmContext context, ExcelExportService excelExportService)
         {
             _context = context;
+            _excelExportService = excelExportService;
         }
 
         // GET: Member
@@ -879,254 +882,146 @@ namespace CrmTechTitans.Controllers
                 }
             }
         }
-        public IActionResult ExportMembers()
-        {
-            var model = new MemberExportViewModel
-            {
-                Members = _context.Members.ToList() // Fetch members from the database
-            };
-            return View(model); // Returns the ExportMembers.cshtml view
-        }
 
         [HttpPost]
         public IActionResult DownloadMembers([FromForm] MemberExportOptions options)
         {
             if (options.SelectedFields == null || !options.SelectedFields.Any())
             {
+                // Consider returning a TempData message for better user feedback
+                TempData["error"] = "Please select at least one field to export.";
+                // Redirect back or return a view indicating the error
+                // For simplicity, returning BadRequest for now
                 return BadRequest("Please select at least one field to export.");
             }
 
-            //IQueryable<Member> membersQuery = _context.Members.AsQueryable();
+            // Fetch members with necessary includes
             IQueryable<Member> membersQuery = _context.Members
-             .Include(m => m.MemberContacts)
-             .Include(m => m.IndustryMembers).ThenInclude(im => im.Industry)
-             .Include(m => m.MemberAddresses).ThenInclude(a => a.Address)
-             .AsQueryable();
+                .Include(m => m.MemberContacts) // Include contacts if needed for export fields
+                .Include(m => m.IndustryMembers).ThenInclude(im => im.Industry)
+                .Include(m => m.MemberAddresses).ThenInclude(a => a.Address)
+                .Include(m => m.MemberMembershipTypes).ThenInclude(mmt => mmt.MembershipType) // Include if needed
+                .AsQueryable();
 
-            // If "Download All" is selected, fetch all members
+            // Filter by selected members if "Download All" is not checked
             if (!options.DownloadAll)
             {
-                // Otherwise, filter by selected members
                 if (options.SelectedMemberIds != null && options.SelectedMemberIds.Any())
                 {
                     membersQuery = membersQuery.Where(m => options.SelectedMemberIds.Contains(m.ID));
                 }
                 else
                 {
-                    return BadRequest("No members selected.");
+                     // If not downloading all and no IDs are selected, return error
+                     TempData["error"] = "No members selected for filtered export.";
+                     return BadRequest("No members selected."); // Or redirect
                 }
             }
 
             var members = membersQuery.ToList();
 
-            // Set the license context
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            using (ExcelPackage excel = new ExcelPackage())
+             if (!members.Any())
             {
-                var workSheet = excel.Workbook.Worksheets.Add("Members");
+                TempData["warning"] = "No members found matching the selected criteria for export.";
+                 // Decide how to handle - maybe return an empty file or redirect with message
+                 // For now, return BadRequest, but a user-friendly redirect might be better
+                 return BadRequest("No members found matching the criteria.");
+            }
 
-                int column = 1;
-                Dictionary<string, int> fieldMapping = new Dictionary<string, int>();
 
-                // Add headers properly
+            // Transform data into List<Dictionary<string, object>>
+            var exportData = new List<Dictionary<string, object>>();
+            foreach (var member in members)
+            {
+                var memberData = new Dictionary<string, object>();
+                // Changed logic: Get the first address, or null if none exist
+                var firstAddress = member.MemberAddresses?.FirstOrDefault()?.Address;
+
                 foreach (var field in options.SelectedFields)
                 {
-                    workSheet.Cells[3, column].Value = field;  // <-- Row 3 for column headings
-                    workSheet.Cells[3, column].Style.Font.Bold = true;
-                    fieldMapping[field] = column;
-                    column++;
-                }
+                    object value = null; // Default value if not found or null
 
-                int row = 4; // Data starts from row 4
-                foreach (var member in members)
-                {
-                    column = 1;
-                    foreach (var field in options.SelectedFields)
+                    switch (field)
                     {
-                        switch (field)
-                        {
-                            case "MemberName":
-                                workSheet.Cells[row, column].Value = member.MemberName;
-                                break;
-                            case "CompanySize":
-                                workSheet.Cells[row, column].Value = member.CompanySize.ToString();
-                                break;
-                            case "Website":
-                                workSheet.Cells[row, column].Value = member.CompanyWebsite;
-                                break;
-                            case "MembershipStatus":
-                                workSheet.Cells[row, column].Value = member.MembershipStatus.ToString();
-                                break;
-                            case "ContactedBy":
-                                workSheet.Cells[row, column].Value = member.ContactedBy.ToString();
-                                break;
-                            case "MemberSince":
-                                workSheet.Cells[row, column].Value = member.MemberSince.ToShortDateString();
-                                workSheet.Column(column).Style.Numberformat.Format = "yyyy-mm-dd";
-                                break;
-                            case "Notes":
-                                workSheet.Cells[row, column].Value = member.Notes;
-                                break;
-                            case "Industries":
-                                workSheet.Cells[row, column].Value = string.Join(", ",
-                                    member.IndustryMembers.Select(im => im.Industry.NAICS)); // List industries
-                                break;
-                            case "Address":
-                                var address = member.MemberAddresses.FirstOrDefault()?.Address;
-                                if (address != null)
-                                {
-                                    workSheet.Cells[row, column].Value = address.Street;
-                                }
-                                else
-                                {
-                                    workSheet.Cells[row, column].Value = "N/A";
-                                }
-                                break;
-                            case "City":
-                                var addressCity = member.MemberAddresses.FirstOrDefault()?.Address;
-                                workSheet.Cells[row, column].Value = addressCity != null ? addressCity.City : "N/A";
-                                break;
-                            case "Province":
-                                var addressProvince = member.MemberAddresses.FirstOrDefault()?.Address;
-                                workSheet.Cells[row, column].Value = addressProvince != null ? addressProvince.Province.ToString() : "N/A";
-                                break;
-                            case "PostalCode":
-                                var addressPostal = member.MemberAddresses.FirstOrDefault()?.Address;
-                                workSheet.Cells[row, column].Value = addressPostal != null && !string.IsNullOrEmpty(addressPostal.PostalCode) 
-                                    ? addressPostal.PostalCode : "N/A";
-                                break;
-                        }
-                        column++;
+                        // Direct Member Properties
+                        case "MemberName": value = member.MemberName; break;
+                        case "CompanySize": value = member.CompanySize.ToString(); break; // Enum to string
+                        case "Website": value = member.CompanyWebsite; break;
+                        case "MembershipStatus": value = member.MembershipStatus.ToString(); break; // Enum to string
+                        case "ContactedBy": value = member.ContactedBy?.ToString(); break; // Nullable enum to string
+                        case "MemberSince": value = member.MemberSince; break; // Keep as DateTime
+                        case "Notes": value = member.Notes; break;
+                        case "Reason": value = member.Reason; break; // Cancellation reason
+
+                        // Related Data - Industries
+                        case "Industries":
+                            value = member.IndustryMembers != null && member.IndustryMembers.Any()
+                                ? string.Join(", ", member.IndustryMembers
+                                        .Select(im => im.Industry?.NAICS.ToString()) // Select NAICS as string (null if Industry or NAICS is null)
+                                        .Where(naicsStr => naicsStr != null) // Filter out nulls
+                                        .DefaultIfEmpty("N/A") // Use N/A if list is empty after filtering
+                                    )
+                                : "N/A";
+                            break;
+
+                         // Related Data - Membership Types
+                        case "MembershipTypes":
+                            value = member.MemberMembershipTypes != null && member.MemberMembershipTypes.Any()
+                                ? string.Join(", ", member.MemberMembershipTypes.Select(mmt => mmt.MembershipType?.Name ?? "N/A"))
+                                : "N/A";
+                            break;
+
+                        // Related Data - Address (using first address)
+                        case "Street": value = firstAddress?.Street; break;
+                        case "City": value = firstAddress?.City; break;
+                        case "Province": value = firstAddress?.Province.ToString(); break; // Enum to string
+                        case "PostalCode": value = firstAddress?.PostalCode; break;
+
+                        // Add cases for other fields if needed (e.g., Contacts)
+                        // case "PrimaryContactName":
+                        //     var primaryContact = member.MemberContacts?.FirstOrDefault(mc => mc.ContactType == ContactType.Primary)?.Contact;
+                        //     value = primaryContact != null ? $"{primaryContact.FirstName} {primaryContact.LastName}" : "N/A";
+                        //     break;
+                        // case "PrimaryContactEmail":
+                        //     value = member.MemberContacts?.FirstOrDefault(mc => mc.ContactType == ContactType.Primary)?.Contact?.Email;
+                        //     break;
+
+                        default:
+                            // Optional: Log unhandled field?
+                            break;
                     }
-                    row++;
+                    memberData[field] = value; // Add the value (even if null, service handles N/A)
                 }
+                exportData.Add(memberData);
+            }
 
-                workSheet.Cells.AutoFitColumns();
+            try
+            {
+                // Use the ExcelExportService
+                byte[] fileBytes = _excelExportService.GenerateExcelPackage(
+                    exportData,
+                    options.SelectedFields,
+                    sheetName: "Members",
+                    reportTitle: "Member Report"
+                );
 
-                // Fix title and timestamp formatting
-                workSheet.Cells[1, 1].Value = "Member Report";
-                using (ExcelRange title = workSheet.Cells[1, 1, 1, options.SelectedFields.Count])
-                {
-                    title.Merge = true;
-                    title.Style.Font.Bold = true;
-                    title.Style.Font.Size = 18;
-                    title.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    title.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    title.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(48, 84, 150));
-                    title.Style.Font.Color.SetColor(System.Drawing.Color.White);
-                }
-
-                // Fix "Created Date" placement (move it below title)
-                DateTime utcDate = DateTime.UtcNow;
-                TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                workSheet.Cells[2, 1].Value = "Created: " + localDate.ToString("MMMM d, yyyy h:mm tt");
-                using (ExcelRange dateRange = workSheet.Cells[2, 1, 2, options.SelectedFields.Count])
-                {
-                    dateRange.Merge = true;
-                    dateRange.Style.Font.Bold = true;
-                    dateRange.Style.Font.Size = 11;
-                    dateRange.Style.Font.Italic = true;
-                    dateRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    dateRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    dateRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
-                }
-
-                // Style the headers
-                using (ExcelRange headers = workSheet.Cells[3, 1, 3, options.SelectedFields.Count])
-                {
-                    headers.Style.Font.Bold = true;
-                    headers.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    headers.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(220, 230, 242));
-                    headers.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    headers.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                    headers.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    headers.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    headers.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                }
-
-                // Format the data range
-                int lastRow = 3 + members.Count;
-                int lastCol = options.SelectedFields.Count;
-                
-                if (members.Count > 0)
-                {
-                    // Apply alternating row colors in the data area
-                    for (int dataRow = 4; dataRow <= lastRow; dataRow++)
-                    {
-                        using (ExcelRange rowRange = workSheet.Cells[dataRow, 1, dataRow, lastCol])
-                        {
-                            // Apply light gray to even rows
-                            if (dataRow % 2 == 0)
-                            {
-                                rowRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                rowRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(242, 242, 242));
-                            }
-                            
-                            // Apply borders to all data cells
-                            rowRange.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                            rowRange.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                            rowRange.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            rowRange.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                            
-                            // Vertical alignment
-                            rowRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                        }
-                    }
-                    
-                    // Format specific data types and cell alignment
-                    for (column = 1; column <= lastCol; column++)
-                    {
-                        string fieldName = options.SelectedFields[column - 1];
-                        
-                        // Set column-specific formatting
-                        if (fieldName == "MemberSince" || fieldName.Contains("Date"))
-                        {
-                            // Format dates consistently
-                            workSheet.Column(column).Style.Numberformat.Format = "yyyy-mm-dd";
-                            workSheet.Column(column).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                        }
-                        else if (fieldName == "Website")
-                        {
-                            // Format URLs
-                            using (ExcelRange urlRange = workSheet.Cells[4, column, lastRow, column])
-                            {
-                                urlRange.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
-                                urlRange.Style.Font.UnderLine = true;
-                            }
-                        }
-                        else if (fieldName == "Notes")
-                        {
-                            // Format multi-line text fields
-                            workSheet.Column(column).Style.WrapText = true;
-                            workSheet.Column(column).Width = 40; // Fixed width for notes
-                        }
-                        else if (fieldName == "MembershipStatus")
-                        {
-                            // Center status values
-                            workSheet.Column(column).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                        }
-                    }
-                }
-                
-                // Add freeze panes to keep headers visible when scrolling
-                workSheet.View.FreezePanes(4, 1);
-                
-                // Adjust column widths but ensure minimum and maximum widths
-                workSheet.Cells.AutoFitColumns(15, 80);
-
-                try
-                {
-                    Byte[] fileBytes = excel.GetAsByteArray();
-                    string filename = "Members.xlsx";
-                    string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    return File(fileBytes, mimeType, filename);
-                }
-                catch (Exception)
-                {
-                    return BadRequest("Could not generate the file.");
-                }
+                string filename = $"Members_{DateTime.Now:yyyyMMddHHmmss}.xlsx"; // Add timestamp to filename
+                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                return File(fileBytes, mimeType, filename);
+            }
+            catch (TimeZoneNotFoundException tzEx)
+            {
+                 // Handle specific error if timezone isn't found (e.g., in Docker)
+                 TempData["error"] = $"Error generating report: Timezone 'Eastern Standard Time' not found. {tzEx.Message}";
+                 // Log the full exception tzEx
+                 return RedirectToAction(nameof(Index)); // Redirect back to index
+            }
+            catch (Exception ex)
+            {
+                // Log the general exception ex
+                TempData["error"] = "An error occurred while generating the Excel file.";
+                 // Consider more specific error handling or logging
+                return RedirectToAction(nameof(Index)); // Redirect back to index on error
             }
         }
 
@@ -1393,6 +1288,6 @@ namespace CrmTechTitans.Controllers
                     return BadRequest("Could not generate the file.");
                 }
             }
-        }
-    }
+        }
+    }
 }
