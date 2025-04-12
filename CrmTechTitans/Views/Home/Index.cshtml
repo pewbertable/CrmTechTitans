@@ -45,7 +45,7 @@
         }
 
         .dashboard-container {
-            padding: 1.5rem;
+            padding: 1.5rem 0;
             max-width: 1600px;
             margin: 0 auto;
         }
@@ -379,9 +379,10 @@
 </div>
 
 <!-- Metrics Cards -->
-<div class="row g-4 mb-4">
+<!-- Metrics Cards -->
+<div class="d-flex flex-wrap gap-4 mb-4 justify-content-start">
     <!-- Total Members Card -->
-    <div class="col-md-6 col-lg-3">
+    <div style="flex: 1 1 calc(33.333% - 1rem); min-width: 250px;">
         <div class="metric-card accent-blue">
             <div class="metric-icon">
                 <i class="fas fa-users"></i>
@@ -394,7 +395,7 @@
     </div>
 
     <!-- GoodStanding Members Card -->
-    <div class="col-md-6 col-lg-3">
+    <div style="flex: 1 1 calc(33.333% - 1rem); min-width: 250px;">
         <div class="metric-card accent-green">
             <div class="metric-icon">
                 <i class="fas fa-user-check"></i>
@@ -407,7 +408,7 @@
     </div>
 
     <!-- Outstanding Members Card -->
-    <div class="col-md-6 col-lg-3">
+    <div style="flex: 1 1 calc(33.333% - 1rem); min-width: 250px;">
         <div class="metric-card accent-yellow">
             <div class="metric-icon">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -418,20 +419,8 @@
             </div>
         </div>
     </div>
-
-    <!-- Cancelled Members Card -->
-    <div class="col-md-6 col-lg-3">
-        <div class="metric-card accent-red">
-            <div class="metric-icon">
-                <i class="fas fa-user-times"></i>
-            </div>
-            <div class="metric-info">
-                <h3>Cancelled</h3>
-                <span data-member-count="cancelled">@(Model.MemberCountSummary?.Cancelled ?? 0)</span>
-            </div>
-        </div>
-    </div>
 </div>
+
 
 <!-- Main Dashboard Charts -->
 <div class="row g-4">

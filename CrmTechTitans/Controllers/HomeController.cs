@@ -35,8 +35,9 @@ namespace CrmTechTitans.Controllers
                 
                 var cancelledCount = await _context.Members
                     .CountAsync(m => m.MembershipStatus == MembershipStatus.Cancelled);
-                
-                var totalMembers = goodStandingCount + outstandingCount + cancelledCount;
+
+                var totalMembers = goodStandingCount + outstandingCount;
+
 
                 // Create member summary
                 var memberSummary = new MemberCountVM

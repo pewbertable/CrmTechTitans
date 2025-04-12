@@ -84,7 +84,7 @@
             position: fixed;
             left: 0;
             top: 0;
-            width: 260px;
+            width: 230px;
             height: 100vh;
             background: linear-gradient(180deg, var(--dark) 0%, var(--gray-800) 100%);
             color: white;
@@ -94,14 +94,16 @@
             z-index: 1000;
             transition: all 0.3s ease-in-out;
             box-shadow: var(--shadow-lg);
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--gray-600) var(--gray-900);
+            overflow: auto; 
+            font-size: 0.8rem;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
         }
 
 
+
         .sidebar-header {
-            padding: 1.75rem 1.5rem;
+            padding: 1rem 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             flex-direction: column;
@@ -144,36 +146,30 @@
         }
 
         .nav-section {
-            margin-bottom: 1.25rem;
-            padding: 0.75rem 0;
+            margin-bottom: 0.25rem;
+            padding: 0.1rem 0;
         }
 
-        .nav-section-title {
+
+
+        .nav-section-title,
+        details summary.nav-section-title {
+            padding: 0.4rem 1.25rem;
             color: var(--gray-400);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.075rem;
-            padding: 0.5rem 1.75rem;
-            margin-bottom: 0.5rem;
+            font-size: 1rem;
             font-weight: 600;
         }
 
         .sidebar a {
-            display: flex;
-            align-items: center;
-            padding: 0.875rem 1.75rem;
-            font-size: 0.9rem;
-            color: var(--gray-300);
-            text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            border-left: 3px solid transparent;
-            margin: 0.125rem 0;
+            padding: 0.35rem 1.25rem;
+            font-size: 0.78rem;
         }
 
+
             .sidebar a i {
-                margin-right: 0.875rem;
-                font-size: 1.1rem;
-                width: 1.5rem;
+                margin-right: 0.5rem;
+                font-size: 1rem;
+                width: 1.25rem;
                 text-align: center;
                 transition: all 0.2s ease;
             }
@@ -201,9 +197,10 @@
 
         .sidebar-footer {
             margin-top: auto;
-            padding: 1.25rem .10rem;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.78rem;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.875rem;
+            
             background-color: rgba(0, 0, 0, 0.15);
         }
 
@@ -371,6 +368,41 @@
             }
         }
 
+
+        details.nav-section {
+            padding: 0;
+            margin-bottom: 0.5rem;
+            border: none;
+        }
+
+        details summary.nav-section-title {
+            color: var(--gray-400);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.075rem;
+            padding: 0.5rem 1.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        details[open] summary .toggle-icon {
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon {
+            margin-left: auto;
+            font-size: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+
+
+
     </style>
 
 </head>
@@ -409,33 +441,42 @@
                     </a>
                 </div>
 
-                <div class="nav-section">
-                    <div class="nav-section-title">CONTACTS</div>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
-                       asp-area="" asp-controller="Contact" asp-action="Index">
-                        <i class="fas fa-address-book"></i> Contacts
-                    </a>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
-                       asp-area="" asp-controller="Address" asp-action="Index">
-                        <i class="fas fa-map-marker-alt"></i> Municipalities
-                    </a>
-                </div>
+                <details class="nav-section">
+                    <summary class="nav-section-title">
+                        CONTACTS <i class="fas fa-chevron-down toggle-icon"></i>
+                    </summary>
+                    <div class="nav-links">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
+                           asp-area="" asp-controller="Contact" asp-action="Index">
+                            <i class="fas fa-address-book"></i> Contacts
+                        </a>
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")"
+                           asp-area="" asp-controller="Address" asp-action="Index">
+                            <i class="fas fa-map-marker-alt"></i> Municipalities
+                        </a>
+                    </div>
+                </details>
 
-                <div class="nav-section">
-                    <div class="nav-section-title">BUSINESS</div>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
-                       asp-area="" asp-controller="Opportunity" asp-action="Index">
-                        <i class="fas fa-briefcase"></i> Opportunities
-                    </a>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
-                       asp-area="" asp-controller="Interaction" asp-action="Index">
-                        <i class="fas fa-comments"></i> Interactions
-                    </a>
-                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
-                       asp-area="" asp-controller="Industry" asp-action="Index">
-                        <i class="fas fa-industry"></i> Industries
-                    </a>
-                </div>
+                <details class="nav-section">
+                    <summary class="nav-section-title">
+                        BUSINESS <i class="fas fa-chevron-down toggle-icon"></i>
+                    </summary>
+                    <div class="nav-links">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
+                           asp-area="" asp-controller="Opportunity" asp-action="Index">
+                            <i class="fas fa-briefcase"></i> Opportunities
+                        </a>
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Interaction" ? "active" : "")"
+                           asp-area="" asp-controller="Interaction" asp-action="Index">
+                            <i class="fas fa-comments"></i> Interactions
+                        </a>
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Industry" ? "active" : "")"
+                           asp-area="" asp-controller="Industry" asp-action="Index">
+                            <i class="fas fa-industry"></i> Industries
+                        </a>
+                    </div>
+                </details>
+
 
                 @if (User.IsInRole("Administrator"))
                 {
