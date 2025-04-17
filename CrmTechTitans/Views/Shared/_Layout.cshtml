@@ -8,6 +8,7 @@
     <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sidebar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/tables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/cards.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
@@ -15,39 +16,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     @await RenderSectionAsync("Styles", required: false)
 
     <style>
         :root {
-            /* Modern color palette */
-            --primary: #1e40af;
-            --primary-light: #3b82f6;
-            --primary-dark: #1e3a8a;
-            --secondary: #334155;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --light: #f8fafc;
-            --dark: #0f172a;
-            /* Neutral colors */
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
+            /* Color Palette */
+            --off-white: #FFFBF2;
+            --light-gray: #DFE2DB;
+            --dark-gray: #555555;
+            --black: #010A10;
+            --red: #731F25;
+            
+            /* Component colors */
+            --primary: var(--dark-gray);
+            --primary-hover: var(--black);
+            --light-bg: var(--off-white);
+            --card-bg: var(--light-gray);
+            --text: var(--dark-gray);
+            --accent: var(--red);
             /* Shadows */
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         html, body {
@@ -57,9 +50,9 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: var(--gray-100);
-            color: var(--gray-800);
+            font-family: 'Poppins', 'Roboto', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -75,169 +68,8 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            margin-left: 260px;
+            margin-left: 230px;
             min-height: 100vh;
-        }
-
-        /* === Sidebar Styling === */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 230px;
-            height: 100vh;
-            background: linear-gradient(180deg, var(--dark) 0%, var(--gray-800) 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            z-index: 1000;
-            transition: all 0.3s ease-in-out;
-            box-shadow: var(--shadow-lg);
-            overflow: auto; 
-            font-size: 0.8rem;
-            scrollbar-width: none; 
-            -ms-overflow-style: none;
-        }
-
-
-
-        .sidebar-header {
-            padding: 1rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.15);
-        }
-
-        .sidebar-logo {
-            color: #ffffff;
-            font-size: 1.25rem;
-            font-weight: 700;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            letter-spacing: -0.025em;
-        }
-
-        .logo-img {
-            width: 150px;
-            height: 75px;
-            border-radius: 10px;
-            margin-bottom: 0.75rem;
-            object-fit: contain;
-            background-color: white;
-            padding: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-        }
-
-            .logo-img:hover {
-                transform: scale(1.02);
-            }
-
-        .sidebar-subtitle {
-            color: var(--gray-400);
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-            font-weight: 500;
-        }
-
-        .nav-section {
-            margin-bottom: 0.25rem;
-            padding: 0.1rem 0;
-        }
-
-
-
-        .nav-section-title,
-        details summary.nav-section-title {
-            padding: 0.4rem 1.25rem;
-            color: var(--gray-400);
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .sidebar a {
-            padding: 0.35rem 1.25rem;
-            font-size: 0.78rem;
-        }
-
-
-            .sidebar a i {
-                margin-right: 0.5rem;
-                font-size: 1rem;
-                width: 1.25rem;
-                text-align: center;
-                transition: all 0.2s ease;
-            }
-
-            .sidebar a:hover {
-                background: rgba(255, 255, 255, 0.08);
-                color: white;
-            }
-
-                .sidebar a:hover i {
-                    color: var(--primary-light);
-                    transform: translateX(2px);
-                }
-
-            .sidebar a.active {
-                background: rgba(59, 130, 246, 0.15);
-                border-left: 3px solid var(--primary-light);
-                color: white;
-                font-weight: 500;
-            }
-
-                .sidebar a.active i {
-                    color: var(--primary-light);
-                }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 0.75rem 0.5rem;
-            font-size: 0.78rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            
-            background-color: rgba(0, 0, 0, 0.15);
-        }
-
-            .sidebar-footer .user-info {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-            }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: white;
-            font-size: 0.9rem;
-        }
-
-        .user-role {
-            color: var(--gray-400);
-            font-size: 0.75rem;
-            margin-top: 0.125rem;
         }
 
         /* === Main Content Adjustments === */
@@ -248,11 +80,12 @@
             display: flex;
             flex-direction: column;
             min-height: 130vh;
+            background-color: var(--light-bg);
         }
 
-            .content-container main {
-                flex: 1;
-            }
+        .content-container main {
+            flex: 1;
+        }
 
         /* Mobile Navigation */
         .mobile-nav-toggle {
@@ -264,20 +97,20 @@
             color: white;
             border: none;
             padding: 0.75rem;
-            border-radius: 0.5rem;
+            border-radius: 4px;
             cursor: pointer;
             z-index: 1100;
             box-shadow: var(--shadow-md);
             transition: all 0.2s ease;
         }
 
-            .mobile-nav-toggle:hover {
-                background: var(--primary-dark);
-            }
+        .mobile-nav-toggle:hover {
+            background: var(--primary-hover);
+        }
 
-            .mobile-nav-toggle i {
-                font-size: 1.25rem;
-            }
+        .mobile-nav-toggle i {
+            font-size: 1.25rem;
+        }
 
         .mobile-nav-overlay {
             display: none;
@@ -286,7 +119,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.2);
             z-index: 999;
             backdrop-filter: blur(2px);
             transition: opacity 0.3s ease;
@@ -294,12 +127,12 @@
 
         /* Footer */
         footer {
-            background-color: white;
+            background-color: var(--light-bg);
             padding: 1rem 2rem;
             text-align: center;
             font-size: 0.875rem;
-            color: var(--gray-500);
-            border-top: 1px solid var(--gray-200);
+            color: var(--text);
+            border-top: 1px solid rgba(33, 29, 33, 0.08);
             margin-top: auto;
             position: fixed;
             bottom: 0;
@@ -316,10 +149,10 @@
                 z-index: 1050;
             }
 
-                .sidebar.mobile-open {
-                    transform: translateX(0);
-                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-                }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            }
 
             .mobile-nav-toggle {
                 display: block;
@@ -331,10 +164,10 @@
                 transition: opacity 0.3s ease;
             }
 
-                .mobile-nav-overlay.active {
-                    display: block;
-                    opacity: 1;
-                }
+            .mobile-nav-overlay.active {
+                display: block;
+                opacity: 1;
+            }
 
             .content-wrapper {
                 margin-left: 0;
@@ -354,11 +187,11 @@
                 width: 100%;
             }
 
-                .table.custom-table th.actions-column,
-                .table.custom-table td.actions-column {
-                    width: 230px; /* Slightly smaller on mobile but still large enough for 3 buttons */
-                    min-width: 230px;
-                }
+            .table.custom-table th.actions-column,
+            .table.custom-table td.actions-column {
+                width: 230px; /* Slightly smaller on mobile but still large enough for 3 buttons */
+                min-width: 230px;
+            }
             /* Button adjustments */
             .text-center .btn-sm {
                 padding: 5px 8px;
@@ -368,7 +201,6 @@
             }
         }
 
-
         details.nav-section {
             padding: 0;
             margin-bottom: 0.5rem;
@@ -376,11 +208,11 @@
         }
 
         details summary.nav-section-title {
-            color: var(--gray-400);
-            font-size: 1rem;
+            color: rgba(33, 29, 33, 0.6);
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.075rem;
-            padding: 0.5rem 1.75rem;
+            letter-spacing: 0.05rem;
+            padding: 0.5rem 1.25rem;
             font-weight: 600;
             cursor: pointer;
             list-style: none;
@@ -397,12 +229,8 @@
         .toggle-icon {
             margin-left: auto;
             font-size: 0.75rem;
-            transition: transform 0.3s ease;
+            color: rgba(33, 29, 33, 0.6);
         }
-
-
-
-
     </style>
 
 </head>
@@ -430,7 +258,7 @@
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">MAIN</div>
+                    <div class="nav-section-title">Main</div>
                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
                        asp-area="" asp-controller="Home" asp-action="Index">
                         <i class="fas fa-home"></i> Dashboard
@@ -443,7 +271,7 @@
 
                 <details class="nav-section">
                     <summary class="nav-section-title">
-                        CONTACTS <i class="fas fa-chevron-down toggle-icon"></i>
+                        Contacts <i class="fas fa-chevron-down toggle-icon"></i>
                     </summary>
                     <div class="nav-links">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")"
@@ -459,7 +287,7 @@
 
                 <details class="nav-section">
                     <summary class="nav-section-title">
-                        BUSINESS <i class="fas fa-chevron-down toggle-icon"></i>
+                        Business <i class="fas fa-chevron-down toggle-icon"></i>
                     </summary>
                     <div class="nav-links">
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Opportunity" ? "active" : "")"
@@ -481,7 +309,7 @@
                 @if (User.IsInRole("Administrator"))
                 {
                     <div class="nav-section">
-                        <div class="nav-section-title">ADMINISTRATION</div>
+                        <div class="nav-section-title">Administration</div>
                         <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" ? "active" : "")"
                            asp-area="" asp-controller="UserManagement" asp-action="Index">
                             <i class="fas fa-user-shield"></i> User Management
@@ -494,7 +322,7 @@
                 }
 
                 <div class="nav-section">
-                    <div class="nav-section-title">PROFILE</div>
+                    <div class="nav-section-title">Profile</div>
                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Profile" ? "active" : "")"
                        asp-area="" asp-controller="Profile" asp-action="Index">
                         <i class="fas fa-user-circle"></i> My Profile
@@ -508,7 +336,7 @@
                     </div>
                     <div class="mt-2">
                         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                            <button type="submit" class="btn btn-sm btn-outline-light w-100">
+                            <button type="submit" class="btn btn-sm btn-outline-dark w-100">
                                 <i class="fas fa-sign-out-alt me-1"></i> Logout
                             </button>
                         </form>
@@ -524,8 +352,6 @@
                     @RenderBody()
                 </main>
             </div>
-
-
         </div>
     </div>
 

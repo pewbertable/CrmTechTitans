@@ -31,13 +31,13 @@ namespace CrmTechTitans.Areas.Identity.Pages.Account
             _emailSettings = emailSettings.Value;
         }
 
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         public bool DisplayConfirmAccountLink { get; set; }
 
-        public string EmailConfirmationUrl { get; set; }
+        public string EmailConfirmationUrl { get; set; } = string.Empty;
 
-        public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string email, string? returnUrl = null)
         {
             if (email == null)
             {
